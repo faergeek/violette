@@ -1,0 +1,12 @@
+{
+  "include": ["."],
+  "extends": [".."],
+  "compilerOptions": {
+    "jsx": "preserve",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "outDir": "../node_modules/.cache/tsc-out/src",
+    "skipLibCheck": false,
+    "types": ["vite/client", "vitest/importMeta"]
+  }
+}

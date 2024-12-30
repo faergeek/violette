@@ -1,0 +1,5 @@
+{
+  "extends": ["config:base", ":semanticCommitsDisabled"],
+  "lockFileMaintenance": { "enabled": true },
+  "rangeStrategy": "update-lockfile"
+}

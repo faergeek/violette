@@ -1,0 +1,7 @@
+/.env.*.local
+/.env.local
+/coverage
+/.swc
+/dist
+/node_modules
+/src/routeTree.gen.ts
