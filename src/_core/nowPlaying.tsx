@@ -204,7 +204,37 @@ export function NowPlaying({
     <>
       <PlaybackPosition />
 
-      <div className="flex items-center gap-4 px-4 py-2">
+      <div className="flex gap-2 md:hidden">
+        {credentials && song && (
+          <Link
+            className="shrink-0"
+            params={{ albumId: song.albumId }}
+            search={{ song: song.id }}
+            to="/album/$albumId"
+          >
+            <CoverArt
+              className="size-16 rounded-none group-hover:opacity-25"
+              coverArt={song.coverArt}
+              credentials={credentials}
+              size={128}
+            />
+          </Link>
+        )}
+
+        <div className="flex h-16 items-center gap-4 overflow-hidden py-2">
+          <div className="line-clamp-2">{song?.title}</div>
+
+          <IconButton
+            className="ms-auto p-5"
+            icon={paused ? <Play /> : <Pause />}
+            onClick={() => {
+              mutateStore(togglePlayback());
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="hidden items-center gap-4 px-4 py-2 md:flex">
         <IconButton
           icon={<SkipBack />}
           onClick={() => {
@@ -273,7 +303,7 @@ export function NowPlaying({
 
         {song && (
           <div className="min-w-0">
-            <div>
+            <div className="truncate">
               <Link
                 params={{ albumId: song.albumId }}
                 search={{ song: song.id }}
@@ -283,7 +313,7 @@ export function NowPlaying({
               </Link>
             </div>
 
-            <div className="text-muted-foreground">
+            <div className="truncate text-muted-foreground">
               {cloneElement(
                 song.artistId ? (
                   <Link
@@ -326,7 +356,7 @@ export function NowPlaying({
         />
 
         <Slider
-          className="w-32"
+          className="shrink-0 basis-32"
           max={1}
           step={0.05}
           value={[volume]}
