@@ -119,6 +119,7 @@ export function Login() {
             disabled={isLoginSubmitting}
             id="login-server-base-url"
             name="server-base-url"
+            required
             type="url"
           />
         </div>
@@ -132,6 +133,7 @@ export function Login() {
             disabled={isLoginSubmitting}
             id="login-username"
             name="username"
+            required
           />
         </div>
 
@@ -143,6 +145,7 @@ export function Login() {
             disabled={isLoginSubmitting}
             id="login-password"
             name="password"
+            required
             type="password"
           />
         </div>
