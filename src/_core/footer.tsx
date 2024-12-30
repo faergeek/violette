@@ -34,7 +34,7 @@ export function Footer() {
             rel="noopener"
             target="_blank"
           >
-            <SiGithub /> Github
+            <SiGithub className="size-4" /> Github
           </a>
         </footer>
       </Container>
