@@ -1,4 +1,9 @@
-import { Brain, Radio } from 'lucide-react';
+import {
+  SiLastdotfm,
+  SiLastdotfmHex,
+  SiMusicbrainz,
+  SiMusicbrainzHex,
+} from '@icons-pack/react-simple-icons';
 import { cloneElement } from 'react';
 
 import { Skeleton } from './skeleton';
@@ -13,6 +18,7 @@ export function MediaLinks({
   musicBrainzUrl?: string;
 }>) {
   const links: Array<{
+    color: string;
     icon: React.ReactElement<{
       'aria-hidden': boolean;
       className: string;
@@ -21,18 +27,20 @@ export function MediaLinks({
     url: string;
   }> = [
     lastFmUrl && {
-      icon: <Radio />,
+      color: SiLastdotfmHex,
+      icon: <SiLastdotfm />,
       label: 'Last.fm',
       url: lastFmUrl,
     },
     musicBrainzUrl && {
-      icon: <Brain />,
+      color: SiMusicbrainzHex,
+      icon: <SiMusicbrainz />,
       label: 'MusicBrainz',
       url: musicBrainzUrl,
     },
   ].filter(v => !!v);
 
-  const wrapper = <nav className="flex flex-wrap gap-2" />;
+  const wrapper = <nav className="flex flex-wrap gap-4" />;
 
   return skeleton
     ? cloneElement(
@@ -54,9 +62,10 @@ export function MediaLinks({
           links.map(link => (
             <a
               key={link.url}
-              className="inline-block space-x-2 whitespace-nowrap"
+              className="inline-block space-x-2 whitespace-nowrap text-[color:var(--brand-color)]"
               href={link.url}
               rel="noopener"
+              style={{ ['--brand-color' as string]: link.color }}
               target="_blank"
             >
               {cloneElement(link.icon, {

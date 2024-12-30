@@ -15,7 +15,7 @@ function clientXToPosition({
   return Math.max(0, Math.min((duration * clientX) / width, duration));
 }
 
-export function PlayerPosition() {
+export function PlaybackPosition() {
   const audio = useStoreState(state => state.audio);
   const rootRef = useRef<HTMLDivElement | null>(null);
 

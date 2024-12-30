@@ -1,9 +1,10 @@
 import { getRouteApi, Link, Outlet } from '@tanstack/react-router';
-import { CassetteTape } from 'lucide-react';
+import { CassetteTape, LogOut } from 'lucide-react';
 
 import { Button } from '../_core/button';
 import { Container } from '../_core/container';
-import { Player } from '../_core/player';
+import { Footer } from '../_core/footer';
+import { NowPlaying } from '../_core/nowPlaying';
 import { useStoreMutations } from '../store/react';
 
 export function Layout() {
@@ -13,21 +14,25 @@ export function Layout() {
 
   return (
     <div className="relative flex min-h-lvh flex-col">
-      <Container className="flex-1 pb-8">
+      <Container className="flex-1">
         <header className="flex items-center gap-4 py-4">
           <Link className="flex items-center gap-2" to="/">
             <CassetteTape />
             Player
           </Link>
 
-          <Button
+          <form
             className="ms-auto"
-            onClick={() => {
+            onSubmit={event => {
+              event.preventDefault();
               mutations.clearSubsonicCredentials();
             }}
           >
-            Logout
-          </Button>
+            <Button variant="link" type="submit">
+              Logout
+              <LogOut />
+            </Button>
+          </form>
         </header>
 
         <main>
@@ -35,8 +40,10 @@ export function Layout() {
         </main>
       </Container>
 
+      <Footer />
+
       <div className="sticky bottom-0 bg-background">
-        <Player credentials={credentials} />
+        <NowPlaying credentials={credentials} />
       </div>
     </div>
   );

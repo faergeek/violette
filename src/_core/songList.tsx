@@ -76,9 +76,9 @@ export function SongList({
           <div
             key={song?.id ?? index}
             className={cn(
-              'group flex items-center gap-2 border-t p-2 hover:bg-muted/50',
+              'group -mt-[1px] flex items-center gap-2 border-y p-2 first:mt-0 hover:bg-muted/50',
               {
-                'bg-red-500 hover:bg-red-500':
+                'relative border-primary bg-secondary hover:bg-secondary':
                   selectedSongId != null &&
                   song != null &&
                   selectedSongId === song.id,

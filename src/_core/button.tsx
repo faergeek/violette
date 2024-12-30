@@ -23,7 +23,7 @@ const variants = cva(
           'border border-input bg-background [:where(:enabled,:any-link)&]:hover:bg-accent [:where(:enabled,:any-link)&]:hover:text-accent-foreground',
         ghost:
           '[:where(:enabled,:any-link)&]:hover:bg-accent [:where(:enabled,:any-link)&]:hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 [:where(:enabled,:any-link)&]:hover:underline',
+        link: 'text-base text-foreground [:where(:enabled,:any-link)&]:hover:text-primary',
       },
     },
     defaultVariants: {

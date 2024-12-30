@@ -17,6 +17,7 @@
   "devDependencies": {
     "@faergeek/eslint-config": "^6.1.14",
     "@faergeek/monads": "^1.1.0",
+    "@icons-pack/react-simple-icons": "^10.2.0",
     "@radix-ui/react-dropdown-menu": "^2.1.4",
     "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-slider": "^1.2.2",
