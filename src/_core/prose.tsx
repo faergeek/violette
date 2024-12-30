@@ -31,7 +31,8 @@ export function Prose<
         </>,
       )
     : createElement(as ?? 'div', {
-        className: 'prose max-w-none',
+        className:
+          '[&_a]:text-muted-foreground [&_a]:underline [&_a] underline-offset-2',
 
         dangerouslySetInnerHTML: {
           __html: sanitizeHtml(html, {
