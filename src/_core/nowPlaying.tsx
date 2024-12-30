@@ -29,7 +29,11 @@ import { PlayerPosition } from './playerPosition';
 import { Slider } from './slider';
 import { StarredIcon } from './starredIcon';
 
-export function Player({ credentials }: { credentials: SubsonicCredentials }) {
+export function NowPlaying({
+  credentials,
+}: {
+  credentials: SubsonicCredentials;
+}) {
   const mutateStore = useStoreMutate();
   const audio = useStoreState(state => state.audio);
   const currentSongId = useStoreState(state => state.currentSongId);

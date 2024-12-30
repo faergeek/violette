@@ -4,7 +4,7 @@ import { CassetteTape, LogOut } from 'lucide-react';
 import { Button } from '../_core/button';
 import { Container } from '../_core/container';
 import { Footer } from '../_core/footer';
-import { Player } from '../_core/player';
+import { NowPlaying } from '../_core/nowPlaying';
 import { useStoreMutations } from '../store/react';
 
 export function Layout() {
@@ -43,7 +43,7 @@ export function Layout() {
       <Footer />
 
       <div className="sticky bottom-0 bg-background">
-        <Player credentials={credentials} />
+        <NowPlaying credentials={credentials} />
       </div>
     </div>
   );
