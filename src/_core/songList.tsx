@@ -229,7 +229,8 @@ export function SongList({
                   className="rounded-md align-middle"
                   icon={<StarredIcon starred={song.starred} />}
                   onClick={() => {
-                    console.log('TODO');
+                    // eslint-disable-next-line no-alert
+                    alert('TODO');
                   }}
                 />
 
@@ -241,7 +242,8 @@ export function SongList({
                   <DropdownMenuContent>
                     <DropdownMenuItem
                       onClick={() => {
-                        console.log('TODO');
+                        // eslint-disable-next-line no-alert
+                        alert('TODO');
                       }}
                     >
                       <Play />
@@ -250,7 +252,8 @@ export function SongList({
 
                     <DropdownMenuItem
                       onClick={() => {
-                        console.log('TODO');
+                        // eslint-disable-next-line no-alert
+                        alert('TODO');
                       }}
                     >
                       <ListStart />
@@ -259,7 +262,8 @@ export function SongList({
 
                     <DropdownMenuItem
                       onClick={() => {
-                        console.log('TODO');
+                        // eslint-disable-next-line no-alert
+                        alert('TODO');
                       }}
                     >
                       <ListEnd />
@@ -268,7 +272,8 @@ export function SongList({
 
                     <DropdownMenuItem
                       onClick={() => {
-                        console.log('TODO');
+                        // eslint-disable-next-line no-alert
+                        alert('TODO');
                       }}
                     >
                       <ListPlus />
@@ -277,7 +282,8 @@ export function SongList({
 
                     <DropdownMenuItem
                       onClick={() => {
-                        console.log('TODO');
+                        // eslint-disable-next-line no-alert
+                        alert('TODO');
                       }}
                     >
                       <Info />
@@ -286,7 +292,8 @@ export function SongList({
 
                     <DropdownMenuItem
                       onClick={() => {
-                        console.log('TODO');
+                        // eslint-disable-next-line no-alert
+                        alert('TODO');
                       }}
                     >
                       <Download />

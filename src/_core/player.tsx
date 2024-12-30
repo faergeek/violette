@@ -246,7 +246,8 @@ export function Player({ credentials }: { credentials: SubsonicCredentials }) {
         <IconButton
           icon={<StarredIcon starred={song?.starred} />}
           onClick={() => {
-            console.log('TODO');
+            // eslint-disable-next-line no-alert
+            alert('TODO');
           }}
         />
 

@@ -7,7 +7,7 @@ import type { StoreState } from './types';
 const CREDENTIALS_LOCAL_STORAGE_KEY = 'subsonic-credentials';
 
 export function createAppStore() {
-  return createStore<StoreState>()((set, get, store) => {
+  return createStore<StoreState>()((set, _get, store) => {
     const credentialsParseResult = v.safeParse(
       SubsonicCredentials,
       JSON.parse(String(localStorage.getItem(CREDENTIALS_LOCAL_STORAGE_KEY))),
