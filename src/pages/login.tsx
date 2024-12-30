@@ -1,6 +1,7 @@
 import { KeyRound } from 'lucide-react';
 import { useActionState } from 'react';
 import SparkMD5 from 'spark-md5';
+import invariant from 'tiny-invariant';
 import * as v from 'valibot';
 
 import { Button } from '../_core/button';
@@ -83,7 +84,28 @@ export function Login() {
         <CardTitle id="login-form-heading">Login</CardTitle>
 
         <CardDescription id="login-form-description">
-          Enter server details
+          Enter your server details or{' '}
+          <button
+            className="text-foreground hover:text-primary"
+            type="button"
+            onClick={event => {
+              const form = event.currentTarget.form;
+              invariant(form);
+
+              const input = (name: string) => {
+                const result = form.elements.namedItem(name);
+                invariant(result instanceof HTMLInputElement);
+                return result;
+              };
+
+              input('server-base-url').value = 'https://demo.navidrome.org';
+              input('username').value = 'demo';
+              input('password').value = 'demo';
+              form.requestSubmit();
+            }}
+          >
+            try a demo
+          </button>
         </CardDescription>
       </CardHeader>
 
@@ -97,6 +119,7 @@ export function Login() {
             disabled={isLoginSubmitting}
             id="login-server-base-url"
             name="server-base-url"
+            required
             type="url"
           />
         </div>
@@ -110,6 +133,7 @@ export function Login() {
             disabled={isLoginSubmitting}
             id="login-username"
             name="username"
+            required
           />
         </div>
 
@@ -121,6 +145,7 @@ export function Login() {
             disabled={isLoginSubmitting}
             id="login-password"
             name="password"
+            required
             type="password"
           />
         </div>
