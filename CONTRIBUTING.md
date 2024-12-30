@@ -38,6 +38,8 @@ pnpm run format
 
 - [Styles](https://tailwindcss.com)
 - [Icons](https://lucide.dev/icons)
+- [Brand icons](https://simpleicons.org/)
+  - [package for React](https://github.com/icons-pack/react-simple-icons)
 - [Subsonic API](https://www.subsonic.org/pages/api.jsp)
 - [OpenSubsonic API](https://opensubsonic.netlify.app)
 

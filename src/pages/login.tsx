@@ -1,4 +1,4 @@
-import { KeyRound } from 'lucide-react';
+import { CassetteTape, KeyRound } from 'lucide-react';
 import { useActionState } from 'react';
 import SparkMD5 from 'spark-md5';
 import invariant from 'tiny-invariant';
@@ -13,6 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from '../_core/card';
+import { Container } from '../_core/container';
+import { Footer } from '../_core/footer';
 import { Fx } from '../_core/fx';
 import { Input } from '../_core/input';
 import { Label } from '../_core/label';
@@ -73,97 +75,107 @@ export function Login() {
   const credentials = useStoreState(state => state.credentials);
 
   return (
-    <Card
-      action={loginAction}
-      aria-describedby="login-form-description"
-      aria-labelledby="login-form-heading"
-      as="form"
-      className="mx-auto my-6 max-w-96"
-    >
-      <CardHeader>
-        <CardTitle id="login-form-heading">Login</CardTitle>
+    <div className="flex min-h-lvh flex-col">
+      <Container className="max-w-96 flex-1">
+        <header className="flex items-center justify-center gap-2 py-4">
+          <CassetteTape />
+          Player
+        </header>
 
-        <CardDescription id="login-form-description">
-          Enter your server details or{' '}
-          <button
-            className="text-foreground hover:text-primary"
-            type="button"
-            onClick={event => {
-              const form = event.currentTarget.form;
-              invariant(form);
-
-              const input = (name: string) => {
-                const result = form.elements.namedItem(name);
-                invariant(result instanceof HTMLInputElement);
-                return result;
-              };
-
-              input('server-base-url').value = 'https://demo.navidrome.org';
-              input('username').value = 'demo';
-              input('password').value = 'demo';
-              form.requestSubmit();
-            }}
-          >
-            try a demo
-          </button>
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        <div>
-          <Label htmlFor="login-server-base-url">URL:</Label>
-
-          <Input
-            autoFocus
-            defaultValue={credentials?.serverBaseUrl ?? undefined}
-            disabled={isLoginSubmitting}
-            id="login-server-base-url"
-            name="server-base-url"
-            required
-            type="url"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="login-username">Username:</Label>
-
-          <Input
-            autoComplete="username"
-            defaultValue={credentials?.username ?? undefined}
-            disabled={isLoginSubmitting}
-            id="login-username"
-            name="username"
-            required
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="login-password">Password:</Label>
-
-          <Input
-            autoComplete="current-password"
-            disabled={isLoginSubmitting}
-            id="login-password"
-            name="password"
-            required
-            type="password"
-          />
-        </div>
-      </CardContent>
-
-      <CardFooter>
-        <Button
-          className="w-full"
-          disabled={isLoginSubmitting}
-          loading={isLoginSubmitting}
-          type="submit"
+        <Card
+          action={loginAction}
+          aria-describedby="login-form-description"
+          aria-labelledby="login-form-heading"
+          as="form"
         >
-          <KeyRound aria-hidden />
-          Login
-        </Button>
+          <CardHeader>
+            <CardTitle id="login-form-heading">Login</CardTitle>
 
-        {error && <SubsonicApiError className="mt-4" error={error} />}
-      </CardFooter>
-    </Card>
+            <CardDescription id="login-form-description">
+              Enter your server details or{' '}
+              <button
+                className="text-foreground hover:text-primary"
+                type="button"
+                onClick={event => {
+                  const form = event.currentTarget.form;
+                  invariant(form);
+
+                  const input = (name: string) => {
+                    const result = form.elements.namedItem(name);
+                    invariant(result instanceof HTMLInputElement);
+                    return result;
+                  };
+
+                  input('server-base-url').value = 'https://demo.navidrome.org';
+                  input('username').value = 'demo';
+                  input('password').value = 'demo';
+                  form.requestSubmit();
+                }}
+              >
+                try a demo
+              </button>
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="login-server-base-url">URL:</Label>
+
+              <Input
+                autoFocus
+                defaultValue={credentials?.serverBaseUrl ?? undefined}
+                disabled={isLoginSubmitting}
+                id="login-server-base-url"
+                name="server-base-url"
+                required
+                type="url"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="login-username">Username:</Label>
+
+              <Input
+                autoComplete="username"
+                defaultValue={credentials?.username ?? undefined}
+                disabled={isLoginSubmitting}
+                id="login-username"
+                name="username"
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="login-password">Password:</Label>
+
+              <Input
+                autoComplete="current-password"
+                disabled={isLoginSubmitting}
+                id="login-password"
+                name="password"
+                required
+                type="password"
+              />
+            </div>
+          </CardContent>
+
+          <CardFooter>
+            <Button
+              className="w-full"
+              disabled={isLoginSubmitting}
+              loading={isLoginSubmitting}
+              type="submit"
+            >
+              <KeyRound aria-hidden />
+              Login
+            </Button>
+
+            {error && <SubsonicApiError className="mt-4" error={error} />}
+          </CardFooter>
+        </Card>
+      </Container>
+
+      <Footer />
+    </div>
   );
 }

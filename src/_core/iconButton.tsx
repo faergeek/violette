@@ -8,7 +8,7 @@ export function IconButton({
   label,
   type = 'button',
   ...otherProps
-}: React.ComponentProps<'button'> & {
+}: Omit<React.ComponentProps<'button'>, 'children'> & {
   icon: React.ReactElement<{ className: string }>;
   label?: React.ReactNode;
 }) {
