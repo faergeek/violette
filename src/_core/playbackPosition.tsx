@@ -113,7 +113,7 @@ export function PlaybackPosition() {
   return (
     <div
       ref={rootRef}
-      className="relative h-5 w-full touch-pan-x select-none overflow-hidden bg-secondary"
+      className="relative h-5 w-full touch-none select-none overflow-hidden bg-secondary"
       onPointerDownCapture={event => {
         if (duration == null) return;
         setPointerIdToCapture(event.pointerId);
@@ -155,31 +155,32 @@ export function PlaybackPosition() {
         bufferedTimeRanges.map((timeRange, index) => (
           <div
             key={index}
-            className="pointer-events-none absolute h-full w-full origin-left bg-muted-foreground/20"
+            className="pointer-events-none absolute h-full w-full origin-left transform bg-muted-foreground/20"
             style={{
-              transform: `translateX(${(100 * timeRange.start) / duration}%) scaleX(${(timeRange.end - timeRange.start) / duration})`,
+              ['--tw-translate-x' as string]: `${(100 * timeRange.start) / duration}%`,
+              ['--tw-scale-x' as string]: `${(timeRange.end - timeRange.start) / duration}`,
             }}
           />
         ))}
 
       {duration != null && position != null && (
         <div
-          className="pointer-events-none absolute h-full w-full bg-primary"
+          className="pointer-events-none absolute h-full w-full origin-left transform-gpu bg-primary will-change-transform"
           style={{
-            transform: `translateX(${(100 * position) / duration - 100}%)`,
+            ['--tw-scale-x' as string]: `${position / duration}`,
           }}
         />
       )}
 
       <div className="flex px-1 slashed-zero tabular-nums">
         {position != null && (
-          <div className="pointer-events-none relative text-sm">
+          <div className="pointer-events-none relative transform-gpu text-sm will-change-contents">
             {formatDuration(position)}
           </div>
         )}
 
         {duration != null && (
-          <div className="pointer-events-none relative ms-auto text-sm">
+          <div className="pointer-events-none relative ms-auto transform-gpu text-sm">
             {formatDuration(duration)}
           </div>
         )}

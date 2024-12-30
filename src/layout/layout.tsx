@@ -42,7 +42,7 @@ export function Layout() {
 
       <Footer />
 
-      <div className="sticky bottom-0 bg-background">
+      <div className="sticky bottom-0 isolate transform-gpu touch-none overflow-hidden bg-background">
         <NowPlaying credentials={credentials} />
       </div>
     </div>
