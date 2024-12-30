@@ -171,7 +171,7 @@ export function PlaybackPosition() {
         />
       )}
 
-      <div className="flex px-1">
+      <div className="flex px-1 slashed-zero tabular-nums">
         {position != null && (
           <div className="pointer-events-none relative text-sm">
             {formatDuration(position)}
