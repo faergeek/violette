@@ -221,8 +221,8 @@ export function NowPlaying({
           </Link>
         )}
 
-        <div className="flex h-16 items-center gap-4 overflow-hidden py-2">
-          <div className="line-clamp-2">{song?.title}</div>
+        <div className="flex h-16 grow items-center gap-4 overflow-hidden py-2">
+          <div className="line-clamp-2 grow">{song?.title}</div>
 
           <IconButton
             className="ms-auto p-5"
