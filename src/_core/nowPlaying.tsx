@@ -25,7 +25,7 @@ import { useStoreMutate, useStoreState } from '../store/react';
 import { cn } from './cn';
 import { CoverArt } from './coverArt';
 import { IconButton } from './iconButton';
-import { PlayerPosition } from './playerPosition';
+import { PlaybackPosition } from './playbackPosition';
 import { Slider } from './slider';
 import { StarredIcon } from './starredIcon';
 
@@ -202,7 +202,7 @@ export function NowPlaying({
 
   return (
     <>
-      <PlayerPosition />
+      <PlaybackPosition />
 
       <div className="flex items-center gap-4 px-4 py-2">
         <IconButton
