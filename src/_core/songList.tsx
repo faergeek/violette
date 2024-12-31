@@ -13,8 +13,11 @@ import {
 import { cloneElement, useLayoutEffect } from 'react';
 
 import type { BaseSong, SubsonicCredentials } from '../api/types';
-import { startPlaying, togglePlayback } from '../store/mutations';
-import { useStoreMutate, useStoreState } from '../store/react';
+import {
+  StoreStateConsumer,
+  useStoreMutations,
+  useStoreState,
+} from '../store/react';
 import { cn } from './cn';
 import { CoverArt } from './coverArt';
 import {
@@ -51,9 +54,8 @@ export function SongList({
   songs: BaseSong[];
   songsToPlay?: BaseSong[];
 }>) {
-  const mutateStore = useStoreMutate();
+  const mutations = useStoreMutations();
   const currentSongId = useStoreState(state => state.currentSongId);
-  const paused = useStoreState(state => state.paused);
 
   useLayoutEffect(() => {
     if (!selectedSongId) return;
@@ -114,38 +116,44 @@ export function SongList({
                 <CoverArt skeleton />
               )}
 
-              {isCurrentInPlayer && !paused && (
-                <span className="absolute inset-0 m-auto flex h-3 w-3 group-hover:invisible">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-                  <span className="relative inline-flex h-3 w-3 rounded-full bg-primary" />
-                </span>
-              )}
+              <StoreStateConsumer selector={state => state.audioState.paused}>
+                {paused => (
+                  <>
+                    {isCurrentInPlayer && !paused && (
+                      <span className="absolute inset-0 m-auto flex h-3 w-3 group-hover:invisible">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                        <span className="relative inline-flex h-3 w-3 rounded-full bg-primary" />
+                      </span>
+                    )}
 
-              {songs && song && (
-                <button
-                  className={cn(
-                    'invisible absolute inset-0 m-auto flex items-center justify-center rounded-full group-hover:visible',
-                    { visible: isCurrentInPlayer && paused },
-                  )}
-                  type="button"
-                  onClick={() => {
-                    if (isCurrentInPlayer) {
-                      mutateStore(togglePlayback());
-                    } else {
-                      mutateStore(startPlaying(song, songsToPlay));
-                    }
-                  }}
-                >
-                  {cloneElement(
-                    isCurrentInPlayer && !paused ? (
-                      <CirclePause />
-                    ) : (
-                      <CirclePlay />
-                    ),
-                    { className: 'stroke-primary size-8' },
-                  )}
-                </button>
-              )}
+                    {songs && song && (
+                      <button
+                        className={cn(
+                          'invisible absolute inset-0 m-auto flex items-center justify-center rounded-full group-hover:visible',
+                          { visible: isCurrentInPlayer && paused },
+                        )}
+                        type="button"
+                        onClick={() => {
+                          if (isCurrentInPlayer) {
+                            mutations.togglePaused();
+                          } else {
+                            mutations.startPlaying(song, songsToPlay);
+                          }
+                        }}
+                      >
+                        {cloneElement(
+                          isCurrentInPlayer && !paused ? (
+                            <CirclePause />
+                          ) : (
+                            <CirclePlay />
+                          ),
+                          { className: 'stroke-primary size-8' },
+                        )}
+                      </button>
+                    )}
+                  </>
+                )}
+              </StoreStateConsumer>
             </div>
 
             <div className="me-2 min-w-0 grow basis-0">

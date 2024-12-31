@@ -1,4 +1,4 @@
-import { getRouteApi, Link, Outlet } from '@tanstack/react-router';
+import { Link, Outlet } from '@tanstack/react-router';
 import { CassetteTape, LogOut } from 'lucide-react';
 
 import { Button } from '../_core/button';
@@ -8,8 +8,6 @@ import { NowPlaying } from '../_core/nowPlaying';
 import { useStoreMutations } from '../store/react';
 
 export function Layout() {
-  const routeApi = getRouteApi('/_layout');
-  const { credentials } = routeApi.useLoaderData();
   const mutations = useStoreMutations();
 
   return (
@@ -42,8 +40,8 @@ export function Layout() {
 
       <Footer />
 
-      <div className="sticky bottom-0 bg-background">
-        <NowPlaying credentials={credentials} />
+      <div className="sticky bottom-0 isolate transform-gpu touch-none overflow-hidden bg-background">
+        <NowPlaying />
       </div>
     </div>
   );

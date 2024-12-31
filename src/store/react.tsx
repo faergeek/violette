@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import invariant from 'tiny-invariant';
 import type { StoreApi } from 'zustand';
 import { useStore } from 'zustand';
@@ -27,19 +27,16 @@ export function useStoreState<T>(selector: (state: StoreState) => T) {
   return useStore(useStoreFromContext(), selector);
 }
 
-export function useStoreMutations() {
-  return useStore(useStoreFromContext(), state => state.mutations);
+export function StoreStateConsumer<T>({
+  children,
+  selector,
+}: {
+  children: (value: T) => React.ReactNode;
+  selector: (state: Omit<StoreState, 'mutations'>) => T;
+}) {
+  return children(useStore(useStoreFromContext(), selector));
 }
 
-export type StoreMutator<T> = (store: StoreApi<StoreState>) => T;
-
-export function useStoreMutate() {
-  const store = useStoreFromContext();
-
-  return useCallback(
-    function mutateStore<T>(fn: StoreMutator<T>) {
-      return fn(store);
-    },
-    [store],
-  );
+export function useStoreMutations() {
+  return useStore(useStoreFromContext(), state => state.mutations);
 }

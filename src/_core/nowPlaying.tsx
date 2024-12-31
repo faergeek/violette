@@ -13,15 +13,11 @@ import {
 } from 'lucide-react';
 import { cloneElement, useEffect, useState } from 'react';
 
-import { subsonicGetCoverArtUrl } from '../api/subsonic';
-import type { SubsonicCredentials } from '../api/types';
 import {
-  goToNextSong,
-  goToPrevSong,
-  setPaused,
-  togglePlayback,
-} from '../store/mutations';
-import { useStoreMutate, useStoreState } from '../store/react';
+  StoreStateConsumer,
+  useStoreMutations,
+  useStoreState,
+} from '../store/react';
 import { cn } from './cn';
 import { CoverArt } from './coverArt';
 import { IconButton } from './iconButton';
@@ -29,53 +25,9 @@ import { PlaybackPosition } from './playbackPosition';
 import { Slider } from './slider';
 import { StarredIcon } from './starredIcon';
 
-export function NowPlaying({
-  credentials,
-}: {
-  credentials: SubsonicCredentials;
-}) {
-  const mutateStore = useStoreMutate();
-  const audio = useStoreState(state => state.audio);
-  const currentSongId = useStoreState(state => state.currentSongId);
-  const paused = useStoreState(state => state.paused);
-  const queuedSongs = useStoreState(state => state.queuedSongs);
-
-  const song = queuedSongs.find(s => s.id === currentSongId);
-
-  const [muted, setMuted] = useState(false);
-  const [volume, setVolume] = useState(1);
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    const listenerOptions = {
-      capture: true,
-      passive: true,
-      signal: abortController.signal,
-    };
-
-    audio.addEventListener(
-      'pause',
-      () => mutateStore(setPaused(true)),
-      listenerOptions,
-    );
-
-    audio.addEventListener(
-      'play',
-      () => mutateStore(setPaused(false)),
-      listenerOptions,
-    );
-
-    audio.addEventListener(
-      'volumechange',
-      () => {
-        setMuted(audio.muted);
-        setVolume(audio.volume);
-      },
-      listenerOptions,
-    );
-
-    return () => abortController.abort();
-  }, [audio, mutateStore]);
+export function NowPlaying() {
+  const mutations = useStoreMutations();
+  const credentials = useStoreState(state => state.credentials);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -87,24 +39,23 @@ export function NowPlaying({
           case 'KeyK':
           case 'Space':
             event.preventDefault();
-            if (audio.paused) audio.play();
-            else audio.pause();
+            mutations.togglePaused();
             break;
           case 'KeyJ':
           case 'ArrowLeft':
-            audio.currentTime -= 10;
+            mutations.setAudioCurrentTime(prevState => prevState - 10);
             break;
           case 'KeyL':
           case 'ArrowRight':
-            audio.currentTime += 10;
+            mutations.setAudioCurrentTime(prevState => prevState + 10);
             break;
           case 'ArrowUp':
             event.preventDefault();
-            audio.volume = Math.min(audio.volume + 0.05, 1);
+            mutations.setVolume(prevState => prevState + 0.05);
             break;
           case 'ArrowDown':
             event.preventDefault();
-            audio.volume = Math.max(0, audio.volume - 0.05);
+            mutations.setVolume(prevState => prevState - 0.05);
             break;
         }
       },
@@ -116,87 +67,7 @@ export function NowPlaying({
     );
 
     return () => abortController.abort();
-  }, [audio]);
-
-  useEffect(() => {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: song?.title,
-      artist: song?.artist,
-      album: song?.album,
-      artwork: song?.coverArt
-        ? [
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt, {
-                size: 96,
-              }),
-              sizes: '96x96',
-            },
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt, {
-                size: 128,
-              }),
-              sizes: '128x128',
-            },
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt, {
-                size: 192,
-              }),
-              sizes: '192x192',
-            },
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt, {
-                size: 256,
-              }),
-              sizes: '256x256',
-            },
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt, {
-                size: 384,
-              }),
-              sizes: '384x384',
-            },
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt),
-            },
-          ]
-        : undefined,
-    });
-  }, [credentials, song?.album, song?.artist, song?.coverArt, song?.title]);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    audio.addEventListener('ended', () => mutateStore(goToNextSong()), {
-      capture: true,
-      passive: true,
-      signal: abortController.signal,
-    });
-
-    return () => abortController.abort();
-  }, [audio, mutateStore]);
-
-  useEffect(() => {
-    navigator.mediaSession.setActionHandler('play', () => {
-      audio.play();
-    });
-
-    navigator.mediaSession.setActionHandler('pause', () => {
-      audio.pause();
-    });
-
-    navigator.mediaSession.setActionHandler('stop', () => {
-      audio.pause();
-      audio.currentTime = 0;
-    });
-
-    navigator.mediaSession.setActionHandler('previoustrack', () => {
-      mutateStore(goToPrevSong());
-    });
-
-    navigator.mediaSession.setActionHandler('nexttrack', () => {
-      mutateStore(goToNextSong());
-    });
-  }, [audio, mutateStore]);
+  }, [mutations]);
 
   const [repeatMode, setRepeatMode] = useState<'repeat-all' | 'repeat-one'>();
 
@@ -205,32 +76,52 @@ export function NowPlaying({
       <PlaybackPosition />
 
       <div className="flex gap-2 md:hidden">
-        {credentials && song && (
-          <Link
-            className="shrink-0"
-            params={{ albumId: song.albumId }}
-            search={{ song: song.id }}
-            to="/album/$albumId"
-          >
-            <CoverArt
-              className="size-16 rounded-none group-hover:opacity-25"
-              coverArt={song.coverArt}
-              credentials={credentials}
-              size={128}
-            />
-          </Link>
-        )}
+        <StoreStateConsumer
+          selector={state =>
+            state.queuedSongs.find(s => s.id === state.currentSongId)
+          }
+        >
+          {song =>
+            credentials && song ? (
+              <Link
+                className="shrink-0"
+                params={{ albumId: song.albumId }}
+                search={{ song: song.id }}
+                to="/album/$albumId"
+              >
+                <CoverArt
+                  className="size-16 rounded-none"
+                  coverArt={song.coverArt}
+                  credentials={credentials}
+                  size={128}
+                />
+              </Link>
+            ) : (
+              <CoverArt skeleton />
+            )
+          }
+        </StoreStateConsumer>
 
         <div className="flex h-16 grow items-center gap-4 overflow-hidden py-2">
-          <div className="line-clamp-2 grow">{song?.title}</div>
+          <StoreStateConsumer
+            selector={state =>
+              state.queuedSongs.find(s => s.id === state.currentSongId)
+            }
+          >
+            {song => <div className="line-clamp-2 grow">{song?.title}</div>}
+          </StoreStateConsumer>
 
-          <IconButton
-            className="ms-auto p-5"
-            icon={paused ? <Play /> : <Pause />}
-            onClick={() => {
-              mutateStore(togglePlayback());
-            }}
-          />
+          <StoreStateConsumer selector={state => state.audioState.paused}>
+            {paused => (
+              <IconButton
+                className="ms-auto p-5"
+                icon={paused ? <Play /> : <Pause />}
+                onClick={() => {
+                  mutations.togglePaused();
+                }}
+              />
+            )}
+          </StoreStateConsumer>
         </div>
       </div>
 
@@ -238,25 +129,31 @@ export function NowPlaying({
         <IconButton
           icon={<SkipBack />}
           onClick={() => {
-            mutateStore(goToPrevSong());
+            mutations.goToPrevSong();
           }}
         />
 
-        <IconButton
-          icon={paused ? <Play /> : <Pause />}
-          onClick={() => {
-            mutateStore(togglePlayback());
-          }}
-        />
+        <StoreStateConsumer selector={state => state.audioState.paused}>
+          {paused => (
+            <IconButton
+              icon={paused ? <Play /> : <Pause />}
+              onClick={() => {
+                mutations.togglePaused();
+              }}
+            />
+          )}
+        </StoreStateConsumer>
 
         <IconButton
           icon={<SkipForward />}
           onClick={() => {
-            mutateStore(goToNextSong());
+            mutations.goToNextSong();
           }}
         />
 
-        <IconButton icon={<ListMusic />} label={queuedSongs.length} />
+        <StoreStateConsumer selector={state => state.queuedSongs.length}>
+          {songCount => <IconButton icon={<ListMusic />} label={songCount} />}
+        </StoreStateConsumer>
 
         <IconButton
           className={cn({
@@ -277,94 +174,126 @@ export function NowPlaying({
           }}
         />
 
-        <IconButton
-          icon={<StarredIcon starred={song?.starred} />}
-          onClick={() => {
-            // eslint-disable-next-line no-alert
-            alert('TODO');
-          }}
-        />
-
-        {credentials && song && (
-          <Link
-            className="shrink-0"
-            params={{ albumId: song.albumId }}
-            search={{ song: song.id }}
-            to="/album/$albumId"
-          >
-            <CoverArt
-              className="size-12 group-hover:opacity-25"
-              coverArt={song.coverArt}
-              credentials={credentials}
-              size={96}
+        <StoreStateConsumer
+          selector={state =>
+            state.queuedSongs.find(s => s.id === state.currentSongId)
+          }
+        >
+          {song => (
+            <IconButton
+              icon={<StarredIcon starred={song?.starred} />}
+              onClick={() => {
+                // eslint-disable-next-line no-alert
+                alert('TODO');
+              }}
             />
-          </Link>
-        )}
+          )}
+        </StoreStateConsumer>
 
-        {song && (
-          <div className="min-w-0">
-            <div className="truncate">
+        <StoreStateConsumer
+          selector={state =>
+            state.queuedSongs.find(s => s.id === state.currentSongId)
+          }
+        >
+          {song =>
+            credentials && song ? (
               <Link
+                className="shrink-0"
                 params={{ albumId: song.albumId }}
                 search={{ song: song.id }}
                 to="/album/$albumId"
               >
-                {song.title}
+                <CoverArt
+                  className="size-12"
+                  coverArt={song.coverArt}
+                  credentials={credentials}
+                  size={96}
+                />
               </Link>
-            </div>
-
-            <div className="truncate text-muted-foreground">
-              {cloneElement(
-                song.artistId ? (
-                  <Link
-                    params={{ artistId: song.artistId }}
-                    to="/artist/$artistId"
-                  />
-                ) : (
-                  <span />
-                ),
-                {},
-                song.artist,
-              )}{' '}
-              &ndash;{' '}
-              <Link params={{ albumId: song.albumId }} to="/album/$albumId">
-                {song.album}
-              </Link>
-            </div>
-          </div>
-        )}
-
-        <IconButton
-          className="ms-auto"
-          icon={
-            muted || volume === 0 ? (
-              <VolumeX />
-            ) : volume > 0.5 ? (
-              <Volume2 />
             ) : (
-              <Volume1 />
+              <CoverArt className="size-12" skeleton />
             )
           }
-          onClick={() => {
-            if (audio.muted) {
-              audio.muted = false;
-              if (audio.volume === 0) audio.volume = 0.5;
-            } else {
-              audio.muted = true;
-            }
-          }}
-        />
+        </StoreStateConsumer>
 
-        <Slider
-          className="shrink-0 basis-32"
-          max={1}
-          step={0.05}
-          value={[volume]}
-          onValueChange={([newVolume]) => {
-            audio.muted = false;
-            audio.volume = newVolume;
-          }}
-        />
+        <StoreStateConsumer
+          selector={state =>
+            state.queuedSongs.find(s => s.id === state.currentSongId)
+          }
+        >
+          {song =>
+            song && (
+              <div className="min-w-0">
+                <div className="truncate">
+                  <Link
+                    params={{ albumId: song.albumId }}
+                    search={{ song: song.id }}
+                    to="/album/$albumId"
+                  >
+                    {song.title}
+                  </Link>
+                </div>
+
+                <div className="truncate text-muted-foreground">
+                  {cloneElement(
+                    song.artistId ? (
+                      <Link
+                        params={{ artistId: song.artistId }}
+                        to="/artist/$artistId"
+                      />
+                    ) : (
+                      <span />
+                    ),
+                    {},
+                    song.artist,
+                  )}{' '}
+                  &ndash;{' '}
+                  <Link params={{ albumId: song.albumId }} to="/album/$albumId">
+                    {song.album}
+                  </Link>
+                </div>
+              </div>
+            )
+          }
+        </StoreStateConsumer>
+
+        <StoreStateConsumer
+          selector={({ audioState }) =>
+            audioState.muted
+              ? 'muted'
+              : audioState.volume < 0.5
+                ? 'volume1'
+                : 'volume2'
+          }
+        >
+          {state => (
+            <IconButton
+              className="ms-auto"
+              icon={
+                {
+                  muted: <VolumeX />,
+                  volume1: <Volume1 />,
+                  volume2: <Volume2 />,
+                }[state]
+              }
+              onClick={() => mutations.toggleMuted()}
+            />
+          )}
+        </StoreStateConsumer>
+
+        <StoreStateConsumer selector={state => state.audioState.volume}>
+          {volume => (
+            <Slider
+              className="shrink-0 basis-32"
+              max={1}
+              step={0.05}
+              value={[volume]}
+              onValueChange={([newVolume]) => {
+                mutations.setVolume(newVolume);
+              }}
+            />
+          )}
+        </StoreStateConsumer>
       </div>
     </>
   );

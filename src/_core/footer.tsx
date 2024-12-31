@@ -1,4 +1,4 @@
-import { SiGithub, SiGithubHex } from '@icons-pack/react-simple-icons';
+import { SiGithub } from '@icons-pack/react-simple-icons';
 
 import { Container } from './container';
 import { Separator } from './separator';
@@ -34,11 +34,7 @@ export function Footer() {
             rel="noopener"
             target="_blank"
           >
-            <SiGithub
-              className="text-[color:var(--brand-color)] group-hover:text-current"
-              style={{ ['--brand-color' as string]: SiGithubHex }}
-            />{' '}
-            Github
+            <SiGithub className="size-4" /> Github
           </a>
         </footer>
       </Container>
