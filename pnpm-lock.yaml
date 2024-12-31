@@ -10,7 +10,7 @@ importers:
     devDependencies:
       '@faergeek/eslint-config':
         specifier: ^6.1.14
-        version: 6.1.62(@typescript-eslint/utils@8.19.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)(vitest@2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
+        version: 6.1.63(@typescript-eslint/utils@8.19.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)(vitest@2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
       '@faergeek/monads':
         specifier: ^1.1.0
         version: 1.1.0
@@ -545,8 +545,8 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@faergeek/eslint-config@6.1.62':
-    resolution: {integrity: sha512-RUbKExa5SDa36HYvIdQD0ug3YQR4j0clyg0A04t5XrYZMCauqYdG+mINpZ20OGo3tRuiPky1R8WYYjoVbWt4ZA==}
+  '@faergeek/eslint-config@6.1.63':
+    resolution: {integrity: sha512-Ecrx/XxG95WU4o1aMgZeGpg9b+6LI/1JXBlO5yGfSXSZC1/EV4cBirOjKl8x867vqacPdlFR1r4L/5KvgOxMwg==}
     peerDependencies:
       eslint: ^8.56.0
 
@@ -1333,8 +1333,8 @@ packages:
       '@vitest/browser':
         optional: true
 
-  '@vitest/eslint-plugin@1.1.21':
-    resolution: {integrity: sha512-gIpmafm7WSwXGHq413q3fC26+nER5mQtM7Lqi7UusY5bSzeQIJmViC+G6CfPo06U0CfgZ+rt7FPaskpkZ2f6gg==}
+  '@vitest/eslint-plugin@1.1.22':
+    resolution: {integrity: sha512-ztvy2+thiCMmKnywvKGhH3AcKgEMGd4BsFK2QC9/EXqlyjXDp7Pg96PonbLx8bDvNCAjq4hfCw5YuZSAz1EDIg==}
     peerDependencies:
       '@typescript-eslint/utils': '>= 8.0'
       eslint: '>= 8.57.0'
@@ -3569,11 +3569,11 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@faergeek/eslint-config@6.1.62(@typescript-eslint/utils@8.19.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)(vitest@2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))':
+  '@faergeek/eslint-config@6.1.63(@typescript-eslint/utils@8.19.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)(vitest@2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))':
     dependencies:
       '@typescript-eslint/eslint-plugin': 8.19.0(@typescript-eslint/parser@8.19.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)
       '@typescript-eslint/parser': 8.19.0(eslint@8.57.1)(typescript@5.7.2)
-      '@vitest/eslint-plugin': 1.1.21(@typescript-eslint/utils@8.19.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)(vitest@2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
+      '@vitest/eslint-plugin': 1.1.22(@typescript-eslint/utils@8.19.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)(vitest@2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
       eslint: 8.57.1
       eslint-config-prettier: 9.1.0(eslint@8.57.1)
       eslint-plugin-react: 7.37.3(eslint@8.57.1)
@@ -4366,7 +4366,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/eslint-plugin@1.1.21(@typescript-eslint/utils@8.19.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)(vitest@2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))':
+  '@vitest/eslint-plugin@1.1.22(@typescript-eslint/utils@8.19.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)(vitest@2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))':
     dependencies:
       '@typescript-eslint/utils': 8.19.0(eslint@8.57.1)(typescript@5.7.2)
       eslint: 8.57.1
