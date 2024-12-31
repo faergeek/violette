@@ -324,6 +324,7 @@ const PlayQueue = v.object({
   changedBy: v.string(),
   current: v.optional(v.string()),
   entry: v.array(BaseSong),
+  position: v.optional(v.number()),
   username: v.string(),
 });
 
@@ -341,13 +342,8 @@ export const subsonicGetPlayQueue = Fx.async(async function* f() {
 
 export const subsonicSavePlayQueue = Fx.async(async function* f(
   id: string[],
-  {
-    current,
-    position,
-  }: {
-    current?: string;
-    position?: number;
-  } = {},
+  current: string,
+  { position = 0 }: { position?: number } = {},
 ) {
   const response = yield* makeSubsonicRequest({
     method: 'rest/savePlayQueue',

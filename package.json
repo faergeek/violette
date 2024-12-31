@@ -37,6 +37,7 @@
     "clsx": "^2.1.1",
     "eslint": "^8.57.0",
     "fast-check": "^3.23.2",
+    "fast-equals": "^5.0.1",
     "lucide-react": "^0.469.0",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",

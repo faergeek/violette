@@ -1,158 +1,83 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useState } from 'react';
 
-import { useStoreState } from '../store/react';
+import {
+  StoreStateConsumer,
+  useStoreMutations,
+  useStoreState,
+} from '../store/react';
 import { formatDuration } from './formatDuration';
 
-function clientXToPosition({
-  clientX,
+function clientXToTime({
   duration,
+  offsetX,
   width,
 }: {
-  clientX: number;
   duration: number;
+  offsetX: number;
   width: number;
 }) {
-  return Math.max(0, Math.min((duration * clientX) / width, duration));
+  return Math.max(0, Math.min((duration * offsetX) / width, duration));
 }
 
 export function PlaybackPosition() {
-  const audio = useStoreState(state => state.audio);
-  const rootRef = useRef<HTMLDivElement | null>(null);
+  const mutations = useStoreMutations();
+  const buffered = useStoreState(state => state.audioState.buffered);
+  const duration = useStoreState(state => state.audioState.duration);
 
-  const [buffered, setBuffered] = useState<TimeRanges>();
-  const [currentTime, setCurrentTime] = useState<number>();
-  const [duration, setDuration] = useState<number>();
-  useEffect(() => {
-    const abortController = new AbortController();
+  const [draggedToTime, setDraggedToTime] = useState<number>();
+  const [hoveredTime, setHoveredTime] = useState<number>();
 
-    const updateAudioState = () => {
-      setBuffered(audio.buffered);
-      setCurrentTime(audio.currentTime);
-      setDuration(isFinite(audio.duration) ? audio.duration : undefined);
-    };
+  function releasePoinerCapture(event: React.PointerEvent<HTMLDivElement>) {
+    if (draggedToTime != null) mutations.setAudioCurrentTime(draggedToTime);
 
-    const listenerOptions = {
-      capture: true,
-      passive: true,
-      signal: abortController.signal,
-    };
+    if (event.currentTarget.hasPointerCapture(event.pointerId))
+      event.currentTarget.releasePointerCapture(event.pointerId);
 
-    audio.addEventListener('durationchange', updateAudioState, listenerOptions);
-    audio.addEventListener('emptied', updateAudioState, listenerOptions);
-    audio.addEventListener('ended', updateAudioState, listenerOptions);
-    audio.addEventListener('loadstart', updateAudioState, listenerOptions);
-    audio.addEventListener('loadeddata', updateAudioState, listenerOptions);
-    audio.addEventListener('loadedmetadata', updateAudioState, listenerOptions);
-    audio.addEventListener('timeupdate', updateAudioState, listenerOptions);
-
-    return () => abortController.abort();
-  }, [audio]);
-
-  useEffect(() => {
-    if (duration == null || currentTime == null) {
-      return;
-    }
-
-    navigator.mediaSession.setPositionState({
-      duration,
-      position: currentTime,
-    });
-  }, [currentTime, duration]);
-
-  useEffect(() => {
-    navigator.mediaSession.setActionHandler('seekto', details => {
-      if (!details.seekTime) return;
-
-      navigator.mediaSession.setPositionState({
-        position: details.seekTime,
-      });
-
-      audio.currentTime = details.seekTime;
-    });
-  }, [audio]);
-
-  const [pointerIdToCapture, setPointerIdToCapture] = useState<number>();
-  const [draggedToPosition, setDraggedToPosition] = useState<number>();
-
-  useEffect(() => {
-    const rootEl = rootRef.current;
-    if (!rootEl || pointerIdToCapture == null) return;
-
-    rootEl.setPointerCapture(pointerIdToCapture);
-
-    return () => {
-      rootEl.releasePointerCapture(pointerIdToCapture);
-    };
-  }, [pointerIdToCapture]);
-
-  function releasePoinerCapture() {
-    if (draggedToPosition == null) return;
-    audio.currentTime = draggedToPosition;
-    setCurrentTime(draggedToPosition);
-    setDraggedToPosition(undefined);
-    setPointerIdToCapture(undefined);
+    setDraggedToTime(undefined);
   }
-
-  const bufferedTimeRanges = useMemo(() => {
-    if (!buffered) return;
-
-    const result = new Array<{ start: number; end: number }>(buffered.length);
-
-    for (let i = 0; i < buffered.length; i++) {
-      result[i] = {
-        start: buffered.start(i),
-        end: buffered.end(i),
-      };
-    }
-
-    return result;
-  }, [buffered]);
-
-  const position = draggedToPosition ?? currentTime;
 
   return (
     <div
-      ref={rootRef}
       className="relative h-5 w-full touch-none select-none overflow-hidden bg-secondary"
       onPointerDownCapture={event => {
         if (duration == null) return;
-        setPointerIdToCapture(event.pointerId);
+        event.currentTarget.setPointerCapture(event.pointerId);
 
         const bcr = event.currentTarget.getBoundingClientRect();
 
-        setDraggedToPosition(
-          clientXToPosition({
-            clientX: event.clientX,
+        setDraggedToTime(
+          clientXToTime({
+            offsetX: event.clientX - bcr.left,
             duration,
             width: bcr.width,
           }),
         );
       }}
       onPointerMoveCapture={event => {
-        if (
-          duration == null ||
-          pointerIdToCapture == null ||
-          !event.currentTarget.hasPointerCapture(pointerIdToCapture)
-        ) {
-          return;
-        }
+        if (duration == null) return;
 
         const bcr = event.currentTarget.getBoundingClientRect();
 
-        setDraggedToPosition(
-          clientXToPosition({
-            clientX: event.clientX - bcr.left,
-            duration,
-            width: bcr.width,
-          }),
-        );
+        const time = clientXToTime({
+          offsetX: event.clientX - bcr.left,
+          duration,
+          width: bcr.width,
+        });
+
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          setDraggedToTime(time);
+        } else {
+          setHoveredTime(time);
+        }
+      }}
+      onPointerOutCapture={() => {
+        setHoveredTime(undefined);
       }}
       onPointerUpCapture={releasePoinerCapture}
       onPointerCancelCapture={releasePoinerCapture}
     >
-      {bufferedTimeRanges &&
-        duration != null &&
-        bufferedTimeRanges.map((timeRange, index) => (
+      {duration != null &&
+        buffered.map((timeRange, index) => (
           <div
             key={index}
             className="pointer-events-none absolute h-full w-full origin-left transform bg-muted-foreground/20"
@@ -163,21 +88,35 @@ export function PlaybackPosition() {
           />
         ))}
 
-      {duration != null && position != null && (
-        <div
-          className="pointer-events-none absolute h-full w-full origin-left transform-gpu bg-primary will-change-transform"
-          style={{
-            ['--tw-scale-x' as string]: `${position / duration}`,
-          }}
-        />
+      {duration != null && (
+        <StoreStateConsumer
+          selector={state =>
+            (draggedToTime ?? state.audioState.currentTime) / duration
+          }
+        >
+          {scaleX => (
+            <div
+              className="pointer-events-none absolute h-full w-full origin-left transform-gpu bg-primary will-change-transform"
+              style={{ ['--tw-scale-x' as string]: scaleX }}
+            />
+          )}
+        </StoreStateConsumer>
       )}
 
       <div className="flex px-1 slashed-zero tabular-nums">
-        {position != null && (
-          <div className="pointer-events-none relative transform-gpu text-sm will-change-contents">
-            {formatDuration(position)}
-          </div>
-        )}
+        <StoreStateConsumer
+          selector={state =>
+            formatDuration(
+              draggedToTime ?? hoveredTime ?? state.audioState.currentTime,
+            )
+          }
+        >
+          {formatted => (
+            <div className="pointer-events-none relative transform-gpu text-sm will-change-contents">
+              {formatted}
+            </div>
+          )}
+        </StoreStateConsumer>
 
         {duration != null && (
           <div className="pointer-events-none relative ms-auto transform-gpu text-sm">
