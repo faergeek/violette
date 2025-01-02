@@ -12,6 +12,6 @@
   {
     "name": "js:lazy",
     "path": ["dist/assets/**/*.js", "!dist/assets/index-*.js"],
-    "limit": "51 kB"
+    "limit": "52 kB"
   }
 ]

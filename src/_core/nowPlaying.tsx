@@ -23,7 +23,7 @@ import { CoverArt } from './coverArt';
 import { IconButton } from './iconButton';
 import { PlaybackPosition } from './playbackPosition';
 import { Slider } from './slider';
-import { StarredIcon } from './starredIcon';
+import { StarButton } from './starButton';
 
 export function NowPlaying() {
   const mutations = useStoreMutations();
@@ -35,28 +35,38 @@ export function NowPlaying() {
     window.addEventListener(
       'keydown',
       event => {
-        switch (event.code) {
-          case 'KeyK':
-          case 'Space':
-            event.preventDefault();
-            mutations.togglePaused();
-            break;
-          case 'KeyJ':
-          case 'ArrowLeft':
-            mutations.setAudioCurrentTime(prevState => prevState - 10);
-            break;
-          case 'KeyL':
-          case 'ArrowRight':
-            mutations.setAudioCurrentTime(prevState => prevState + 10);
-            break;
-          case 'ArrowUp':
-            event.preventDefault();
-            mutations.setVolume(prevState => prevState + 0.05);
-            break;
-          case 'ArrowDown':
-            event.preventDefault();
-            mutations.setVolume(prevState => prevState - 0.05);
-            break;
+        if (document.activeElement === document.body) {
+          switch (event.code) {
+            case 'KeyK':
+            case 'Space':
+              event.preventDefault();
+              mutations.togglePaused();
+              break;
+            case 'KeyJ':
+            case 'ArrowLeft':
+              mutations.setAudioCurrentTime(prevState => prevState - 10);
+              break;
+            case 'KeyL':
+            case 'ArrowRight':
+              mutations.setAudioCurrentTime(prevState => prevState + 10);
+              break;
+            case 'ArrowUp':
+              event.preventDefault();
+              mutations.setVolume(prevState => prevState + 0.05);
+              break;
+            case 'ArrowDown':
+              event.preventDefault();
+              mutations.setVolume(prevState => prevState - 0.05);
+              break;
+          }
+        } else {
+          if (
+            event.code === 'Escape' &&
+            (document.activeElement instanceof HTMLElement ||
+              document.activeElement instanceof SVGElement)
+          ) {
+            document.activeElement.blur();
+          }
         }
       },
       {
@@ -179,15 +189,13 @@ export function NowPlaying() {
             state.queuedSongs.find(s => s.id === state.currentSongId)
           }
         >
-          {song => (
-            <IconButton
-              icon={<StarredIcon starred={song?.starred} />}
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            />
-          )}
+          {song =>
+            song ? (
+              <StarButton id={song.id} starred={song.starred} />
+            ) : (
+              <StarButton disabled />
+            )
+          }
         </StoreStateConsumer>
 
         <StoreStateConsumer
