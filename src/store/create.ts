@@ -10,6 +10,7 @@ import {
   subsonicGetPlayQueue,
   subsonicGetStreamUrl,
   subsonicSavePlayQueue,
+  subsonicScrobble,
 } from '../api/subsonic';
 import type { BaseSong } from '../api/types';
 import { SubsonicCredentials } from '../api/types';
@@ -284,6 +285,33 @@ export function createAppStore() {
             },
           ],
         });
+      }
+    });
+
+    let scrobbled = false;
+    store.subscribe((state, prevState) => {
+      if (state.currentSongId === prevState.currentSongId) return;
+      scrobbled = false;
+    });
+
+    store.subscribe((state, prevState) => {
+      const { audioState, credentials, currentSongId } = state;
+
+      if (
+        audioState.duration == null ||
+        currentSongId == null ||
+        credentials == null ||
+        audioState.currentTime === prevState.audioState.currentTime ||
+        scrobbled
+      ) {
+        return;
+      }
+
+      const progress = audioState.currentTime / audioState.duration;
+
+      if (progress >= 0.5 || audioState.currentTime >= 240) {
+        subsonicScrobble(currentSongId).runAsync({ credentials });
+        scrobbled = true;
       }
     });
 
