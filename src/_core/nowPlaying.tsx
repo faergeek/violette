@@ -35,30 +35,38 @@ export function NowPlaying() {
     window.addEventListener(
       'keydown',
       event => {
-        if (document.activeElement !== document.body) return;
-
-        switch (event.code) {
-          case 'KeyK':
-          case 'Space':
-            event.preventDefault();
-            mutations.togglePaused();
-            break;
-          case 'KeyJ':
-          case 'ArrowLeft':
-            mutations.setAudioCurrentTime(prevState => prevState - 10);
-            break;
-          case 'KeyL':
-          case 'ArrowRight':
-            mutations.setAudioCurrentTime(prevState => prevState + 10);
-            break;
-          case 'ArrowUp':
-            event.preventDefault();
-            mutations.setVolume(prevState => prevState + 0.05);
-            break;
-          case 'ArrowDown':
-            event.preventDefault();
-            mutations.setVolume(prevState => prevState - 0.05);
-            break;
+        if (document.activeElement === document.body) {
+          switch (event.code) {
+            case 'KeyK':
+            case 'Space':
+              event.preventDefault();
+              mutations.togglePaused();
+              break;
+            case 'KeyJ':
+            case 'ArrowLeft':
+              mutations.setAudioCurrentTime(prevState => prevState - 10);
+              break;
+            case 'KeyL':
+            case 'ArrowRight':
+              mutations.setAudioCurrentTime(prevState => prevState + 10);
+              break;
+            case 'ArrowUp':
+              event.preventDefault();
+              mutations.setVolume(prevState => prevState + 0.05);
+              break;
+            case 'ArrowDown':
+              event.preventDefault();
+              mutations.setVolume(prevState => prevState - 0.05);
+              break;
+          }
+        } else {
+          if (
+            event.code === 'Escape' &&
+            (document.activeElement instanceof HTMLElement ||
+              document.activeElement instanceof SVGElement)
+          ) {
+            document.activeElement.blur();
+          }
         }
       },
       {
