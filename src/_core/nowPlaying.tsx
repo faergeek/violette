@@ -35,6 +35,8 @@ export function NowPlaying() {
     window.addEventListener(
       'keydown',
       event => {
+        if (document.activeElement !== document.body) return;
+
         switch (event.code) {
           case 'KeyK':
           case 'Space':
