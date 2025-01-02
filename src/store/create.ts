@@ -4,12 +4,12 @@ import invariant from 'tiny-invariant';
 import * as v from 'valibot';
 import { createStore } from 'zustand';
 
-import { throttle } from '../_core/throttle';
 import {
   subsonicGetCoverArtUrl,
   subsonicGetPlayQueue,
   subsonicGetStreamUrl,
   subsonicSavePlayQueue,
+  subsonicScrobble,
 } from '../api/subsonic';
 import type { BaseSong } from '../api/types';
 import { SubsonicCredentials } from '../api/types';
@@ -25,17 +25,6 @@ export function createAppStore() {
     );
 
     const audio = new Audio();
-
-    const saveAudioCurrentTime = throttle(5000, async () => {
-      const { credentials, currentSongId, queuedSongs } = get();
-      if (credentials == null || currentSongId == null) return;
-
-      await subsonicSavePlayQueue(
-        queuedSongs.map(song => song.id),
-        currentSongId,
-        { position: Math.floor(audio.currentTime * 1000) },
-      ).runAsync({ credentials });
-    });
 
     setInterval(() => {
       if (!audio.src) return;
@@ -71,7 +60,6 @@ export function createAppStore() {
 
       audio.currentTime = currentTime;
       set({ audioState: { ...audioState, currentTime } });
-      saveAudioCurrentTime.now();
     }
 
     const initialCredentials = credentialsParseResult.success
@@ -94,14 +82,8 @@ export function createAppStore() {
             .assertOk(),
         );
 
-      const currentSongId = playQueue?.current;
-
-      if (currentSongId != null) {
-        setAudioCurrentTime((playQueue?.position ?? 0) / 1000);
-      }
-
       set({
-        currentSongId,
+        currentSongId: playQueue?.current,
         queuedSongs: playQueue?.entry ?? [],
       });
     }
@@ -199,8 +181,6 @@ export function createAppStore() {
       set(prevState => ({
         audioState: { ...prevState.audioState, currentTime: audio.currentTime },
       }));
-
-      saveAudioCurrentTime();
     });
 
     audio.addEventListener('volumechange', () =>
@@ -284,6 +264,33 @@ export function createAppStore() {
             },
           ],
         });
+      }
+    });
+
+    let scrobbled = false;
+    store.subscribe((state, prevState) => {
+      if (state.currentSongId === prevState.currentSongId) return;
+      scrobbled = false;
+    });
+
+    store.subscribe((state, prevState) => {
+      const { audioState, credentials, currentSongId } = state;
+
+      if (
+        audioState.duration == null ||
+        currentSongId == null ||
+        credentials == null ||
+        audioState.currentTime === prevState.audioState.currentTime ||
+        scrobbled
+      ) {
+        return;
+      }
+
+      const progress = audioState.currentTime / audioState.duration;
+
+      if (progress >= 0.5 || audioState.currentTime >= 240) {
+        subsonicScrobble(currentSongId).runAsync({ credentials });
+        scrobbled = true;
       }
     });
 

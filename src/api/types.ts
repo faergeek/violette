@@ -50,6 +50,12 @@ export type SubsonicRequest =
       albumId?: string;
       artistId?: string;
       id?: string;
+    }
+  | {
+      method: 'rest/scrobble';
+      id: string;
+      submission?: boolean;
+      time?: number;
     };
 
 const SubsonicResponseJsonCommon = v.object({
