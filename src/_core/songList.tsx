@@ -29,7 +29,7 @@ import {
 import { formatDuration } from './formatDuration';
 import { IconButton } from './iconButton';
 import { Skeleton } from './skeleton';
-import { StarredIcon } from './starredIcon';
+import { StarButton } from './starButton';
 import type { SkeletonProps } from './types';
 
 function getSongElementId(songId: string) {
@@ -233,14 +233,7 @@ export function SongList({
 
             {song && (
               <div className="ms-2 flex shrink-0 basis-5">
-                <IconButton
-                  className="rounded-md align-middle"
-                  icon={<StarredIcon starred={song.starred} />}
-                  onClick={() => {
-                    // eslint-disable-next-line no-alert
-                    alert('TODO');
-                  }}
-                />
+                <StarButton id={song.id} starred={song.starred} />
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild className="ms-2">

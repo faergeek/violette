@@ -23,7 +23,7 @@ import { CoverArt } from './coverArt';
 import { IconButton } from './iconButton';
 import { PlaybackPosition } from './playbackPosition';
 import { Slider } from './slider';
-import { StarredIcon } from './starredIcon';
+import { StarButton } from './starButton';
 
 export function NowPlaying() {
   const mutations = useStoreMutations();
@@ -189,15 +189,13 @@ export function NowPlaying() {
             state.queuedSongs.find(s => s.id === state.currentSongId)
           }
         >
-          {song => (
-            <IconButton
-              icon={<StarredIcon starred={song?.starred} />}
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            />
-          )}
+          {song =>
+            song ? (
+              <StarButton id={song.id} starred={song.starred} />
+            ) : (
+              <StarButton disabled />
+            )
+          }
         </StoreStateConsumer>
 
         <StoreStateConsumer

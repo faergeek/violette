@@ -8,6 +8,7 @@ import { MediaHeader } from '../_core/mediaHeader';
 import { MediaLinks } from '../_core/mediaLinks';
 import { Prose } from '../_core/prose';
 import { SongList } from '../_core/songList';
+import { StarButton } from '../_core/starButton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../_core/tabs';
 
 export function Artist() {
@@ -47,7 +48,14 @@ export function Artist() {
               Artist
             </div>
 
-            <H1>{artist.name}</H1>
+            <H1>
+              {artist.name}
+              <StarButton
+                className="ms-2"
+                artistId={artist.id}
+                starred={artist.starred}
+              />
+            </H1>
 
             <div className="text-muted-foreground">
               <Link

@@ -38,7 +38,19 @@ export type SubsonicRequest =
       id: string;
       maxBitRate?: number;
     }
-  | { method: 'rest/getCoverArt'; id: string; size?: number };
+  | { method: 'rest/getCoverArt'; id: string; size?: number }
+  | {
+      method: 'rest/star';
+      albumId?: string;
+      artistId?: string;
+      id?: string;
+    }
+  | {
+      method: 'rest/unstar';
+      albumId?: string;
+      artistId?: string;
+      id?: string;
+    };
 
 const SubsonicResponseJsonCommon = v.object({
   openSubsonic: v.optional(v.boolean()),

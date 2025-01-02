@@ -15,7 +15,7 @@ export function IconButton({
   return (
     <button
       className={cn(
-        'flex items-center gap-2 text-muted-foreground enabled:hover:text-secondary-foreground disabled:text-muted',
+        'inline-flex items-center gap-2 rounded-md text-muted-foreground enabled:hover:text-secondary-foreground disabled:opacity-50',
         className,
       )}
       type="button"

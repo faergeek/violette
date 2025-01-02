@@ -395,3 +395,47 @@ export function subsonicGetCoverArtUrl(
     size,
   }).toString();
 }
+
+export const subsonicStar = Fx.async(async function* f({
+  albumId,
+  artistId,
+  id,
+}: {
+  albumId?: string;
+  artistId?: string;
+  id?: string;
+} = {}) {
+  const response = yield* makeSubsonicRequest({
+    method: 'rest/star',
+    albumId,
+    artistId,
+    id,
+  });
+
+  const json = yield* parseJsonResponse(response, {});
+  yield* handleJsonResponse(json['subsonic-response']);
+
+  return Fx.Ok();
+});
+
+export const subsonicUnstar = Fx.async(async function* f({
+  albumId,
+  artistId,
+  id,
+}: {
+  albumId?: string;
+  artistId?: string;
+  id?: string;
+} = {}) {
+  const response = yield* makeSubsonicRequest({
+    method: 'rest/unstar',
+    albumId,
+    artistId,
+    id,
+  });
+
+  const json = yield* parseJsonResponse(response, {});
+  yield* handleJsonResponse(json['subsonic-response']);
+
+  return Fx.Ok();
+});

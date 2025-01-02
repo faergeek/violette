@@ -7,6 +7,7 @@ import { MediaHeader } from '../_core/mediaHeader';
 import { MediaLinks } from '../_core/mediaLinks';
 import { Prose } from '../_core/prose';
 import { SongList } from '../_core/songList';
+import { StarButton } from '../_core/starButton';
 import type { BaseSong } from '../api/types';
 
 export function Album() {
@@ -64,7 +65,14 @@ export function Album() {
           <div>
             <div className="text-sm uppercase text-muted-foreground">Album</div>
 
-            <H1>{album.name}</H1>
+            <H1>
+              {album.name}
+              <StarButton
+                className="ms-2"
+                albumId={album.id}
+                starred={album.starred}
+              />
+            </H1>
 
             <div className="text-muted-foreground">
               {year != null && <>{year} &ndash; </>}
