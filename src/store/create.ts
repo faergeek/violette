@@ -4,6 +4,7 @@ import invariant from 'tiny-invariant';
 import * as v from 'valibot';
 import { createStore } from 'zustand';
 
+import { throttle } from '../_core/throttle';
 import {
   subsonicGetCoverArtUrl,
   subsonicGetPlayQueue,
@@ -25,6 +26,17 @@ export function createAppStore() {
     );
 
     const audio = new Audio();
+
+    const saveAudioCurrentTime = throttle(5000, async () => {
+      const { credentials, currentSongId, queuedSongs } = get();
+      if (credentials == null || currentSongId == null) return;
+
+      await subsonicSavePlayQueue(
+        queuedSongs.map(song => song.id),
+        currentSongId,
+        { position: Math.floor(audio.currentTime * 1000) },
+      ).runAsync({ credentials });
+    });
 
     setInterval(() => {
       if (!audio.src) return;
@@ -60,6 +72,7 @@ export function createAppStore() {
 
       audio.currentTime = currentTime;
       set({ audioState: { ...audioState, currentTime } });
+      saveAudioCurrentTime.now();
     }
 
     const initialCredentials = credentialsParseResult.success
@@ -82,8 +95,14 @@ export function createAppStore() {
             .assertOk(),
         );
 
+      const currentSongId = playQueue?.current;
+
+      if (currentSongId != null) {
+        setAudioCurrentTime((playQueue?.position ?? 0) / 1000);
+      }
+
       set({
-        currentSongId: playQueue?.current,
+        currentSongId,
         queuedSongs: playQueue?.entry ?? [],
       });
     }
@@ -181,6 +200,8 @@ export function createAppStore() {
       set(prevState => ({
         audioState: { ...prevState.audioState, currentTime: audio.currentTime },
       }));
+
+      saveAudioCurrentTime();
     });
 
     audio.addEventListener('volumechange', () =>
