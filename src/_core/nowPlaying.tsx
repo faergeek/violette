@@ -118,20 +118,66 @@ export function NowPlaying() {
               state.queuedSongs.find(s => s.id === state.currentSongId)
             }
           >
-            {song => <div className="line-clamp-2 grow">{song?.title}</div>}
+            {song =>
+              song && (
+                <div className="min-w-0">
+                  <div className="truncate">{song.title}</div>
+
+                  <div className="truncate text-muted-foreground">
+                    <span>{song.artist}</span> &ndash; {song.album}
+                  </div>
+                </div>
+              )
+            }
           </StoreStateConsumer>
 
-          <StoreStateConsumer selector={state => state.audioState.paused}>
-            {paused => (
-              <IconButton
-                className="ms-auto p-5"
-                icon={paused ? <Play /> : <Pause />}
-                onClick={() => {
-                  mutations.togglePaused();
-                }}
-              />
-            )}
+          <StoreStateConsumer
+            selector={state =>
+              state.queuedSongs.find(s => s.id === state.currentSongId)
+            }
+          >
+            {song =>
+              song ? (
+                <StarButton
+                  className="hidden p-5 sm:block"
+                  id={song.id}
+                  starred={song.starred}
+                />
+              ) : (
+                <StarButton className="hidden p-5 sm:block" disabled />
+              )
+            }
           </StoreStateConsumer>
+
+          <div className="ms-auto flex">
+            <IconButton
+              className="hidden p-5 sm:block"
+              icon={<SkipBack />}
+              onClick={() => {
+                mutations.goToPrevSong();
+              }}
+            />
+
+            <StoreStateConsumer selector={state => state.audioState.paused}>
+              {paused => (
+                <IconButton
+                  className="p-5"
+                  icon={paused ? <Play /> : <Pause />}
+                  onClick={() => {
+                    mutations.togglePaused();
+                  }}
+                />
+              )}
+            </StoreStateConsumer>
+
+            <IconButton
+              className="hidden p-5 sm:block"
+              icon={<SkipForward />}
+              onClick={() => {
+                mutations.goToNextSong();
+              }}
+            />
+          </div>
         </div>
       </div>
 
