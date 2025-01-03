@@ -25,6 +25,7 @@ export function createAppStore() {
       JSON.parse(String(localStorage.getItem(CREDENTIALS_LOCAL_STORAGE_KEY))),
     );
 
+    let skipping = false;
     const audio = new Audio();
 
     const saveAudioCurrentTime = throttle(5000, async () => {
@@ -65,6 +66,7 @@ export function createAppStore() {
     function setAudioCurrentTime(
       currentTime: number | ((currentTime: number) => number),
     ) {
+      skipping = true;
       const { audioState } = get();
       currentTime =
         typeof currentTime === 'function'
@@ -228,93 +230,97 @@ export function createAppStore() {
     navigator.mediaSession.setActionHandler('previoustrack', goToPrevSong);
     navigator.mediaSession.setActionHandler('nexttrack', goToNextSong);
 
+    let timePlayed = 0;
     store.subscribe((state, prevState) => {
-      const { credentials, currentSongId, queuedSongs } = state;
+      const { credentials, currentSongId, audioState } = state;
 
       if (
-        credentials === prevState.credentials &&
-        currentSongId === prevState.currentSongId
+        currentSongId === prevState.currentSongId &&
+        audioState.currentTime !== prevState.audioState.currentTime
       ) {
-        return;
+        if (skipping) {
+          skipping = false;
+        } else if (audioState.currentTime > prevState.audioState.currentTime) {
+          timePlayed +=
+            audioState.currentTime - prevState.audioState.currentTime;
+        }
       }
 
-      const src =
-        credentials == null || currentSongId == null
-          ? ''
-          : subsonicGetStreamUrl(credentials, currentSongId);
+      if (
+        credentials !== prevState.credentials ||
+        currentSongId !== prevState.currentSongId
+      ) {
+        const src =
+          credentials == null || currentSongId == null
+            ? ''
+            : subsonicGetStreamUrl(credentials, currentSongId);
 
-      if (audio.src !== src) audio.src = src;
+        if (audio.src !== src) audio.src = src;
+      }
 
-      const song = queuedSongs.find(s => s.id === currentSongId);
+      if (credentials && currentSongId !== prevState.currentSongId) {
+        const { queuedSongs } = state;
+        const song = queuedSongs.find(s => s.id === currentSongId);
 
-      if (credentials && song) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: song.title,
-          artist: song.artist,
-          album: song.album,
-          artwork: [
-            {
+        if (song) {
+          const artwork = (size?: number) => {
+            const result: MediaImage = {
               src: subsonicGetCoverArtUrl(credentials, song.coverArt, {
-                size: 96,
+                size,
               }),
-              sizes: '96x96',
-            },
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt, {
-                size: 128,
-              }),
-              sizes: '128x128',
-            },
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt, {
-                size: 192,
-              }),
-              sizes: '192x192',
-            },
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt, {
-                size: 256,
-              }),
-              sizes: '256x256',
-            },
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt, {
-                size: 384,
-              }),
-              sizes: '384x384',
-            },
-            {
-              src: subsonicGetCoverArtUrl(credentials, song.coverArt),
-            },
-          ],
+            };
+
+            if (size != null) {
+              result.sizes = `${size}x${size}`;
+            }
+
+            return result;
+          };
+
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: song.title,
+            artist: song.artist,
+            album: song.album,
+            artwork: [
+              artwork(96),
+              artwork(128),
+              artwork(192),
+              artwork(256),
+              artwork(384),
+              artwork(),
+            ],
+          });
+        }
+      }
+
+      if (
+        credentials != null &&
+        currentSongId != null &&
+        !audioState.paused &&
+        (currentSongId !== prevState.currentSongId ||
+          audioState.paused !== prevState.audioState.paused)
+      ) {
+        subsonicScrobble(currentSongId, { submission: false }).runAsync({
+          credentials,
         });
       }
-    });
-
-    let scrobbled = false;
-    store.subscribe((state, prevState) => {
-      if (state.currentSongId === prevState.currentSongId) return;
-      scrobbled = false;
-    });
-
-    store.subscribe((state, prevState) => {
-      const { audioState, credentials, currentSongId } = state;
 
       if (
-        audioState.duration == null ||
-        currentSongId == null ||
-        credentials == null ||
-        audioState.currentTime === prevState.audioState.currentTime ||
-        scrobbled
+        currentSongId !== prevState.currentSongId &&
+        prevState.currentSongId != null
       ) {
-        return;
-      }
+        if (
+          credentials != null &&
+          prevState.audioState.duration != null &&
+          prevState.audioState.duration >= 30 &&
+          // https://www.last.fm/api/scrobbling#when-is-a-scrobble-a-scrobble
+          (timePlayed / prevState.audioState.duration >= 0.5 ||
+            timePlayed >= 4 * 60)
+        ) {
+          subsonicScrobble(prevState.currentSongId).runAsync({ credentials });
+        }
 
-      const progress = audioState.currentTime / audioState.duration;
-
-      if (progress >= 0.5 || audioState.currentTime >= 240) {
-        subsonicScrobble(currentSongId).runAsync({ credentials });
-        scrobbled = true;
+        timePlayed = 0;
       }
     });
 
