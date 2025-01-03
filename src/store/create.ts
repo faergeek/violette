@@ -168,12 +168,12 @@ export function createAppStore() {
     audio.addEventListener('emptied', () => {
       set(prevState => ({
         audioState: {
-          ...prevState,
-          ...store.getInitialState().audioState,
           buffered: [],
           currentTime: 0,
           duration: undefined,
+          muted: prevState.audioState.muted,
           paused: true,
+          volume: prevState.audioState.volume,
         },
       }));
     });
