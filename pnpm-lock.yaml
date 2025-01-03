@@ -43,7 +43,7 @@ importers:
         version: 1.94.1(@tanstack/react-router@1.94.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(csstype@3.1.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@tanstack/router-plugin':
         specifier: ^1.85.3
-        version: 1.94.1(@tanstack/react-router@1.94.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(vite@6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
+        version: 1.94.1(@tanstack/react-router@1.94.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(vite@6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
       '@types/react':
         specifier: ^19.0.1
         version: 19.0.2
@@ -55,7 +55,7 @@ importers:
         version: 3.0.5
       '@vitejs/plugin-react-swc':
         specifier: ^3.7.0
-        version: 3.7.2(vite@6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
+        version: 3.7.2(vite@6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
       '@vitest/coverage-v8':
         specifier: 2.1.6
         version: 2.1.6(vitest@2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
@@ -124,7 +124,7 @@ importers:
         version: 1.0.0-beta.9(typescript@5.7.2)
       vite:
         specifier: ^6.0.0
-        version: 6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
+        version: 6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
       vitest:
         specifier: ^2.0.0
         version: 2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
@@ -3100,8 +3100,8 @@ packages:
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
-  vite@6.0.6:
-    resolution: {integrity: sha512-NSjmUuckPmDU18bHz7QZ+bTYhRR0iA72cs2QAxCqDpafJ0S6qetco0LB3WW2OxlMHS0JmAv+yZ/R3uPmMyGTjQ==}
+  vite@6.0.7:
+    resolution: {integrity: sha512-RDt8r/7qx9940f8FcOIAH9PTViRrghKaK2K1jY3RaAURrEUbm9Du1mJ72G+jlhtG3WwodnfzY8ORQZbBavZEAQ==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -4185,7 +4185,7 @@ snapshots:
     optionalDependencies:
       '@tanstack/react-router': 1.94.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
-  '@tanstack/router-plugin@1.94.1(@tanstack/react-router@1.94.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(vite@6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))':
+  '@tanstack/router-plugin@1.94.1(@tanstack/react-router@1.94.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(vite@6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/generator': 7.26.3
@@ -4206,7 +4206,7 @@ snapshots:
       unplugin: 1.16.0
       zod: 3.24.1
     optionalDependencies:
-      vite: 6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
+      vite: 6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
     transitivePeerDependencies:
       - '@tanstack/react-router'
       - supports-color
@@ -4341,10 +4341,10 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-react-swc@3.7.2(vite@6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))':
+  '@vitejs/plugin-react-swc@3.7.2(vite@6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))':
     dependencies:
       '@swc/core': 1.9.3
-      vite: 6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
+      vite: 6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
     transitivePeerDependencies:
       - '@swc/helpers'
 
@@ -4381,14 +4381,14 @@ snapshots:
       chai: 5.1.2
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.6(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(vite@6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))':
+  '@vitest/mocker@2.1.6(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(vite@6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))':
     dependencies:
       '@vitest/spy': 2.1.6
       estree-walker: 3.0.3
       magic-string: 0.30.14
     optionalDependencies:
       msw: 2.6.8(@types/node@22.10.2)(typescript@5.7.2)
-      vite: 6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
+      vite: 6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
 
   '@vitest/pretty-format@2.1.6':
     dependencies:
@@ -6306,7 +6306,7 @@ snapshots:
       debug: 4.3.7
       es-module-lexer: 1.5.4
       pathe: 1.1.2
-      vite: 6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
+      vite: 6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -6321,7 +6321,7 @@ snapshots:
       - tsx
       - yaml
 
-  vite@6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1):
+  vite@6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1):
     dependencies:
       esbuild: 0.24.2
       postcss: 8.4.49
@@ -6338,7 +6338,7 @@ snapshots:
   vitest@2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1):
     dependencies:
       '@vitest/expect': 2.1.6
-      '@vitest/mocker': 2.1.6(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(vite@6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
+      '@vitest/mocker': 2.1.6(msw@2.6.8(@types/node@22.10.2)(typescript@5.7.2))(vite@6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1))
       '@vitest/pretty-format': 2.1.6
       '@vitest/runner': 2.1.6
       '@vitest/snapshot': 2.1.6
@@ -6354,7 +6354,7 @@ snapshots:
       tinyexec: 0.3.1
       tinypool: 1.0.2
       tinyrainbow: 1.2.0
-      vite: 6.0.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
+      vite: 6.0.7(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
       vite-node: 2.1.6(@types/node@22.10.2)(jiti@2.4.1)(lightningcss@1.28.2)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
