@@ -41,22 +41,25 @@ export function createAppStore() {
     setInterval(() => {
       if (!audio.src) return;
 
-      set(prevState => {
-        const buffered = new Array<TimeRange>(audio.buffered.length);
+      const buffered = new Array<TimeRange>(audio.buffered.length);
 
-        for (let i = 0; i < audio.buffered.length; i++) {
-          buffered[i] = {
-            start: audio.buffered.start(i),
-            end: audio.buffered.end(i),
-          };
-        }
-
-        return {
-          audioState: deepEqual(buffered, prevState.audioState.buffered)
-            ? prevState.audioState
-            : { ...prevState.audioState, buffered },
+      for (let i = 0; i < audio.buffered.length; i++) {
+        buffered[i] = {
+          start: audio.buffered.start(i),
+          end: audio.buffered.end(i),
         };
-      });
+      }
+
+      const prevState = get();
+
+      if (!deepEqual(buffered, prevState.audioState.buffered)) {
+        set({
+          audioState: {
+            ...prevState.audioState,
+            buffered,
+          },
+        });
+      }
     }, 100);
 
     function setAudioCurrentTime(
