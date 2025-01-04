@@ -354,6 +354,7 @@ export function createAppStore() {
         },
         setAudioCurrentTime,
         setVolume(volume) {
+          audio.muted = false;
           audio.volume = Math.max(
             0,
             Math.min(
