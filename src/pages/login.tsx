@@ -119,7 +119,9 @@ export function Login() {
 
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="login-server-base-url">URL:</Label>
+              <Label className="pb-2" htmlFor="login-server-base-url">
+                URL:
+              </Label>
 
               <Input
                 autoFocus
@@ -133,7 +135,9 @@ export function Login() {
             </div>
 
             <div>
-              <Label htmlFor="login-username">Username:</Label>
+              <Label className="pb-2" htmlFor="login-username">
+                Username:
+              </Label>
 
               <Input
                 autoComplete="username"
@@ -146,7 +150,9 @@ export function Login() {
             </div>
 
             <div>
-              <Label htmlFor="login-password">Password:</Label>
+              <Label className="pb-2" htmlFor="login-password">
+                Password:
+              </Label>
 
               <Input
                 autoComplete="current-password"
