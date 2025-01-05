@@ -313,7 +313,7 @@ export function NowPlaying() {
 
         <StoreStateConsumer
           selector={({ audioState }) =>
-            audioState.muted
+            audioState.muted || audioState.volume === 0
               ? 'muted'
               : audioState.volume < 0.5
                 ? 'volume1'
