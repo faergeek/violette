@@ -7,21 +7,32 @@ import {
   Repeat1,
   SkipBack,
   SkipForward,
+  SlidersVertical,
   Volume1,
   Volume2,
   VolumeX,
 } from 'lucide-react';
 import { cloneElement, useEffect, useState } from 'react';
+import * as v from 'valibot';
 
 import {
   StoreStateConsumer,
   useStoreMutations,
   useStoreState,
 } from '../store/react';
+import { PreferredGain } from '../store/types';
 import { cn } from './cn';
 import { CoverArt } from './coverArt';
 import { IconButton } from './iconButton';
+import { Label } from './label';
 import { PlaybackPosition } from './playbackPosition';
+import {
+  Popover,
+  PopoverArrow,
+  PopoverContent,
+  PopoverTrigger,
+} from './popover';
+import { RadioGroup, RadioGroupItem } from './radioGroup';
 import { Slider } from './slider';
 import { StarButton } from './starButton';
 
@@ -348,6 +359,94 @@ export function NowPlaying() {
             />
           )}
         </StoreStateConsumer>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <IconButton icon={<SlidersVertical />} />
+          </PopoverTrigger>
+
+          <PopoverContent align="end" className="hidden w-80 md:block">
+            <h2 className="mb-2 font-bold">ReplayGain</h2>
+
+            <StoreStateConsumer
+              selector={state => state.replayGainSettings.preferredGain}
+            >
+              {preferredGain => (
+                <RadioGroup
+                  className="mb-4 flex"
+                  value={preferredGain || ''}
+                  onValueChange={newValue => {
+                    mutations.setReplayGainSettings(replayGainSettings => ({
+                      ...replayGainSettings,
+                      preferredGain: v.parse(
+                        v.optional(v.enum(PreferredGain)),
+                        newValue || undefined,
+                      ),
+                    }));
+                  }}
+                >
+                  <Label className="flex cursor-pointer items-center space-x-2">
+                    <RadioGroupItem id="preferred-gain-none" value="" />
+                    <span>None</span>
+                  </Label>
+
+                  <Label className="flex cursor-pointer items-center space-x-2">
+                    <RadioGroupItem
+                      id="preferred-gain-album"
+                      value={PreferredGain.Album}
+                    />
+
+                    <span>Album</span>
+                  </Label>
+
+                  <Label className="flex cursor-pointer items-center space-x-2">
+                    <RadioGroupItem
+                      id="preferred-gain-track"
+                      value={PreferredGain.Track}
+                    />
+
+                    <span>Track</span>
+                  </Label>
+                </RadioGroup>
+              )}
+            </StoreStateConsumer>
+
+            <Label className="pb-2">Pre-amplification</Label>
+
+            <StoreStateConsumer
+              selector={state => state.replayGainSettings.preAmp}
+            >
+              {preAmp => (
+                <div className="flex flex-col gap-2">
+                  <Slider
+                    max={15}
+                    min={-15}
+                    step={0.5}
+                    value={[preAmp]}
+                    onValueChange={([newPreAmp]) => {
+                      mutations.setReplayGainSettings(replayGainSettings => ({
+                        ...replayGainSettings,
+                        preAmp: newPreAmp,
+                        preferredGain:
+                          replayGainSettings.preferredGain ??
+                          PreferredGain.Album,
+                      }));
+                    }}
+                  />
+
+                  <div className="flex justify-between text-sm slashed-zero tabular-nums">
+                    <div className="ms-auto">
+                      {preAmp > 0 ? '+' : preAmp < 0 ? '-' : undefined}
+                      {Math.abs(preAmp).toFixed(1)} dB
+                    </div>
+                  </div>
+                </div>
+              )}
+            </StoreStateConsumer>
+
+            <PopoverArrow />
+          </PopoverContent>
+        </Popover>
       </div>
     </>
   );

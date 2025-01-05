@@ -7,11 +7,11 @@
   {
     "name": "js:eager",
     "path": "dist/assets/index-*.js",
-    "limit": "78 kB"
+    "limit": "79 kB"
   },
   {
     "name": "js:lazy",
     "path": ["dist/assets/**/*.js", "!dist/assets/index-*.js"],
-    "limit": "52 kB"
+    "limit": "55 kB"
   }
 ]

@@ -1,4 +1,4 @@
-import { Result } from '@faergeek/monads';
+import { Maybe, Result } from '@faergeek/monads';
 import { deepEqual } from 'fast-equals';
 import invariant from 'tiny-invariant';
 import * as v from 'valibot';
@@ -15,18 +15,41 @@ import {
 import type { BaseSong } from '../api/types';
 import { SubsonicCredentials } from '../api/types';
 import type { StoreState, TimeRange } from './types';
+import { PreferredGain, ReplayGainSettings } from './types';
 
 const CREDENTIALS_LOCAL_STORAGE_KEY = 'subsonic-credentials';
+const REPLAY_GAIN_LOCAL_STORAGE_KEY = 'replayGain';
+
+function getLocalStorageValue<
+  const T extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>,
+>(key: string, schema: T) {
+  const value = localStorage.getItem(key);
+  if (value == null) return Maybe.None;
+
+  let maybeJsonStr: Maybe<v.InferInput<T>>;
+
+  try {
+    maybeJsonStr = Maybe.Some(JSON.parse(value));
+  } catch {
+    maybeJsonStr = Maybe.None;
+  }
+
+  return maybeJsonStr.flatMapSome(jsonStr => {
+    const parseResult = v.safeParse(schema, jsonStr);
+
+    return parseResult.success ? Maybe.Some(parseResult.output) : Maybe.None;
+  });
+}
 
 export function createAppStore() {
   return createStore<StoreState>()((set, get, store): StoreState => {
-    const credentialsParseResult = v.safeParse(
-      SubsonicCredentials,
-      JSON.parse(String(localStorage.getItem(CREDENTIALS_LOCAL_STORAGE_KEY))),
-    );
-
     let skipping = false;
     const audio = new Audio();
+    audio.crossOrigin = 'anonymous';
+    const audioContext = new AudioContext();
+    const track = audioContext.createMediaElementSource(audio);
+    const gainNode = audioContext.createGain();
+    track.connect(gainNode).connect(audioContext.destination);
 
     const saveAudioCurrentTime = throttle(5000, async () => {
       const { credentials, currentSongId, queuedSongs } = get();
@@ -80,9 +103,10 @@ export function createAppStore() {
       saveAudioCurrentTime.now();
     }
 
-    const initialCredentials = credentialsParseResult.success
-      ? credentialsParseResult.output
-      : undefined;
+    const initialCredentials = getLocalStorageValue(
+      CREDENTIALS_LOCAL_STORAGE_KEY,
+      SubsonicCredentials,
+    ).toOptional();
 
     async function initializePlaybackState() {
       const { credentials = initialCredentials } = get() ?? {};
@@ -232,7 +256,8 @@ export function createAppStore() {
 
     let timePlayed = 0;
     store.subscribe((state, prevState) => {
-      const { credentials, currentSongId, audioState } = state;
+      const { audioState, credentials, currentSongId, replayGainSettings } =
+        state;
 
       if (
         currentSongId === prevState.currentSongId &&
@@ -294,6 +319,43 @@ export function createAppStore() {
       }
 
       if (
+        currentSongId !== prevState.currentSongId ||
+        replayGainSettings !== prevState.replayGainSettings
+      ) {
+        const { queuedSongs } = state;
+        const currentSong = queuedSongs.find(s => s.id === currentSongId);
+
+        if (currentSong) {
+          const { albumGain, albumPeak, trackGain, trackPeak } =
+            currentSong.replayGain ?? {};
+
+          // https://wiki.hydrogenaud.io/index.php?title=ReplayGain_2.0_specification#Player_requirements
+          const gain =
+            replayGainSettings.preferredGain == null
+              ? 0
+              : ({
+                  [PreferredGain.Album]: albumGain ?? trackGain,
+                  [PreferredGain.Track]: trackGain ?? albumGain,
+                }[replayGainSettings.preferredGain] ?? 0);
+
+          const peak =
+            replayGainSettings.preferredGain == null
+              ? 1
+              : ({
+                  [PreferredGain.Album]: albumPeak ?? trackPeak,
+                  [PreferredGain.Track]: trackPeak ?? albumPeak,
+                }[replayGainSettings.preferredGain] ?? 1);
+
+          const gainValue = Math.min(
+            10 ** ((gain + replayGainSettings.preAmp) / 20),
+            1 / peak,
+          );
+
+          gainNode.gain.setValueAtTime(gainValue, audioContext.currentTime);
+        }
+      }
+
+      if (
         credentials != null &&
         currentSongId != null &&
         !audioState.paused &&
@@ -335,6 +397,10 @@ export function createAppStore() {
       },
       credentials: initialCredentials,
       queuedSongs: [],
+      replayGainSettings: getLocalStorageValue(
+        REPLAY_GAIN_LOCAL_STORAGE_KEY,
+        ReplayGainSettings,
+      ).getOr(() => ({ preAmp: 0 })),
 
       mutations: {
         clearSubsonicCredentials() {
@@ -353,6 +419,24 @@ export function createAppStore() {
           initializePlaybackState();
         },
         setAudioCurrentTime,
+        setReplayGainSettings(replayGainSettings) {
+          replayGainSettings =
+            typeof replayGainSettings === 'function'
+              ? replayGainSettings(get().replayGainSettings)
+              : replayGainSettings;
+
+          replayGainSettings = {
+            ...replayGainSettings,
+            preAmp: Math.max(-15, Math.min(replayGainSettings.preAmp, 15)),
+          };
+
+          set({ replayGainSettings });
+
+          localStorage.setItem(
+            REPLAY_GAIN_LOCAL_STORAGE_KEY,
+            JSON.stringify(replayGainSettings),
+          );
+        },
         setVolume(volume) {
           audio.muted = false;
           audio.volume = Math.max(

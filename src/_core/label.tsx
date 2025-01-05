@@ -7,7 +7,7 @@ export function Label({
   return (
     <label
       className={cn(
-        'block pb-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+        'block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
         className,
       )}
       {...otherProps}
