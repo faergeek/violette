@@ -37,6 +37,23 @@ export function CoverArt({
       'load',
       () => {
         setIsReady(true);
+        controller.abort();
+      },
+      { once: true, signal: controller.signal },
+    );
+
+    img.addEventListener(
+      'error',
+      () => {
+        const timeout = setTimeout(() => {
+          img.src = src;
+        }, 3000);
+
+        controller.signal.addEventListener(
+          'abort',
+          () => clearTimeout(timeout),
+          { once: true, signal: controller.signal },
+        );
       },
       { signal: controller.signal },
     );
