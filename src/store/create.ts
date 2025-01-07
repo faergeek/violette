@@ -146,7 +146,7 @@ export function createAppStore() {
       const currentSongId = song.id;
       set({ currentSongId, queuedSongs });
 
-      audio.play();
+      togglePaused(false);
 
       await subsonicSavePlayQueue(
         queuedSongs.map(s => s.id),
@@ -173,7 +173,7 @@ export function createAppStore() {
 
       if (state.audioState.currentTime > 3) {
         setAudioCurrentTime(0);
-        audio.play();
+        togglePaused(false);
       } else {
         const currentIndex = state.queuedSongs.findIndex(
           s => s.id === state.currentSongId,
@@ -243,11 +243,21 @@ export function createAppStore() {
       })),
     );
 
-    navigator.mediaSession.setActionHandler('play', () => audio.play());
-    navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+    function togglePaused(paused?: boolean) {
+      paused ??= !get().audioState.paused;
+
+      if (paused) audio.pause();
+      else {
+        if (audioContext.state === 'suspended') audioContext.resume();
+        audio.play();
+      }
+    }
+
+    navigator.mediaSession.setActionHandler('play', () => togglePaused(false));
+    navigator.mediaSession.setActionHandler('pause', () => togglePaused(true));
 
     navigator.mediaSession.setActionHandler('stop', () => {
-      audio.pause();
+      togglePaused(true);
       setAudioCurrentTime(0);
     });
 
@@ -455,12 +465,7 @@ export function createAppStore() {
             audio.volume = 0.5;
           }
         },
-        togglePaused(paused?: boolean) {
-          paused ??= !get().audioState.paused;
-
-          if (paused) audio.pause();
-          else audio.play();
-        },
+        togglePaused,
       },
     };
   });
