@@ -15,8 +15,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       '@icons-pack/react-simple-icons':
-        specifier: ^10.2.0
-        version: 10.2.0(react@19.0.0)
+        specifier: ^11.0.0
+        version: 11.0.0(react@19.0.0)
       '@radix-ui/react-dropdown-menu':
         specifier: ^2.1.4
         version: 2.1.4(@types/react-dom@19.0.2(@types/react@19.0.4))(@types/react@19.0.4)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -587,8 +587,8 @@ packages:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
 
-  '@icons-pack/react-simple-icons@10.2.0':
-    resolution: {integrity: sha512-QDUxup8D3GdIIzwGpxQs6bjeFV5mJes25qqf4aqP/PaBYQNCar7AiyD8C14636TosCG0A/QqAUwm/Hviep4d4g==}
+  '@icons-pack/react-simple-icons@11.0.0':
+    resolution: {integrity: sha512-o8ho4F8UiN7ie1X4gWUNJMgQw7lzPncfcXs6PHF02hDmwV71OngqI4eWEY+ibTNKaS5xdGyBXho9Zvx4JeyriA==}
     peerDependencies:
       react: ^16.13 || ^17 || ^18 || ^19
 
@@ -3661,7 +3661,7 @@ snapshots:
 
   '@humanwhocodes/object-schema@2.0.3': {}
 
-  '@icons-pack/react-simple-icons@10.2.0(react@19.0.0)':
+  '@icons-pack/react-simple-icons@11.0.0(react@19.0.0)':
     dependencies:
       react: 19.0.0
 
