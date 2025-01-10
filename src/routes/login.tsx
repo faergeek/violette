@@ -15,13 +15,13 @@ export const Route = createFileRoute('/login')({
   },
   async loader({ context: { store }, deps }) {
     const state = store.getState();
-    if (!state.credentials) return;
+    if (!state.auth.credentials) return;
 
     await subsonicPing()
       .flatMap<never, never>(() => {
         throw redirect({ replace: true, to: deps.next });
       })
       .catch(() => Fx.Ok())
-      .runAsync({ credentials: state.credentials });
+      .runAsync({ credentials: state.auth.credentials });
   },
 });

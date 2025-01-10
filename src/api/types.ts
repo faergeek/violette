@@ -21,6 +21,7 @@ export type SubsonicRequest =
       includeNotPresent?: boolean;
     }
   | { method: 'rest/getAlbum'; id: string }
+  | { method: 'rest/getSong'; id: string }
   | { method: 'rest/getAlbumInfo2'; id: string }
   | { method: 'rest/getTopSongs'; artist: string; count?: number }
   | { method: 'rest/getPlayQueue' }
@@ -103,22 +104,40 @@ const ReplayGain = v.partial(
   }),
 );
 
-export const BaseArtist = v.object({
+export const Song = v.object({
+  album: v.string(),
+  albumId: v.string(),
+  artist: v.string(),
+  artistId: v.optional(v.string()),
   coverArt: v.string(),
+  discNumber: v.optional(v.number()),
+  duration: v.number(),
+  genre: v.optional(v.string()),
+  genres: v.optional(v.array(v.object({ name: v.string() }))),
   id: v.string(),
-  name: v.string(),
+  musicBrainzId: v.optional(v.string()),
+  replayGain: v.optional(ReplayGain),
+  size: v.number(),
   starred: v.optional(v.string()),
+  title: v.string(),
+  track: v.optional(v.number()),
   userRating: v.optional(v.number()),
+  year: v.optional(v.number()),
 });
 
-export type BaseArtist = v.InferInput<typeof BaseArtist>;
+export type Song = v.InferInput<typeof Song>;
 
 export const BaseAlbum = v.object({
   artist: v.string(),
   artistId: v.string(),
   coverArt: v.string(),
+  duration: v.number(),
+  genre: v.optional(v.string()),
+  genres: v.optional(v.array(v.object({ name: v.string() }))),
   id: v.string(),
+  musicBrainzId: v.optional(v.string()),
   name: v.string(),
+  songCount: v.number(),
   starred: v.optional(v.string()),
   userRating: v.optional(v.number()),
   year: v.optional(v.number()),
@@ -126,32 +145,58 @@ export const BaseAlbum = v.object({
 
 export type BaseAlbum = v.InferInput<typeof BaseAlbum>;
 
-export const BaseSong = v.object({
-  album: v.string(),
-  albumId: v.string(),
-  artist: v.string(),
-  artistId: v.optional(v.string()),
-  coverArt: v.string(),
-  duration: v.number(),
-  id: v.string(),
-  replayGain: v.optional(ReplayGain),
-  starred: v.optional(v.string()),
-  title: v.string(),
-  track: v.optional(v.number()),
-  userRating: v.optional(v.number()),
-});
+const DiscTitle = v.object({ disc: v.number(), title: v.string() });
+export type DiscTitle = v.InferInput<typeof DiscTitle>;
 
-export type BaseSong = v.InferInput<typeof BaseSong>;
-
-export const Song = v.object({
-  ...BaseSong.entries,
-  discNumber: v.optional(v.number()),
-  genre: v.optional(v.string()),
-  genres: v.optional(v.array(v.object({ name: v.string() }))),
-  musicBrainzId: v.optional(v.string()),
-  replayGain: v.optional(ReplayGain),
-  size: v.number(),
+const ReleaseDate = v.object({
+  day: v.optional(v.number()),
+  month: v.optional(v.number()),
   year: v.optional(v.number()),
 });
 
-export type Song = v.InferInput<typeof Song>;
+export type ReleaseDate = v.InferInput<typeof ReleaseDate>;
+
+export const Album = v.object({
+  ...BaseAlbum.entries,
+  discTitles: v.optional(v.array(DiscTitle)),
+  isCompilation: v.optional(v.boolean()),
+  originalReleaseDate: v.optional(ReleaseDate),
+  releaseDate: v.optional(ReleaseDate),
+  song: v.array(Song),
+});
+
+export const AlbumInfo = v.object({
+  lastFmUrl: v.optional(v.string()),
+  musicBrainzId: v.optional(v.string()),
+  notes: v.optional(v.string()),
+});
+
+export type AlbumInfo = v.InferInput<typeof AlbumInfo>;
+
+export const BaseArtist = v.object({
+  albumCount: v.number(),
+  coverArt: v.string(),
+  id: v.string(),
+  musicBrainzId: v.optional(v.string()),
+  name: v.string(),
+  starred: v.optional(v.string()),
+  userRating: v.optional(v.number()),
+});
+
+export type BaseArtist = v.InferInput<typeof BaseArtist>;
+
+export const ArtistInfo = v.object({
+  biography: v.optional(v.string()),
+  lastFmUrl: v.optional(v.string()),
+  musicBrainzId: v.optional(v.string()),
+  similarArtist: v.optional(
+    v.array(v.union([BaseArtist, v.object({ name: v.string() })])),
+  ),
+});
+
+export type ArtistInfo = v.InferInput<typeof ArtistInfo>;
+
+export type StarParams =
+  | { albumId: string; artistId?: never; id?: never }
+  | { albumId?: never; artistId: string; id?: never }
+  | { albumId?: never; artistId?: never; id: string };

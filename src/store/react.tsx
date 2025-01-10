@@ -1,9 +1,9 @@
+import { invariant } from '@tanstack/react-router';
 import { createContext, useContext } from 'react';
-import invariant from 'tiny-invariant';
 import type { StoreApi } from 'zustand';
 import { useStore } from 'zustand';
 
-import type { StoreState } from './types';
+import type { StoreState } from './create';
 
 const StoreContext = createContext<StoreApi<StoreState> | null>(null);
 
@@ -23,20 +23,16 @@ function useStoreFromContext() {
   return store;
 }
 
-export function useStoreState<T>(selector: (state: StoreState) => T) {
+export function useAppStore<T>(selector: (state: StoreState) => T) {
   return useStore(useStoreFromContext(), selector);
 }
 
-export function StoreStateConsumer<T>({
+export function StoreConsumer<T>({
   children,
   selector,
 }: {
   children: (value: T) => React.ReactNode;
-  selector: (state: Omit<StoreState, 'mutations'>) => T;
+  selector: (state: StoreState) => T;
 }) {
   return children(useStore(useStoreFromContext(), selector));
-}
-
-export function useStoreMutations() {
-  return useStore(useStoreFromContext(), state => state.mutations);
 }

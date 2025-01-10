@@ -1,9 +1,8 @@
-import { useRouter } from '@tanstack/react-router';
 import { Heart } from 'lucide-react';
-import invariant from 'tiny-invariant';
+import { useOptimistic } from 'react';
 
-import { subsonicStar, subsonicUnstar } from '../api/subsonic';
-import { useStoreState } from '../store/react';
+import type { StarParams } from '../api/types';
+import { useAppStore } from '../store/react';
 import { IconButton } from './iconButton';
 
 type Props = { className?: string } & (
@@ -14,60 +13,61 @@ type Props = { className?: string } & (
       id?: never;
       starred?: never;
     }
-  | {
-      albumId: string;
-      artistId?: never;
+  | (StarParams & {
       disabled?: false;
-      id?: never;
       starred: string | undefined;
-    }
-  | {
-      albumId?: never;
-      artistId: string;
-      disabled?: false;
-      id?: never;
-      starred: string | undefined;
-    }
-  | {
-      albumId?: never;
-      artistId?: never;
-      disabled?: false;
-      id: string;
-      starred: string | undefined;
-    }
+    })
 );
 
 export function StarButton({
-  albumId,
-  artistId,
   className,
   disabled,
-  id,
-  starred,
+  starred: starredProp,
+  ...starParams
 }: Props) {
-  const router = useRouter();
-  const credentials = useStoreState(state => state.credentials);
+  const star = useAppStore(state => state.star);
+  const unstar = useAppStore(state => state.unstar);
+
+  const [starred, addOptimistic] = useOptimistic(
+    starredProp,
+    (_, optimisticValue: string | undefined) => optimisticValue,
+  );
 
   return (
-    <IconButton
-      className={className}
-      disabled={disabled || !credentials}
-      icon={<Heart className={starred ? 'fill-primary stroke-primary' : ''} />}
-      onClick={async () => {
-        invariant(credentials);
-
-        if (starred) {
-          await subsonicUnstar({ albumId, artistId, id }).runAsync({
-            credentials,
-          });
-        } else {
-          await subsonicStar({ albumId, artistId, id }).runAsync({
-            credentials,
-          });
+    <form
+      action={async formData => {
+        if (
+          starParams.albumId == null &&
+          starParams.artistId == null &&
+          starParams.id == null
+        ) {
+          return;
         }
 
-        router.invalidate();
+        const newStarred = formData.get('starred')
+          ? new Date().toISOString()
+          : undefined;
+
+        addOptimistic(newStarred);
+
+        return newStarred ? star(starParams) : unstar(starParams);
       }}
-    />
+      className="inline-flex"
+    >
+      <input
+        name="starred"
+        type="hidden"
+        value={starred ? '' : new Date().toISOString()}
+      />
+
+      <IconButton
+        className={className}
+        disabled={disabled}
+        icon={
+          <Heart className={starred ? 'fill-primary stroke-primary' : ''} />
+        }
+        type="submit"
+      />
+    </form>
   );
 }

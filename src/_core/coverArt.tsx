@@ -1,29 +1,26 @@
 import { useEffect, useState } from 'react';
 
 import { subsonicGetCoverArtUrl } from '../api/subsonic';
-import type { SubsonicCredentials } from '../api/types';
+import { useAppStore } from '../store/react';
 import { cn } from './cn';
 import { Skeleton } from './skeleton';
-import type { SkeletonProps } from './types';
 
 export function CoverArt({
   className,
   coverArt,
-  credentials,
   size,
-  skeleton,
   ...otherProps
-}: Omit<React.ComponentProps<'img'>, 'src'> &
-  SkeletonProps<{
-    coverArt: string;
-    credentials: SubsonicCredentials;
-    size?: number;
-  }>) {
+}: Omit<React.ComponentProps<'img'>, 'src'> & {
+  coverArt?: string;
+  size?: number;
+}) {
+  const credentials = useAppStore(state => state.auth.credentials);
   const [isReady, setIsReady] = useState(false);
 
-  const src = coverArt
-    ? subsonicGetCoverArtUrl(credentials, coverArt, { size })
-    : undefined;
+  const src =
+    coverArt == null || credentials == null
+      ? undefined
+      : subsonicGetCoverArtUrl(credentials, coverArt, { size });
 
   useEffect(() => {
     if (!src) return;
@@ -37,6 +34,23 @@ export function CoverArt({
       'load',
       () => {
         setIsReady(true);
+        controller.abort();
+      },
+      { once: true, signal: controller.signal },
+    );
+
+    img.addEventListener(
+      'error',
+      () => {
+        const timeout = setTimeout(() => {
+          img.src = src;
+        }, 3000);
+
+        controller.signal.addEventListener(
+          'abort',
+          () => clearTimeout(timeout),
+          { once: true, signal: controller.signal },
+        );
       },
       { signal: controller.signal },
     );
@@ -44,8 +58,8 @@ export function CoverArt({
     return () => controller.abort();
   }, [src]);
 
-  return skeleton || !isReady ? (
-    <Skeleton className={cn('aspect-square h-auto w-full', className)} />
+  return src == null || !isReady ? (
+    <Skeleton className={cn('my-0 aspect-square h-auto w-full', className)} />
   ) : (
     <img
       alt=""

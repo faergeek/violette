@@ -1,10 +1,6 @@
 import { useState } from 'react';
 
-import {
-  StoreStateConsumer,
-  useStoreMutations,
-  useStoreState,
-} from '../store/react';
+import { StoreConsumer, useAppStore } from '../store/react';
 import { formatDuration } from './formatDuration';
 
 function clientXToTime({
@@ -20,15 +16,16 @@ function clientXToTime({
 }
 
 export function PlaybackPosition() {
-  const mutations = useStoreMutations();
-  const buffered = useStoreState(state => state.audioState.buffered);
-  const duration = useStoreState(state => state.audioState.duration);
+  const buffered = useAppStore(state => state.player.buffered);
+  const duration = useAppStore(state => state.player.duration);
+
+  const setCurrentTime = useAppStore(state => state.player.setCurrentTime);
 
   const [draggedToTime, setDraggedToTime] = useState<number>();
   const [hoveredTime, setHoveredTime] = useState<number>();
 
   function releasePoinerCapture(event: React.PointerEvent<HTMLDivElement>) {
-    if (draggedToTime != null) mutations.setAudioCurrentTime(draggedToTime);
+    if (draggedToTime != null) setCurrentTime(draggedToTime);
 
     if (event.currentTarget.hasPointerCapture(event.pointerId))
       event.currentTarget.releasePointerCapture(event.pointerId);
@@ -89,9 +86,9 @@ export function PlaybackPosition() {
         ))}
 
       {duration != null && (
-        <StoreStateConsumer
+        <StoreConsumer
           selector={state =>
-            (draggedToTime ?? state.audioState.currentTime) / duration
+            (draggedToTime ?? state.player.currentTime) / duration
           }
         >
           {scaleX => (
@@ -100,14 +97,14 @@ export function PlaybackPosition() {
               style={{ ['--tw-scale-x' as string]: scaleX }}
             />
           )}
-        </StoreStateConsumer>
+        </StoreConsumer>
       )}
 
       <div className="flex px-1 slashed-zero tabular-nums">
-        <StoreStateConsumer
+        <StoreConsumer
           selector={state =>
             formatDuration(
-              draggedToTime ?? hoveredTime ?? state.audioState.currentTime,
+              draggedToTime ?? hoveredTime ?? state.player.currentTime,
             )
           }
         >
@@ -116,7 +113,7 @@ export function PlaybackPosition() {
               {formatted}
             </div>
           )}
-        </StoreStateConsumer>
+        </StoreConsumer>
 
         {duration != null && (
           <div className="pointer-events-none relative ms-auto transform-gpu text-sm">

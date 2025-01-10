@@ -15,12 +15,9 @@ import {
 import { cloneElement, useEffect, useState } from 'react';
 import * as v from 'valibot';
 
-import {
-  StoreStateConsumer,
-  useStoreMutations,
-  useStoreState,
-} from '../store/react';
-import { PreferredGain } from '../store/types';
+import { PreferredGain } from '../slices/player';
+import type { StoreState } from '../store/create';
+import { StoreConsumer, useAppStore } from '../store/react';
 import { cn } from './cn';
 import { CoverArt } from './coverArt';
 import { IconButton } from './iconButton';
@@ -37,8 +34,15 @@ import { Slider } from './slider';
 import { StarButton } from './starButton';
 
 export function NowPlaying() {
-  const mutations = useStoreMutations();
-  const credentials = useStoreState(state => state.credentials);
+  const goToNextSong = useAppStore(state => state.player.goToNextSong);
+  const goToPrevSong = useAppStore(state => state.player.goToPrevSong);
+  const setCurrentTime = useAppStore(state => state.player.setCurrentTime);
+  const setReplayGainSettings = useAppStore(
+    state => state.player.setReplayGainOptions,
+  );
+  const setVolume = useAppStore(state => state.player.setVolume);
+  const toggleMuted = useAppStore(state => state.player.toggleMuted);
+  const togglePaused = useAppStore(state => state.player.togglePaused);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -51,23 +55,23 @@ export function NowPlaying() {
             case 'KeyK':
             case 'Space':
               event.preventDefault();
-              mutations.togglePaused();
+              togglePaused();
               break;
             case 'KeyJ':
             case 'ArrowLeft':
-              mutations.setAudioCurrentTime(prevState => prevState - 10);
+              setCurrentTime(prevState => prevState - 10);
               break;
             case 'KeyL':
             case 'ArrowRight':
-              mutations.setAudioCurrentTime(prevState => prevState + 10);
+              setCurrentTime(prevState => prevState + 10);
               break;
             case 'ArrowUp':
               event.preventDefault();
-              mutations.setVolume(prevState => prevState + 0.05);
+              setVolume(prevState => prevState + 0.05);
               break;
             case 'ArrowDown':
               event.preventDefault();
-              mutations.setVolume(prevState => prevState - 0.05);
+              setVolume(prevState => prevState - 0.05);
               break;
           }
         } else {
@@ -88,22 +92,24 @@ export function NowPlaying() {
     );
 
     return () => abortController.abort();
-  }, [mutations]);
+  }, [setCurrentTime, setVolume, togglePaused]);
 
   const [repeatMode, setRepeatMode] = useState<'repeat-all' | 'repeat-one'>();
+
+  function getCurrentSong({ player, songs }: StoreState) {
+    return player.currentSongId
+      ? songs.byId.get(player.currentSongId)
+      : undefined;
+  }
 
   return (
     <>
       <PlaybackPosition />
 
       <div className="flex gap-2 md:hidden">
-        <StoreStateConsumer
-          selector={state =>
-            state.queuedSongs.find(s => s.id === state.currentSongId)
-          }
-        >
+        <StoreConsumer selector={getCurrentSong}>
           {song =>
-            credentials && song ? (
+            song ? (
               <Link
                 className="shrink-0"
                 params={{ albumId: song.albumId }}
@@ -113,22 +119,17 @@ export function NowPlaying() {
                 <CoverArt
                   className="size-16 rounded-none"
                   coverArt={song.coverArt}
-                  credentials={credentials}
                   size={128}
                 />
               </Link>
             ) : (
-              <CoverArt skeleton />
+              <CoverArt className="size-16 rounded-none" />
             )
           }
-        </StoreStateConsumer>
+        </StoreConsumer>
 
         <div className="flex h-16 grow items-center gap-4 overflow-hidden py-2">
-          <StoreStateConsumer
-            selector={state =>
-              state.queuedSongs.find(s => s.id === state.currentSongId)
-            }
-          >
+          <StoreConsumer selector={getCurrentSong}>
             {song =>
               song && (
                 <div className="min-w-0">
@@ -140,13 +141,9 @@ export function NowPlaying() {
                 </div>
               )
             }
-          </StoreStateConsumer>
+          </StoreConsumer>
 
-          <StoreStateConsumer
-            selector={state =>
-              state.queuedSongs.find(s => s.id === state.currentSongId)
-            }
-          >
+          <StoreConsumer selector={getCurrentSong}>
             {song =>
               song ? (
                 <StarButton
@@ -158,69 +155,97 @@ export function NowPlaying() {
                 <StarButton className="hidden p-5 sm:block" disabled />
               )
             }
-          </StoreStateConsumer>
+          </StoreConsumer>
 
           <div className="ms-auto flex">
-            <IconButton
-              className="hidden p-5 sm:block"
-              icon={<SkipBack />}
-              onClick={() => {
-                mutations.goToPrevSong();
-              }}
-            />
-
-            <StoreStateConsumer selector={state => state.audioState.paused}>
-              {paused => (
+            <StoreConsumer
+              selector={state => state.player.queuedSongIds.length}
+            >
+              {queuedSongCount => (
                 <IconButton
-                  className="p-5"
-                  icon={paused ? <Play /> : <Pause />}
-                  onClick={() => {
-                    mutations.togglePaused();
-                  }}
+                  className="hidden p-5 sm:block"
+                  disabled={queuedSongCount === 0}
+                  icon={<SkipBack />}
+                  onClick={goToPrevSong}
                 />
               )}
-            </StoreStateConsumer>
+            </StoreConsumer>
 
-            <IconButton
-              className="hidden p-5 sm:block"
-              icon={<SkipForward />}
-              onClick={() => {
-                mutations.goToNextSong();
-              }}
-            />
+            <StoreConsumer
+              selector={state => state.player.currentSongId != null}
+            >
+              {hasCurrentSong => (
+                <StoreConsumer selector={state => state.player.paused}>
+                  {paused => (
+                    <IconButton
+                      className="p-5"
+                      disabled={!hasCurrentSong}
+                      icon={paused ? <Play /> : <Pause />}
+                      onClick={() => {
+                        togglePaused();
+                      }}
+                    />
+                  )}
+                </StoreConsumer>
+              )}
+            </StoreConsumer>
+
+            <StoreConsumer
+              selector={state => state.player.queuedSongIds.length}
+            >
+              {queuedSongCount => (
+                <IconButton
+                  className="hidden p-5 sm:block"
+                  disabled={queuedSongCount === 0}
+                  icon={<SkipForward />}
+                  onClick={goToNextSong}
+                />
+              )}
+            </StoreConsumer>
           </div>
         </div>
       </div>
 
       <div className="hidden items-center gap-4 px-4 py-2 md:flex">
-        <IconButton
-          icon={<SkipBack />}
-          onClick={() => {
-            mutations.goToPrevSong();
-          }}
-        />
-
-        <StoreStateConsumer selector={state => state.audioState.paused}>
-          {paused => (
+        <StoreConsumer selector={state => state.player.queuedSongIds.length}>
+          {queuedSongCount => (
             <IconButton
-              icon={paused ? <Play /> : <Pause />}
-              onClick={() => {
-                mutations.togglePaused();
-              }}
+              disabled={queuedSongCount === 0}
+              icon={<SkipBack />}
+              onClick={goToPrevSong}
             />
           )}
-        </StoreStateConsumer>
+        </StoreConsumer>
 
-        <IconButton
-          icon={<SkipForward />}
-          onClick={() => {
-            mutations.goToNextSong();
-          }}
-        />
+        <StoreConsumer selector={state => state.player.currentSongId != null}>
+          {hasCurrentSong => (
+            <StoreConsumer selector={state => state.player.paused}>
+              {paused => (
+                <IconButton
+                  disabled={!hasCurrentSong}
+                  icon={paused ? <Play /> : <Pause />}
+                  onClick={() => {
+                    togglePaused();
+                  }}
+                />
+              )}
+            </StoreConsumer>
+          )}
+        </StoreConsumer>
 
-        <StoreStateConsumer selector={state => state.queuedSongs.length}>
+        <StoreConsumer selector={state => state.player.queuedSongIds.length}>
+          {queuedSongCount => (
+            <IconButton
+              disabled={queuedSongCount === 0}
+              icon={<SkipForward />}
+              onClick={goToNextSong}
+            />
+          )}
+        </StoreConsumer>
+
+        <StoreConsumer selector={state => state.player.queuedSongIds.length}>
           {songCount => <IconButton icon={<ListMusic />} label={songCount} />}
-        </StoreStateConsumer>
+        </StoreConsumer>
 
         <IconButton
           className={cn({
@@ -241,11 +266,7 @@ export function NowPlaying() {
           }}
         />
 
-        <StoreStateConsumer
-          selector={state =>
-            state.queuedSongs.find(s => s.id === state.currentSongId)
-          }
-        >
+        <StoreConsumer selector={getCurrentSong}>
           {song =>
             song ? (
               <StarButton id={song.id} starred={song.starred} />
@@ -253,15 +274,11 @@ export function NowPlaying() {
               <StarButton disabled />
             )
           }
-        </StoreStateConsumer>
+        </StoreConsumer>
 
-        <StoreStateConsumer
-          selector={state =>
-            state.queuedSongs.find(s => s.id === state.currentSongId)
-          }
-        >
+        <StoreConsumer selector={getCurrentSong}>
           {song =>
-            credentials && song ? (
+            song ? (
               <Link
                 className="shrink-0"
                 params={{ albumId: song.albumId }}
@@ -271,21 +288,16 @@ export function NowPlaying() {
                 <CoverArt
                   className="size-12"
                   coverArt={song.coverArt}
-                  credentials={credentials}
                   size={96}
                 />
               </Link>
             ) : (
-              <CoverArt className="size-12" skeleton />
+              <CoverArt className="size-12" />
             )
           }
-        </StoreStateConsumer>
+        </StoreConsumer>
 
-        <StoreStateConsumer
-          selector={state =>
-            state.queuedSongs.find(s => s.id === state.currentSongId)
-          }
-        >
+        <StoreConsumer selector={getCurrentSong}>
           {song =>
             song && (
               <div className="min-w-0">
@@ -320,10 +332,10 @@ export function NowPlaying() {
               </div>
             )
           }
-        </StoreStateConsumer>
+        </StoreConsumer>
 
-        <StoreStateConsumer
-          selector={({ audioState }) =>
+        <StoreConsumer
+          selector={({ player: audioState }) =>
             audioState.muted || audioState.volume === 0
               ? 'muted'
               : audioState.volume < 0.5
@@ -341,12 +353,12 @@ export function NowPlaying() {
                   volume2: <Volume2 />,
                 }[state]
               }
-              onClick={() => mutations.toggleMuted()}
+              onClick={toggleMuted}
             />
           )}
-        </StoreStateConsumer>
+        </StoreConsumer>
 
-        <StoreStateConsumer selector={state => state.audioState.volume}>
+        <StoreConsumer selector={state => state.player.volume}>
           {volume => (
             <Slider
               className="shrink-0 basis-32"
@@ -354,11 +366,11 @@ export function NowPlaying() {
               step={0.05}
               value={[volume]}
               onValueChange={([newVolume]) => {
-                mutations.setVolume(newVolume);
+                setVolume(newVolume);
               }}
             />
           )}
-        </StoreStateConsumer>
+        </StoreConsumer>
 
         <Popover>
           <PopoverTrigger asChild>
@@ -368,15 +380,15 @@ export function NowPlaying() {
           <PopoverContent align="end" className="hidden w-80 md:block">
             <h2 className="mb-2 font-bold">ReplayGain</h2>
 
-            <StoreStateConsumer
-              selector={state => state.replayGainSettings.preferredGain}
+            <StoreConsumer
+              selector={state => state.player.replayGainOptions.preferredGain}
             >
               {preferredGain => (
                 <RadioGroup
                   className="mb-4 flex"
                   value={preferredGain || ''}
                   onValueChange={newValue => {
-                    mutations.setReplayGainSettings(replayGainSettings => ({
+                    setReplayGainSettings(replayGainSettings => ({
                       ...replayGainSettings,
                       preferredGain: v.parse(
                         v.optional(v.enum(PreferredGain)),
@@ -409,12 +421,12 @@ export function NowPlaying() {
                   </Label>
                 </RadioGroup>
               )}
-            </StoreStateConsumer>
+            </StoreConsumer>
 
             <Label className="pb-2">Pre-amplification</Label>
 
-            <StoreStateConsumer
-              selector={state => state.replayGainSettings.preAmp}
+            <StoreConsumer
+              selector={state => state.player.replayGainOptions.preAmp}
             >
               {preAmp => (
                 <div className="flex flex-col gap-2">
@@ -424,7 +436,7 @@ export function NowPlaying() {
                     step={0.5}
                     value={[preAmp]}
                     onValueChange={([newPreAmp]) => {
-                      mutations.setReplayGainSettings(replayGainSettings => ({
+                      setReplayGainSettings(replayGainSettings => ({
                         ...replayGainSettings,
                         preAmp: newPreAmp,
                         preferredGain:
@@ -442,7 +454,7 @@ export function NowPlaying() {
                   </div>
                 </div>
               )}
-            </StoreStateConsumer>
+            </StoreConsumer>
 
             <PopoverArrow />
           </PopoverContent>

@@ -1,131 +1,176 @@
-import { Await, getRouteApi, Link } from '@tanstack/react-router';
+import { Await, Link } from '@tanstack/react-router';
 import { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 import { formatDuration } from '../_core/formatDuration';
 import { H1 } from '../_core/headings';
 import { MediaHeader } from '../_core/mediaHeader';
 import { MediaLinks } from '../_core/mediaLinks';
 import { Prose } from '../_core/prose';
+import { Skeleton } from '../_core/skeleton';
 import { SongList } from '../_core/songList';
 import { StarButton } from '../_core/starButton';
-import type { BaseSong } from '../api/types';
+import type { AlbumInfo } from '../api/types';
+import { StoreConsumer, useAppStore } from '../store/react';
 
-export function Album() {
-  const routeApi = getRouteApi('/_layout/album/$albumId');
-  const search = routeApi.useSearch();
+export function AlbumPage({
+  albumId,
+  deferredAlbumInfo,
+  search,
+}: {
+  albumId: string;
+  deferredAlbumInfo?: Promise<AlbumInfo>;
+  search: { song?: string };
+}) {
+  const base = useAppStore(state => state.albums.baseById.get(albumId));
+  const details = useAppStore(state => state.albums.detailsById.get(albumId));
+  const songIds = useAppStore(state => state.albums.songIdsById.get(albumId));
 
-  const { album, credentials, deferredAlbumInfo } = routeApi.useLoaderData();
-
-  const year = album.releaseDate?.year;
+  const songs = useAppStore(
+    useShallow(state =>
+      songIds?.map(id => state.songs.byId.get(id)).filter(song => song != null),
+    ),
+  );
 
   const discs = useMemo(() => {
-    const result: Array<{
-      number: number;
-      songs: BaseSong[];
-      title: string;
-    }> = [];
+    if (!details || !songs) return;
 
-    for (const song of album.song) {
-      const discTitle = album.discTitles?.find(x => x.disc === song.discNumber);
+    const result: Array<{ number: number; songIds: string[]; title: string }> =
+      [];
+
+    for (const song of songs) {
+      const discTitle = details.discTitles?.find(
+        x => x.disc === song.discNumber,
+      );
       const discNumber = song.discNumber ?? 1;
 
       const disc = (result[discNumber - 1] ??= {
         number: discNumber,
-        songs: [],
+        songIds: [],
         title: discTitle?.title ?? '',
       });
 
-      disc.songs.push(song);
+      disc.songIds.push(song.id);
     }
 
     return result;
-  }, [album.discTitles, album.song]);
+  }, [details, songs]);
+
+  function renderAlbumInfo(
+    children: (albumInfo: AlbumInfo) => React.ReactNode,
+    fallback: React.ReactElement = <></>,
+  ) {
+    return (
+      <StoreConsumer selector={state => state.albums.infoById.get(albumId)}>
+        {albumInfo =>
+          albumInfo ? (
+            children(albumInfo)
+          ) : deferredAlbumInfo ? (
+            <Await fallback={fallback} promise={deferredAlbumInfo}>
+              {info => children(info)}
+            </Await>
+          ) : (
+            fallback
+          )
+        }
+      </StoreConsumer>
+    );
+  }
 
   return (
-    <article>
+    <>
       <MediaHeader
-        coverArt={album.coverArt}
-        credentials={credentials}
-        links={
-          <Await fallback={<MediaLinks skeleton />} promise={deferredAlbumInfo}>
-            {info => (
-              <MediaLinks
-                lastFmUrl={info.lastFmUrl}
-                musicBrainzUrl={
-                  info.musicBrainzId
-                    ? `https://musicbrainz.org/release/${info.musicBrainzId}`
-                    : undefined
-                }
-              />
-            )}
-          </Await>
-        }
+        coverArt={base?.coverArt}
+        links={renderAlbumInfo(
+          albumInfo => (
+            <MediaLinks
+              lastFmUrl={albumInfo.lastFmUrl}
+              musicBrainzUrl={
+                albumInfo.musicBrainzId
+                  ? `https://musicbrainz.org/release/${albumInfo.musicBrainzId}`
+                  : undefined
+              }
+            />
+          ),
+          <MediaLinks skeleton />,
+        )}
       >
         <div className="space-y-2">
           <div>
             <div className="text-sm uppercase text-muted-foreground">Album</div>
 
             <H1>
-              {album.name}
-              <StarButton
-                className="ms-2"
-                albumId={album.id}
-                starred={album.starred}
-              />
+              {base ? (
+                <>
+                  {base.name}
+                  <StarButton
+                    className="ms-2"
+                    albumId={base.id}
+                    starred={base.starred}
+                  />
+                </>
+              ) : (
+                <Skeleton className="w-64" />
+              )}
             </H1>
 
             <div className="text-muted-foreground">
-              {year != null && <>{year} &ndash; </>}
-              <Link
-                params={{ artistId: album.artistId }}
-                to="/artist/$artistId"
-              >
-                {album.artist}
-              </Link>{' '}
-              &ndash; {formatDuration(album.duration)}
+              {base ? (
+                <>
+                  {base.year != null && <>{base.year} &ndash; </>}
+                  <Link
+                    params={{ artistId: base.artistId }}
+                    to="/artist/$artistId"
+                  >
+                    {base.artist}
+                  </Link>{' '}
+                  &ndash; {formatDuration(base.duration)}
+                </>
+              ) : (
+                <Skeleton className="w-40" />
+              )}
             </div>
           </div>
 
-          <Await
-            fallback={<Prose as="p" skeleton />}
-            promise={deferredAlbumInfo}
-          >
-            {details => details.notes && <Prose as="p" html={details.notes} />}
-          </Await>
+          {renderAlbumInfo(
+            albumInfo =>
+              albumInfo.notes && <Prose as="p" html={albumInfo.notes} />,
+            <Prose as="p" skeleton />,
+          )}
         </div>
       </MediaHeader>
 
-      {discs.length > 1 ? (
+      {base == null || details == null || discs == null ? (
+        <SongList />
+      ) : discs.length > 1 ? (
         <div className="space-y-4">
           {discs.map(disc => (
-            <div key={disc.number} className="space-y-2">
-              <h2 className="text-md font-semibold text-muted-foreground">
+            <div key={disc.number}>
+              <h2 className="text-md mb-2 font-semibold text-muted-foreground">
                 Disc {disc.number}
                 {disc.title && <> - {disc.title}</>}
               </h2>
 
               <SongList
-                credentials={credentials}
                 isAlbumView
-                isCompilation={album.isCompilation}
-                primaryArtist={album.artist}
+                isCompilation={details.isCompilation}
+                primaryArtist={base.artist}
                 selectedSongId={search.song}
-                songs={disc.songs}
-                songsToPlay={album.song}
+                songIds={disc.songIds}
+                songIdsToPlay={songIds}
               />
             </div>
           ))}
         </div>
       ) : (
         <SongList
-          credentials={credentials}
           isAlbumView
-          isCompilation={album.isCompilation}
-          primaryArtist={album.artist}
+          isCompilation={details.isCompilation}
+          primaryArtist={base.artist}
           selectedSongId={search.song}
-          songs={album.song}
+          songIds={songIds}
         />
       )}
-    </article>
+    </>
   );
 }

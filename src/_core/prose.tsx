@@ -19,11 +19,11 @@ export function Prose<
 
   if (skeleton) {
     return (
-      <Component className="space-y-2">
-        <Skeleton className="w-96" />
-        <Skeleton className="w-64" />
-        <Skeleton className="w-80" />
-        <Skeleton className="w-56" />
+      <Component>
+        <Skeleton className="w-56 sm:w-96" />
+        <Skeleton className="w-36 sm:w-64" />
+        <Skeleton className="w-48 sm:w-80" />
+        <Skeleton className="w-28 sm:w-56" />
       </Component>
     );
   }
