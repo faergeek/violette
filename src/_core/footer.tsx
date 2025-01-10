@@ -17,7 +17,7 @@ export function Footer() {
             rel="noopener"
             target="_blank"
           >
-            Copyright &copy; 2024
+            Copyright &copy; 2025
           </a>
           <address className="not-italic">
             <a

@@ -1,9 +1,12 @@
 import './index.css';
 
-import { createRouter, RouterProvider } from '@tanstack/react-router';
+import {
+  createRouter,
+  invariant,
+  RouterProvider,
+} from '@tanstack/react-router';
 import { lazy, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import invariant from 'tiny-invariant';
 
 import { routeTree } from './routeTree.gen';
 import { createAppStore } from './store/create';
@@ -17,11 +20,12 @@ const store = createAppStore();
 const router = createRouter({
   basepath: import.meta.env.BASE_URL,
   context: { store },
+  defaultPreload: 'intent',
   routeTree,
 });
 
 store.subscribe((state, prevState) => {
-  if (state.credentials === prevState.credentials) return;
+  if (state.auth.credentials === prevState.auth.credentials) return;
 
   router.invalidate();
 });

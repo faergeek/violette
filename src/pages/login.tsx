@@ -1,7 +1,7 @@
+import { invariant } from '@tanstack/react-router';
 import { CassetteTape, KeyRound } from 'lucide-react';
 import { useActionState } from 'react';
 import SparkMD5 from 'spark-md5';
-import invariant from 'tiny-invariant';
 import * as v from 'valibot';
 
 import { Button } from '../_core/button';
@@ -21,8 +21,7 @@ import { Label } from '../_core/label';
 import { SubsonicApiError } from '../_core/subsonicApiError';
 import { subsonicPing } from '../api/subsonic';
 import type { SubsonicCredentials, SubsonicError } from '../api/types';
-import { useStoreMutations, useStoreState } from '../store/react';
-import type { StoreMutations } from '../store/types';
+import { useAppStore } from '../store/react';
 
 const loginFormSchema = v.object({
   serverBaseUrl: v.string(),
@@ -30,20 +29,21 @@ const loginFormSchema = v.object({
   password: v.string(),
 });
 
-const loginFx = Fx.async(async function* f() {
+const loginFx = Fx.async(async function* f(
+  saveSubsonicCredentials: (credentials: SubsonicCredentials) => void,
+) {
   yield* subsonicPing();
 
-  const { credentials, mutations } = yield* Fx.ask<{
-    credentials: SubsonicCredentials;
-    mutations: StoreMutations;
-  }>();
+  const { credentials } = yield* Fx.ask<{ credentials: SubsonicCredentials }>();
 
-  mutations.saveSubsonicCredentials(credentials);
+  saveSubsonicCredentials(credentials);
   return Fx.Ok(null);
 });
 
-export function Login() {
-  const mutations = useStoreMutations();
+export function LoginPage() {
+  const saveSubsonicCredentials = useAppStore(
+    state => state.auth.saveSubsonicCredentials,
+  );
 
   const [error, loginAction, isLoginSubmitting] = useActionState<
     SubsonicError | null,
@@ -59,7 +59,7 @@ export function Login() {
       .map(b => b.toString(16))
       .join('');
 
-    return loginFx()
+    return loginFx(saveSubsonicCredentials)
       .runAsync({
         credentials: {
           salt,
@@ -67,12 +67,11 @@ export function Login() {
           token: SparkMD5.hash(password + salt),
           username,
         },
-        mutations,
       })
       .then(result => result.match({ Err: err => err, Ok: value => value }));
   }, null);
 
-  const credentials = useStoreState(state => state.credentials);
+  const credentials = useAppStore(state => state.auth.credentials);
 
   return (
     <div className="flex min-h-lvh flex-col">

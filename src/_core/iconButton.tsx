@@ -18,7 +18,7 @@ export function IconButton({
         'inline-flex items-center gap-2 rounded-md text-muted-foreground enabled:hover:text-secondary-foreground disabled:opacity-50',
         className,
       )}
-      type="button"
+      type={type}
       {...otherProps}
     >
       {cloneElement(icon, { className: cn('size-6', icon.props.className) })}

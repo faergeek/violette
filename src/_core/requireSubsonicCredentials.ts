@@ -3,13 +3,16 @@ import { redirect } from '@tanstack/react-router';
 
 import type { RouterContext } from './router';
 
-export function requireSubsonicCredentials(
-  { store }: RouterContext,
-  location: ParsedLocation,
-) {
+export function requireSubsonicCredentials({
+  context: { store },
+  location,
+}: {
+  context: RouterContext;
+  location: ParsedLocation;
+}) {
   const state = store.getState();
 
-  if (!state.credentials) {
+  if (!state.auth.credentials) {
     throw redirect({
       replace: true,
       search: { next: location.pathname + location.searchStr },
@@ -17,5 +20,5 @@ export function requireSubsonicCredentials(
     });
   }
 
-  return state.credentials;
+  return state.auth.credentials;
 }

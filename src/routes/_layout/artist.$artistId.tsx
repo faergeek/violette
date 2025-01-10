@@ -1,50 +1,80 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, invariant } from '@tanstack/react-router';
 import * as v from 'valibot';
 
-import { Fx } from '../../_core/fx';
 import { requireSubsonicCredentials } from '../../_core/requireSubsonicCredentials';
-import {
-  subsonicGetArtist,
-  subsonicGetArtistInfo,
-  subsonicGetTopSongs,
-} from '../../api/subsonic';
-import type { SubsonicCredentials } from '../../api/types';
 
-const loaderFx = Fx.async(async function* f(artistId: string) {
-  const { credentials } = yield* Fx.ask<{ credentials: SubsonicCredentials }>();
-  const artist = yield* subsonicGetArtist(artistId);
-
-  return Fx.Ok({
-    artist,
-    deferredArtistInfo: subsonicGetArtistInfo(artistId, {
-      includeNotPresent: true,
-    })
-      .runAsync({ credentials })
-      .then(result => result.assertOk()),
-    deferredTopSongs: subsonicGetTopSongs(artist.name)
-      .runAsync({
-        credentials,
-      })
-      .then(result => result.assertOk()),
-    credentials,
-  });
-});
+export enum ArtistTab {
+  Albums = 'albums',
+  SimilarArtists = 'similar-artists',
+  TopSongs = 'top-songs',
+}
 
 export const Route = createFileRoute('/_layout/artist/$artistId')({
   validateSearch: v.object({
-    tab: v.optional(
-      v.union([
-        v.literal('albums'),
-        v.literal('top-songs'),
-        v.literal('similar-artists'),
-      ]),
-    ),
+    tab: v.optional(v.enum(ArtistTab)),
   }),
-  async loader({ context, location, params: { artistId } }) {
-    const credentials = requireSubsonicCredentials(context, location);
+  beforeLoad: requireSubsonicCredentials,
+  async loader({ context: { store }, params: { artistId } }) {
+    const fetchOnePromise = store
+      .getState()
+      .artists.fetchOne(artistId)
+      .then(() => {
+        const state = store.getState();
+        const initialArtist = state.artists.byId.get(artistId);
+        invariant(initialArtist);
 
-    return loaderFx(artistId)
-      .runAsync({ credentials })
-      .then(result => result.assertOk());
+        return initialArtist;
+      });
+
+    const artistInfoPromise = store
+      .getState()
+      .artists.fetchArtistInfo(artistId, {
+        includeNotPresent: true,
+      });
+
+    const deferredArtistInfo = artistInfoPromise.then(() => {
+      const state = store.getState();
+      const artistInfo = state.artists.artistInfoById.get(artistId);
+      invariant(artistInfo);
+
+      return artistInfo;
+    });
+
+    const deferredSimilarArtists = artistInfoPromise.then(() => {
+      const state = store.getState();
+      const similarArtists = state.artists.similarArtistsById.get(artistId);
+      invariant(similarArtists);
+
+      return similarArtists;
+    });
+
+    const initialArtist =
+      store.getState().artists.byId.get(artistId) ?? (await fetchOnePromise);
+
+    await fetchOnePromise;
+    const { artists } = store.getState();
+
+    const initialAlbumIds = artists.albumIdsByArtistId.get(artistId);
+    invariant(initialAlbumIds);
+
+    const deferredTopSongIds = artists
+      .fetchTopSongs(initialArtist.name)
+      .then(() => {
+        const state = store.getState();
+        const topSongIds = state.artists.topSongIdsByArtistName.get(
+          initialArtist.name,
+        );
+        invariant(topSongIds);
+
+        return topSongIds;
+      });
+
+    return {
+      deferredArtistInfo,
+      deferredSimilarArtists,
+      deferredTopSongIds,
+      initialAlbumIds,
+      initialArtist,
+    };
   },
 });

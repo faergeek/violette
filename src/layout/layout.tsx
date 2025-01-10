@@ -5,10 +5,12 @@ import { Button } from '../_core/button';
 import { Container } from '../_core/container';
 import { Footer } from '../_core/footer';
 import { NowPlaying } from '../_core/nowPlaying';
-import { useStoreMutations } from '../store/react';
+import { useAppStore } from '../store/react';
 
 export function Layout() {
-  const mutations = useStoreMutations();
+  const clearSubsonicCredentials = useAppStore(
+    state => state.auth.clearSubsonicCredentials,
+  );
 
   return (
     <div className="relative flex min-h-lvh flex-col">
@@ -23,7 +25,7 @@ export function Layout() {
             className="ms-auto"
             onSubmit={event => {
               event.preventDefault();
-              mutations.clearSubsonicCredentials();
+              clearSubsonicCredentials();
             }}
           >
             <Button variant="link" type="submit">

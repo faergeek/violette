@@ -2,14 +2,17 @@ import * as v from 'valibot';
 
 import { Fx } from '../_core/fx';
 import type {
+  StarParams,
   SubsonicCredentials,
   SubsonicError,
   SubsonicRequest,
 } from './types';
 import {
+  Album,
+  AlbumInfo,
+  ArtistInfo,
   BaseAlbum,
   BaseArtist,
-  BaseSong,
   Song,
   SubsonicResponseJsonFailed,
   SubsonicResponseJsonOk,
@@ -163,16 +166,7 @@ export const subsonicGetArtist = Fx.async(async function* f(id: string) {
   const json = yield* parseJsonResponse(response, {
     artist: v.object({
       ...BaseArtist.entries,
-      album: v.array(
-        v.object({
-          ...BaseAlbum.entries,
-          duration: v.number(),
-          musicBrainzId: v.optional(v.string()),
-          songCount: v.number(),
-        }),
-      ),
-      albumCount: v.number(),
-      musicBrainzId: v.optional(v.string()),
+      album: v.array(BaseAlbum),
     }),
   });
 
@@ -189,7 +183,7 @@ export const subsonicGetArtistInfo = Fx.async(async function* f(
   }: {
     count?: number;
     includeNotPresent?: boolean;
-  },
+  } = {},
 ) {
   const response = yield* makeSubsonicRequest({
     method: 'rest/getArtistInfo2',
@@ -199,26 +193,7 @@ export const subsonicGetArtistInfo = Fx.async(async function* f(
   });
 
   const json = yield* parseJsonResponse(response, {
-    artistInfo2: v.object({
-      biography: v.optional(v.string()),
-      lastFmUrl: v.optional(v.string()),
-      musicBrainzId: v.optional(v.string()),
-      similarArtist: v.optional(
-        v.array(
-          v.object({
-            coverArt: v.pipe(
-              v.optional(v.string()),
-              v.transform(s => (s === 'ar--1_0' ? undefined : s)),
-            ),
-            id: v.pipe(
-              v.optional(v.string()),
-              v.transform(s => (s === '-1' ? undefined : s)),
-            ),
-            name: v.string(),
-          }),
-        ),
-      ),
-    }),
+    artistInfo2: ArtistInfo,
   });
 
   const result = yield* handleJsonResponse(json['subsonic-response']);
@@ -229,54 +204,19 @@ export const subsonicGetArtistInfo = Fx.async(async function* f(
 export const subsonicGetAlbum = Fx.async(async function* f(id: string) {
   const response = yield* makeSubsonicRequest({ method: 'rest/getAlbum', id });
 
-  const json = yield* parseJsonResponse(response, {
-    album: v.object({
-      ...BaseAlbum.entries,
-      artist: v.string(),
-      artistId: v.string(),
-      created: v.string(),
-      discTitles: v.optional(
-        v.array(
-          v.object({
-            disc: v.number(),
-            title: v.string(),
-          }),
-        ),
-      ),
-      duration: v.number(),
-      genre: v.optional(v.string()),
-      genres: v.optional(
-        v.array(
-          v.object({
-            name: v.string(),
-          }),
-        ),
-      ),
-      isCompilation: v.optional(v.boolean()),
-      musicBrainzId: v.optional(v.string()),
-      originalReleaseDate: v.optional(
-        v.object({
-          day: v.optional(v.number()),
-          month: v.optional(v.number()),
-          year: v.optional(v.number()),
-        }),
-      ),
-      releaseDate: v.optional(
-        v.object({
-          day: v.optional(v.number()),
-          month: v.optional(v.number()),
-          year: v.optional(v.number()),
-        }),
-      ),
-      song: v.array(Song),
-      songCount: v.number(),
-      userRating: v.optional(v.number()),
-    }),
-  });
-
+  const json = yield* parseJsonResponse(response, { album: Album });
   const result = yield* handleJsonResponse(json['subsonic-response']);
 
   return Fx.Ok(result.album);
+});
+
+export const subsonicGetSong = Fx.async(async function* f(id: string) {
+  const response = yield* makeSubsonicRequest({ method: 'rest/getSong', id });
+
+  const json = yield* parseJsonResponse(response, { song: Song });
+  const result = yield* handleJsonResponse(json['subsonic-response']);
+
+  return Fx.Ok(result.song);
 });
 
 export const subsonicGetAlbumInfo = Fx.async(async function* f(id: string) {
@@ -285,14 +225,7 @@ export const subsonicGetAlbumInfo = Fx.async(async function* f(id: string) {
     id,
   });
 
-  const json = yield* parseJsonResponse(response, {
-    albumInfo: v.object({
-      lastFmUrl: v.optional(v.string()),
-      musicBrainzId: v.optional(v.string()),
-      notes: v.optional(v.string()),
-    }),
-  });
-
+  const json = yield* parseJsonResponse(response, { albumInfo: AlbumInfo });
   const result = yield* handleJsonResponse(json['subsonic-response']);
 
   return Fx.Ok(result.albumInfo);
@@ -323,7 +256,7 @@ const PlayQueue = v.object({
   changed: v.string(),
   changedBy: v.string(),
   current: v.optional(v.string()),
-  entry: v.array(BaseSong),
+  entry: v.array(Song),
   position: v.optional(v.number()),
   username: v.string(),
 });
@@ -400,11 +333,7 @@ export const subsonicStar = Fx.async(async function* f({
   albumId,
   artistId,
   id,
-}: {
-  albumId?: string;
-  artistId?: string;
-  id?: string;
-} = {}) {
+}: StarParams) {
   const response = yield* makeSubsonicRequest({
     method: 'rest/star',
     albumId,
@@ -422,11 +351,7 @@ export const subsonicUnstar = Fx.async(async function* f({
   albumId,
   artistId,
   id,
-}: {
-  albumId?: string;
-  artistId?: string;
-  id?: string;
-} = {}) {
+}: StarParams) {
   const response = yield* makeSubsonicRequest({
     method: 'rest/unstar',
     albumId,
