@@ -3,7 +3,7 @@ import { cloneElement, useRef } from 'react';
 
 import { AlbumCard } from '../_core/albumCard';
 import { ArtistCard } from '../_core/artistCard';
-import { CardGrid } from '../_core/cardGrid';
+import { CARD_GRID_COVER_ART_SIZES, CardGrid } from '../_core/cardGrid';
 import { EmptyState } from '../_core/emptyState';
 import { H1 } from '../_core/headings';
 import { MediaHeader } from '../_core/mediaHeader';
@@ -273,7 +273,13 @@ export function ArtistPage({
                 ? albumIds
                     .toReversed()
                     .slice(0, 6)
-                    .map(id => <AlbumCard key={id} id={id} />)
+                    .map(id => (
+                      <AlbumCard
+                        key={id}
+                        coverArtSizes={CARD_GRID_COVER_ART_SIZES}
+                        id={id}
+                      />
+                    ))
                 : new Array<null>(6)
                     .fill(null)
                     .map((_, i) => <AlbumCard key={i} />)}
@@ -299,7 +305,15 @@ export function ArtistPage({
         <TabsContent value={ArtistTab.Albums}>
           <CardGrid>
             {albumIds
-              ? albumIds.toReversed().map(id => <AlbumCard key={id} id={id} />)
+              ? albumIds
+                  .toReversed()
+                  .map(id => (
+                    <AlbumCard
+                      key={id}
+                      coverArtSizes={CARD_GRID_COVER_ART_SIZES}
+                      id={id}
+                    />
+                  ))
               : new Array<null>(12)
                   .fill(null)
                   .map((_, i) => <AlbumCard key={i} />)}
@@ -318,7 +332,11 @@ export function ArtistPage({
                       .map(x => (x.present ? x.id : null))
                       .filter(similarArtist => similarArtist != null)
                       .map(id => (
-                        <ArtistCard key={id} id={id} />
+                        <ArtistCard
+                          key={id}
+                          coverArtSizes={CARD_GRID_COVER_ART_SIZES}
+                          id={id}
+                        />
                       ))}
                   </CardGrid>
 

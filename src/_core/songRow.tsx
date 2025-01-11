@@ -95,7 +95,7 @@ export function SongRow({
                       'opacity-25': isCurrentInPlayer,
                     })}
                     coverArt={song.coverArt}
-                    size={96}
+                    sizes="3em"
                   />
                 )}
               </StoreConsumer>

@@ -5,7 +5,13 @@ import { useAppStore } from '../store/react';
 import { CoverArt } from './coverArt';
 import { Skeleton } from './skeleton';
 
-export function ArtistCard({ id }: { id?: string }) {
+export function ArtistCard({
+  coverArtSizes,
+  id,
+}: {
+  coverArtSizes?: string;
+  id?: string;
+}) {
   const artist = useAppStore(state =>
     id == null ? undefined : state.artists.byId.get(id),
   );
@@ -22,15 +28,11 @@ export function ArtistCard({ id }: { id?: string }) {
           className: 'block space-y-1',
           children: (
             <>
-              {artist == null ? (
-                <CoverArt className="size-40" />
-              ) : (
-                <CoverArt
-                  className="aspect-square"
-                  coverArt={artist.coverArt}
-                  size={400}
-                />
-              )}
+              <CoverArt
+                className="aspect-square w-full"
+                coverArt={artist?.coverArt}
+                sizes={coverArtSizes}
+              />
 
               <h2 className="text-balance font-bold leading-tight">
                 {artist == null ? <Skeleton className="w-24" /> : artist.name}

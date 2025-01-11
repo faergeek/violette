@@ -5,7 +5,13 @@ import { useAppStore } from '../store/react';
 import { CoverArt } from './coverArt';
 import { Skeleton } from './skeleton';
 
-export function AlbumCard({ id }: { id?: string }) {
+export function AlbumCard({
+  coverArtSizes,
+  id,
+}: {
+  coverArtSizes?: string;
+  id?: string;
+}) {
   const album = useAppStore(state =>
     id == null ? undefined : state.albums.baseById.get(id),
   );
@@ -25,9 +31,9 @@ export function AlbumCard({ id }: { id?: string }) {
         {},
         <>
           <CoverArt
-            className="aspect-square"
+            className="aspect-square w-full"
             coverArt={album?.coverArt}
-            size={400}
+            sizes={coverArtSizes}
           />
 
           <h2 className="text-balance font-bold leading-tight">

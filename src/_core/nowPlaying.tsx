@@ -119,7 +119,7 @@ export function NowPlaying() {
                 <CoverArt
                   className="size-16 rounded-none"
                   coverArt={song.coverArt}
-                  size={128}
+                  sizes="4em"
                 />
               </Link>
             ) : (
@@ -288,7 +288,7 @@ export function NowPlaying() {
                 <CoverArt
                   className="size-12"
                   coverArt={song.coverArt}
-                  size={96}
+                  sizes="3em"
                 />
               </Link>
             ) : (

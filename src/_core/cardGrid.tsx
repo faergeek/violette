@@ -3,6 +3,9 @@ import { createElement } from 'react';
 
 import { cn } from './cn';
 
+export const CARD_GRID_COVER_ART_SIZES =
+  '(max-width: 639px) calc(50vw - 22px), (max-width: 767px) 143px, (max-width: 1023px) 137.6px, (max-width: 1279px) 155.333px, (max-width: 1535px) 168px, 177.5px';
+
 export function CardGrid<
   T extends
     | keyof JSX.IntrinsicElements

@@ -1,7 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 
 import { ArtistCard } from '../../_core/artistCard';
-import { CardGrid } from '../../_core/cardGrid';
+import { CARD_GRID_COVER_ART_SIZES, CardGrid } from '../../_core/cardGrid';
 import { useAppStore } from '../../store/react';
 
 export const Route = createLazyFileRoute('/_layout/')({
@@ -24,7 +24,11 @@ export const Route = createLazyFileRoute('/_layout/')({
     return (
       <CardGrid>
         {listIds.map(id => (
-          <ArtistCard key={id} id={id} />
+          <ArtistCard
+            key={id}
+            coverArtSizes={CARD_GRID_COVER_ART_SIZES}
+            id={id}
+          />
         ))}
       </CardGrid>
     );
