@@ -1,21 +1,12 @@
 {
+  "extends": ["./tsconfig.base.json"],
   "include": ["./*"],
   "references": [{ "path": "./src" }],
   "compilerOptions": {
-    "composite": true,
-    "emitDeclarationOnly": true,
-    "isolatedModules": true,
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "noErrorTruncation": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noEmit": true,
     "outDir": "./node_modules/.cache/tsc-out/root",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "esnext"
+    "skipLibCheck": true
   }
 }

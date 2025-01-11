@@ -1,6 +1,8 @@
 import { createFileRoute, invariant } from '@tanstack/react-router';
 import * as v from 'valibot';
 
+import { preloadCoverArt } from '../../_core/coverArt';
+import { MEDIA_HEADER_COVER_ART_SIZES } from '../../_core/mediaHeader';
 import { requireSubsonicCredentials } from '../../_core/requireSubsonicCredentials';
 
 export enum ArtistTab {
@@ -50,6 +52,14 @@ export const Route = createFileRoute('/_layout/artist/$artistId')({
 
     const initialArtist =
       store.getState().artists.byId.get(artistId) ?? (await fetchOnePromise);
+
+    const { credentials } = store.getState().auth;
+    invariant(credentials);
+    preloadCoverArt({
+      coverArt: initialArtist.coverArt,
+      credentials,
+      sizes: MEDIA_HEADER_COVER_ART_SIZES,
+    });
 
     await fetchOnePromise;
     const { artists } = store.getState();

@@ -1,65 +1,117 @@
 import { useEffect, useState } from 'react';
 
 import { subsonicGetCoverArtUrl } from '../api/subsonic';
+import type { SubsonicCredentials } from '../api/types';
 import { useAppStore } from '../store/react';
 import { cn } from './cn';
 import { Skeleton } from './skeleton';
 
+function createCoverArtSrcSet({
+  coverArt,
+  credentials,
+}: {
+  coverArt: string;
+  credentials: SubsonicCredentials;
+}) {
+  return Array.from(
+    new Set(
+      [48, 64, 100, 143, 200].flatMap(w =>
+        [1, 1.5, 2, 2.5, 3, 3.5, 4].map(x => w * x),
+      ),
+    ),
+  )
+    .sort((a, b) => a - b)
+    .map(w =>
+      [
+        subsonicGetCoverArtUrl(credentials, coverArt, { size: w }),
+        w != null ? `${w}w` : undefined,
+      ]
+        .filter(Boolean)
+        .join(' '),
+    )
+    .join(',');
+}
+
+export function preloadCoverArt({
+  coverArt,
+  credentials,
+  sizes,
+}: {
+  coverArt: string;
+  credentials: SubsonicCredentials;
+  sizes?: string;
+}) {
+  const img = new Image();
+  if (sizes != null) img.sizes = sizes;
+  img.srcset = createCoverArtSrcSet({ coverArt, credentials });
+}
+
 export function CoverArt({
   className,
   coverArt,
-  size,
+  sizes,
   ...otherProps
 }: Omit<React.ComponentProps<'img'>, 'src'> & {
   coverArt?: string;
-  size?: number;
 }) {
   const credentials = useAppStore(state => state.auth.credentials);
-  const [isReady, setIsReady] = useState(false);
-
-  const src =
-    coverArt == null || credentials == null
-      ? undefined
-      : subsonicGetCoverArtUrl(credentials, coverArt, { size });
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [src, setSrc] = useState<string>();
 
   useEffect(() => {
-    if (!src) return;
+    if (coverArt == null || credentials == null || !shouldLoad) return;
 
+    const srcSet = createCoverArtSrcSet({ coverArt, credentials });
     const img = new Image();
-    img.src = src;
-
     const controller = new AbortController();
+    const signal = controller.signal;
 
     img.addEventListener(
       'load',
       () => {
-        setIsReady(true);
-        controller.abort();
+        setSrc(img.currentSrc);
       },
-      { once: true, signal: controller.signal },
+      { signal },
     );
 
+    let retryTimeout: ReturnType<typeof setTimeout> | undefined;
     img.addEventListener(
       'error',
       () => {
-        const timeout = setTimeout(() => {
-          img.src = src;
-        }, 3000);
-
-        controller.signal.addEventListener(
-          'abort',
-          () => clearTimeout(timeout),
-          { once: true, signal: controller.signal },
-        );
+        retryTimeout = setTimeout(() => {
+          img.srcset = srcSet;
+        }, 1000);
       },
-      { signal: controller.signal },
+      { signal },
     );
 
-    return () => controller.abort();
-  }, [src]);
+    if (sizes != null) img.sizes = sizes;
 
-  return src == null || !isReady ? (
-    <Skeleton className={cn('my-0 aspect-square h-auto w-full', className)} />
+    img.decoding = 'async';
+    img.srcset = srcSet;
+
+    return () => {
+      img.srcset = '';
+      controller.abort();
+      clearTimeout(retryTimeout);
+    };
+  }, [coverArt, credentials, shouldLoad, sizes]);
+
+  return src == null ? (
+    <Skeleton
+      ref={skeleton => {
+        if (!skeleton) return;
+
+        const observer = new IntersectionObserver(entries => {
+          setShouldLoad(entries.some(entry => entry.isIntersecting));
+        });
+
+        observer.observe(skeleton);
+
+        return () => observer.unobserve(skeleton);
+      }}
+      className={cn('my-0 aspect-square h-auto w-full', className)}
+    />
   ) : (
     <img
       alt=""
@@ -67,12 +119,12 @@ export function CoverArt({
       loading="lazy"
       {...otherProps}
       className={cn(
-        'rounded-md border-none bg-background object-cover shadow-lg',
+        'rounded-md border-none bg-muted bg-cover bg-center object-contain bg-blend-multiply shadow-lg [background-image:_var(--coverArtUrl)]',
         className,
       )}
+      sizes={sizes}
       src={src}
-      width={size}
-      height={size}
+      style={{ ['--coverArtUrl' as string]: `url(${src})` }}
     />
   );
 }

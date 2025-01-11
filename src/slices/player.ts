@@ -44,6 +44,7 @@ export interface PlayerSlice {
   goToNextSong: () => void;
   goToPrevSong: () => void;
   init(credentials: SubsonicCredentials): Promise<void>;
+  isInitialized: boolean;
   muted: boolean;
   paused: boolean;
   queuedSongIds: string[];
@@ -420,7 +421,7 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
     goToNextSong,
     goToPrevSong,
     async init(credentials) {
-      if (!credentials) return;
+      if (!credentials || get().player.isInitialized) return;
 
       const playQueue = await subsonicGetPlayQueue()
         .runAsync({ credentials })
@@ -440,32 +441,22 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
         setCurrentTime((playQueue?.position ?? 0) / 1000);
       }
 
-      const queuedSongIds = playQueue?.entry.map(song => song.id) ?? [];
-
-      const songsById = playQueue?.entry
-        ? mergeIntoMap(get().songs.byId, playQueue.entry, x => x.id)
-        : get().songs.byId;
-
-      if (
-        currentSongId === get().player.currentSongId &&
-        deepEqual(queuedSongIds, get().player.queuedSongIds) &&
-        songsById === get().songs.byId
-      ) {
-        return;
-      }
-
       set(prevState => ({
         player: {
           ...prevState.player,
           currentSongId,
-          queuedSongIds,
+          isInitialized: true,
+          queuedSongIds: playQueue?.entry.map(song => song.id) ?? [],
         },
         songs: {
           ...prevState.songs,
-          byId: songsById,
+          byId: playQueue?.entry
+            ? mergeIntoMap(get().songs.byId, playQueue.entry, x => x.id)
+            : get().songs.byId,
         },
       }));
     },
+    isInitialized: false,
     muted: false,
     paused: true,
     queuedSongIds: [],

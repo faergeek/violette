@@ -1,6 +1,8 @@
 import { createFileRoute, invariant } from '@tanstack/react-router';
 import * as v from 'valibot';
 
+import { preloadCoverArt } from '../../_core/coverArt';
+import { MEDIA_HEADER_COVER_ART_SIZES } from '../../_core/mediaHeader';
 import { requireSubsonicCredentials } from '../../_core/requireSubsonicCredentials';
 
 export const Route = createFileRoute('/_layout/album/$albumId')({
@@ -22,11 +24,19 @@ export const Route = createFileRoute('/_layout/album/$albumId')({
       return base;
     });
 
-    const base = store.getState().albums.baseById.get(albumId);
+    let base = store.getState().albums.baseById.get(albumId);
 
     if (!base) {
-      await basePromise;
+      base = await basePromise;
     }
+
+    const { credentials } = store.getState().auth;
+    invariant(credentials);
+    preloadCoverArt({
+      coverArt: base.coverArt,
+      credentials,
+      sizes: MEDIA_HEADER_COVER_ART_SIZES,
+    });
 
     return {
       deferredAlbumInfo: store

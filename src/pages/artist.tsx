@@ -1,9 +1,9 @@
 import { Await, Link } from '@tanstack/react-router';
-import { cloneElement } from 'react';
+import { cloneElement, useRef } from 'react';
 
 import { AlbumCard } from '../_core/albumCard';
 import { ArtistCard } from '../_core/artistCard';
-import { CardGrid } from '../_core/cardGrid';
+import { CARD_GRID_COVER_ART_SIZES, CardGrid } from '../_core/cardGrid';
 import { EmptyState } from '../_core/emptyState';
 import { H1 } from '../_core/headings';
 import { MediaHeader } from '../_core/mediaHeader';
@@ -38,6 +38,8 @@ export function ArtistPage({
   const artist = useAppStore(
     state => state.artists.byId.get(params.artistId) ?? initialArtist,
   );
+
+  const tabsListRef = useRef<HTMLDivElement | null>(null);
 
   function renderArtistInfo(
     children: (
@@ -187,9 +189,9 @@ export function ArtistPage({
       </MediaHeader>
 
       <Tabs value={search.tab ?? ''}>
-        <TabsList>
+        <TabsList ref={tabsListRef}>
           <TabsTrigger asChild value="">
-            <Link params={params} to="/artist/$artistId">
+            <Link params={params} resetScroll={false} to="/artist/$artistId">
               Main
             </Link>
           </TabsTrigger>
@@ -197,6 +199,7 @@ export function ArtistPage({
           <TabsTrigger asChild value={ArtistTab.TopSongs}>
             <Link
               params={params}
+              resetScroll={false}
               search={{ tab: ArtistTab.TopSongs }}
               to="/artist/$artistId"
             >
@@ -207,6 +210,7 @@ export function ArtistPage({
           <TabsTrigger asChild value={ArtistTab.Albums}>
             <Link
               params={params}
+              resetScroll={false}
               search={{ tab: ArtistTab.Albums }}
               to="/artist/$artistId"
             >
@@ -217,6 +221,7 @@ export function ArtistPage({
           <TabsTrigger asChild value={ArtistTab.SimilarArtists}>
             <Link
               params={params}
+              resetScroll={false}
               search={{ tab: ArtistTab.SimilarArtists }}
               to="/artist/$artistId"
             >
@@ -226,28 +231,21 @@ export function ArtistPage({
         </TabsList>
 
         <TabsContent className="space-y-4" value="">
-          <section>
-            <h2 className="mb-2 text-lg font-bold">
-              <Link
-                params={params}
-                search={{ tab: ArtistTab.TopSongs }}
-                to="/artist/$artistId"
-              >
-                Top songs
-              </Link>
-            </h2>
-
-            {renderTopSongs(
-              data => (
-                <SongList
-                  primaryArtist={data.artist.name}
-                  songIds={data.topSongIds.slice(0, 5)}
-                  songIdsToPlay={data.topSongIds}
-                />
+          {renderTopSongs(
+            data =>
+              data.topSongIds.length !== 0 && (
+                <TopSongsSection params={params}>
+                  <SongList
+                    primaryArtist={data.artist.name}
+                    songIds={data.topSongIds.slice(0, 5)}
+                    songIdsToPlay={data.topSongIds}
+                  />
+                </TopSongsSection>
               ),
-              <SongList />,
-            )}
-          </section>
+            <TopSongsSection params={params}>
+              <SongList />
+            </TopSongsSection>,
+          )}
 
           <section>
             <h2 className="mb-2 text-lg font-bold">
@@ -255,8 +253,12 @@ export function ArtistPage({
                 artist ? (
                   <Link
                     params={{ artistId: artist.id }}
+                    resetScroll={false}
                     search={{ tab: ArtistTab.Albums }}
                     to="/artist/$artistId"
+                    onClick={() => {
+                      tabsListRef.current?.scrollIntoView({ block: 'nearest' });
+                    }}
                   />
                 ) : (
                   <span />
@@ -271,7 +273,13 @@ export function ArtistPage({
                 ? albumIds
                     .toReversed()
                     .slice(0, 6)
-                    .map(id => <AlbumCard key={id} id={id} />)
+                    .map(id => (
+                      <AlbumCard
+                        key={id}
+                        coverArtSizes={CARD_GRID_COVER_ART_SIZES}
+                        id={id}
+                      />
+                    ))
                 : new Array<null>(6)
                     .fill(null)
                     .map((_, i) => <AlbumCard key={i} />)}
@@ -281,12 +289,15 @@ export function ArtistPage({
 
         <TabsContent value={ArtistTab.TopSongs}>
           {renderTopSongs(
-            data => (
-              <SongList
-                primaryArtist={data.artist.name}
-                songIds={data.topSongIds}
-              />
-            ),
+            data =>
+              data.topSongIds.length === 0 ? (
+                <EmptyState message="No top songs" />
+              ) : (
+                <SongList
+                  primaryArtist={data.artist.name}
+                  songIds={data.topSongIds}
+                />
+              ),
             <SongList />,
           )}
         </TabsContent>
@@ -294,7 +305,15 @@ export function ArtistPage({
         <TabsContent value={ArtistTab.Albums}>
           <CardGrid>
             {albumIds
-              ? albumIds.toReversed().map(id => <AlbumCard key={id} id={id} />)
+              ? albumIds
+                  .toReversed()
+                  .map(id => (
+                    <AlbumCard
+                      key={id}
+                      coverArtSizes={CARD_GRID_COVER_ART_SIZES}
+                      id={id}
+                    />
+                  ))
               : new Array<null>(12)
                   .fill(null)
                   .map((_, i) => <AlbumCard key={i} />)}
@@ -313,7 +332,11 @@ export function ArtistPage({
                       .map(x => (x.present ? x.id : null))
                       .filter(similarArtist => similarArtist != null)
                       .map(id => (
-                        <ArtistCard key={id} id={id} />
+                        <ArtistCard
+                          key={id}
+                          coverArtSizes={CARD_GRID_COVER_ART_SIZES}
+                          id={id}
+                        />
                       ))}
                   </CardGrid>
 
@@ -336,5 +359,32 @@ export function ArtistPage({
         </TabsContent>
       </Tabs>
     </>
+  );
+}
+
+function TopSongsSection({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: {
+    artistId: string;
+  };
+}) {
+  return (
+    <section>
+      <h2 className="mb-2 text-lg font-bold">
+        <Link
+          params={params}
+          resetScroll={false}
+          search={{ tab: ArtistTab.TopSongs }}
+          to="/artist/$artistId"
+        >
+          Top songs
+        </Link>
+      </h2>
+
+      {children}
+    </section>
   );
 }

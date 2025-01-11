@@ -167,11 +167,10 @@ export const artistsSlice: StateCreator<StoreState, [], [], ArtistsSlice> = (
     const { auth } = get();
     invariant(auth.credentials);
 
-    const songs = await subsonicGetTopSongs(artistName)
-      .runAsync({ credentials: auth.credentials })
-      .then(result => result.assertOk());
-
-    if (!songs) return;
+    const songs =
+      (await subsonicGetTopSongs(artistName)
+        .runAsync({ credentials: auth.credentials })
+        .then(result => result.assertOk())) ?? [];
 
     const topSongIdsByArtistName = mergeIntoMap(
       get().artists.topSongIdsByArtistName,
