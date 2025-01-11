@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react-swc';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -13,5 +12,4 @@ export default defineConfig({
     devSourcemap: true,
   },
   plugins: [TanStackRouterVite(), react(), visualizer({ emitFile: true })],
-  test: {},
 });
