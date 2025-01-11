@@ -1,5 +1,5 @@
 import { Await, Link } from '@tanstack/react-router';
-import { cloneElement } from 'react';
+import { cloneElement, useRef } from 'react';
 
 import { AlbumCard } from '../_core/albumCard';
 import { ArtistCard } from '../_core/artistCard';
@@ -38,6 +38,8 @@ export function ArtistPage({
   const artist = useAppStore(
     state => state.artists.byId.get(params.artistId) ?? initialArtist,
   );
+
+  const tabsListRef = useRef<HTMLDivElement | null>(null);
 
   function renderArtistInfo(
     children: (
@@ -187,9 +189,9 @@ export function ArtistPage({
       </MediaHeader>
 
       <Tabs value={search.tab ?? ''}>
-        <TabsList>
+        <TabsList ref={tabsListRef}>
           <TabsTrigger asChild value="">
-            <Link params={params} to="/artist/$artistId">
+            <Link params={params} resetScroll={false} to="/artist/$artistId">
               Main
             </Link>
           </TabsTrigger>
@@ -197,6 +199,7 @@ export function ArtistPage({
           <TabsTrigger asChild value={ArtistTab.TopSongs}>
             <Link
               params={params}
+              resetScroll={false}
               search={{ tab: ArtistTab.TopSongs }}
               to="/artist/$artistId"
             >
@@ -207,6 +210,7 @@ export function ArtistPage({
           <TabsTrigger asChild value={ArtistTab.Albums}>
             <Link
               params={params}
+              resetScroll={false}
               search={{ tab: ArtistTab.Albums }}
               to="/artist/$artistId"
             >
@@ -217,6 +221,7 @@ export function ArtistPage({
           <TabsTrigger asChild value={ArtistTab.SimilarArtists}>
             <Link
               params={params}
+              resetScroll={false}
               search={{ tab: ArtistTab.SimilarArtists }}
               to="/artist/$artistId"
             >
@@ -248,8 +253,12 @@ export function ArtistPage({
                 artist ? (
                   <Link
                     params={{ artistId: artist.id }}
+                    resetScroll={false}
                     search={{ tab: ArtistTab.Albums }}
                     to="/artist/$artistId"
+                    onClick={() => {
+                      tabsListRef.current?.scrollIntoView({ block: 'nearest' });
+                    }}
                   />
                 ) : (
                   <span />
@@ -349,6 +358,7 @@ function TopSongsSection({
       <h2 className="mb-2 text-lg font-bold">
         <Link
           params={params}
+          resetScroll={false}
           search={{ tab: ArtistTab.TopSongs }}
           to="/artist/$artistId"
         >
