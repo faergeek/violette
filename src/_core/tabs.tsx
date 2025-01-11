@@ -9,13 +9,15 @@ export function TabsList({
   ...otherProps
 }: React.ComponentProps<typeof List>) {
   return (
-    <List
-      className={cn(
-        'inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground',
-        className,
-      )}
-      {...otherProps}
-    />
+    <div className="overflow-auto">
+      <List
+        className={cn(
+          'inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground',
+          className,
+        )}
+        {...otherProps}
+      />
+    </div>
   );
 }
 
