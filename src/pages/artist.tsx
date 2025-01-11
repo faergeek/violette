@@ -226,28 +226,21 @@ export function ArtistPage({
         </TabsList>
 
         <TabsContent className="space-y-4" value="">
-          <section>
-            <h2 className="mb-2 text-lg font-bold">
-              <Link
-                params={params}
-                search={{ tab: ArtistTab.TopSongs }}
-                to="/artist/$artistId"
-              >
-                Top songs
-              </Link>
-            </h2>
-
-            {renderTopSongs(
-              data => (
-                <SongList
-                  primaryArtist={data.artist.name}
-                  songIds={data.topSongIds.slice(0, 5)}
-                  songIdsToPlay={data.topSongIds}
-                />
+          {renderTopSongs(
+            data =>
+              data.topSongIds.length !== 0 && (
+                <TopSongsSection params={params}>
+                  <SongList
+                    primaryArtist={data.artist.name}
+                    songIds={data.topSongIds.slice(0, 5)}
+                    songIdsToPlay={data.topSongIds}
+                  />
+                </TopSongsSection>
               ),
-              <SongList />,
-            )}
-          </section>
+            <TopSongsSection params={params}>
+              <SongList />
+            </TopSongsSection>,
+          )}
 
           <section>
             <h2 className="mb-2 text-lg font-bold">
@@ -281,12 +274,15 @@ export function ArtistPage({
 
         <TabsContent value={ArtistTab.TopSongs}>
           {renderTopSongs(
-            data => (
-              <SongList
-                primaryArtist={data.artist.name}
-                songIds={data.topSongIds}
-              />
-            ),
+            data =>
+              data.topSongIds.length === 0 ? (
+                <EmptyState message="No top songs" />
+              ) : (
+                <SongList
+                  primaryArtist={data.artist.name}
+                  songIds={data.topSongIds}
+                />
+              ),
             <SongList />,
           )}
         </TabsContent>
@@ -336,5 +332,31 @@ export function ArtistPage({
         </TabsContent>
       </Tabs>
     </>
+  );
+}
+
+function TopSongsSection({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: {
+    artistId: string;
+  };
+}) {
+  return (
+    <section>
+      <h2 className="mb-2 text-lg font-bold">
+        <Link
+          params={params}
+          search={{ tab: ArtistTab.TopSongs }}
+          to="/artist/$artistId"
+        >
+          Top songs
+        </Link>
+      </h2>
+
+      {children}
+    </section>
   );
 }
