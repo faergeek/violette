@@ -72,20 +72,28 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
   const audio = new Audio();
   audio.crossOrigin = 'anonymous';
   let audioContext: AudioContext | undefined;
-  let gainValue: number | undefined;
-  let gainNode: GainNode | undefined;
+  let volumeNode: GainNode | undefined;
+  let replayGainValue: number | undefined;
+  let replayGainNode: GainNode | undefined;
 
   function play() {
     if (!audioContext) {
       audioContext = new AudioContext();
-      gainNode = audioContext.createGain();
+      replayGainNode = audioContext.createGain();
+      volumeNode = audioContext.createGain();
       audioContext
         .createMediaElementSource(audio)
-        .connect(gainNode)
+        .connect(replayGainNode)
+        .connect(volumeNode)
         .connect(audioContext.destination);
 
-      if (gainValue != null) {
-        gainNode.gain.setValueAtTime(gainValue, audioContext.currentTime);
+      volumeNode.gain.value = get().player.volume;
+
+      if (replayGainValue != null) {
+        replayGainNode.gain.setValueAtTime(
+          replayGainValue,
+          audioContext.currentTime,
+        );
       }
     }
 
@@ -250,16 +258,6 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
     saveCurrentTime();
   });
 
-  audio.addEventListener('volumechange', () => {
-    set(prevState => ({
-      player: {
-        ...prevState.player,
-        muted: audio.muted,
-        volume: audio.volume,
-      },
-    }));
-  });
-
   navigator.mediaSession.setActionHandler('play', play);
   navigator.mediaSession.setActionHandler('pause', pause);
 
@@ -372,13 +370,16 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
               [PreferredGain.Track]: trackPeak ?? albumPeak,
             }[player.replayGainOptions.preferredGain] ?? 1);
 
-      gainValue = Math.min(
+      replayGainValue = Math.min(
         10 ** ((gain + player.replayGainOptions.preAmp) / 20),
         1 / peak,
       );
 
-      if (audioContext && gainNode) {
-        gainNode.gain.setValueAtTime(gainValue, audioContext.currentTime);
+      if (audioContext && replayGainNode) {
+        replayGainNode.gain.setValueAtTime(
+          replayGainValue,
+          audioContext.currentTime,
+        );
       }
     }
 
@@ -491,21 +492,39 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
       );
     },
     setVolume(volume) {
-      audio.muted = false;
-      audio.volume = Math.max(
-        0,
-        Math.min(
-          typeof volume === 'function' ? volume(audio.volume) : volume,
-          1,
-        ),
-      );
+      set(prevState => ({
+        player: {
+          ...prevState.player,
+          volume: Math.max(
+            0,
+            Math.min(
+              typeof volume === 'function'
+                ? volume(prevState.player.volume)
+                : volume,
+              1,
+            ),
+          ),
+        },
+      }));
+
+      if (!volumeNode) return;
+      volumeNode.gain.value = get().player.volume;
     },
     startPlaying,
     toggleMuted() {
-      audio.muted = !audio.muted;
+      set(prevState => ({
+        player: {
+          ...prevState.player,
+          muted: !prevState.player.muted,
+          volume:
+            prevState.player.muted && prevState.player.volume === 0
+              ? 0.5
+              : prevState.player.volume,
+        },
+      }));
 
-      if (!audio.muted && audio.volume === 0) {
-        audio.volume = 0.5;
+      if (volumeNode) {
+        volumeNode.gain.value = get().player.muted ? 0 : get().player.volume;
       }
     },
     togglePaused(paused?: boolean) {
