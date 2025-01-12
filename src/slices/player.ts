@@ -75,27 +75,25 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
   let gainValue: number | undefined;
   let gainNode: GainNode | undefined;
 
-  function togglePaused(paused?: boolean) {
-    const { player } = get();
-    paused ??= !player.paused;
+  function play() {
+    if (!audioContext) {
+      audioContext = new AudioContext();
+      gainNode = audioContext.createGain();
+      audioContext
+        .createMediaElementSource(audio)
+        .connect(gainNode)
+        .connect(audioContext.destination);
 
-    if (paused) audio.pause();
-    else {
-      if (!audioContext) {
-        audioContext = new AudioContext();
-        gainNode = audioContext.createGain();
-        audioContext
-          .createMediaElementSource(audio)
-          .connect(gainNode)
-          .connect(audioContext.destination);
-
-        if (gainValue != null) {
-          gainNode.gain.setValueAtTime(gainValue, audioContext.currentTime);
-        }
+      if (gainValue != null) {
+        gainNode.gain.setValueAtTime(gainValue, audioContext.currentTime);
       }
-
-      audio.play();
     }
+
+    audio.play();
+  }
+
+  function pause() {
+    audio.pause();
   }
 
   async function startPlaying(
@@ -113,7 +111,7 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
       },
     }));
 
-    togglePaused(false);
+    play();
 
     await subsonicSavePlayQueue(queuedSongIds, songId)
       .runAsync({ credentials: auth.credentials })
@@ -181,7 +179,7 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
 
     if (player.currentTime > 3) {
       setCurrentTime(0);
-      togglePaused(false);
+      play();
     } else {
       const currentIndex = player.queuedSongIds.findIndex(
         id => id === player.currentSongId,
@@ -262,11 +260,11 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
     }));
   });
 
-  navigator.mediaSession.setActionHandler('play', () => togglePaused(false));
-  navigator.mediaSession.setActionHandler('pause', () => togglePaused(true));
+  navigator.mediaSession.setActionHandler('play', play);
+  navigator.mediaSession.setActionHandler('pause', pause);
 
   navigator.mediaSession.setActionHandler('stop', () => {
-    togglePaused(true);
+    pause();
     setCurrentTime(0);
   });
 
@@ -510,7 +508,13 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
         audio.volume = 0.5;
       }
     },
-    togglePaused,
+    togglePaused(paused?: boolean) {
+      const { player } = get();
+      paused ??= !player.paused;
+
+      if (paused) pause();
+      else play();
+    },
     volume: 1,
   };
 };
