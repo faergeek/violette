@@ -125,7 +125,6 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
     currentTime: number | ((currentTime: number) => number),
   ) {
     const { player } = get();
-    if (player.duration == null) return;
 
     skipping = true;
 
@@ -134,7 +133,10 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
         ? currentTime(player.currentTime)
         : currentTime;
 
-    currentTime = Math.max(0, Math.min(currentTime, player.duration));
+    currentTime = Math.max(
+      0,
+      Math.min(currentTime, player.duration ?? Infinity),
+    );
 
     if (currentTime === audio.currentTime) return;
 
