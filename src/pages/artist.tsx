@@ -302,6 +302,24 @@ export function ArtistPage({
                     .map((_, i) => <AlbumCard key={i} />)}
             </CardGrid>
           </section>
+
+          {renderSimilarArtists(
+            similarArtists => {
+              const presentArtists = similarArtists
+                .map(x => (x.present ? x.id : null))
+                .filter(similarArtist => similarArtist != null);
+
+              return (
+                presentArtists.length !== 0 && (
+                  <SimilarArtistsSection
+                    artistId={params.artistId}
+                    presentArtists={presentArtists}
+                  />
+                )
+              );
+            },
+            <SimilarArtistsSection artistId={params.artistId} />,
+          )}
         </TabsContent>
 
         <TabsContent id="top-songs" value={ArtistTab.TopSongs}>
@@ -431,6 +449,47 @@ function TopSongsSection({
       </h2>
 
       {children}
+    </section>
+  );
+}
+
+function SimilarArtistsSection({
+  artistId,
+  presentArtists,
+}: {
+  artistId: string;
+  presentArtists?: string[];
+}) {
+  return (
+    <section>
+      <h2 className="mb-2 text-lg font-bold">
+        <Link
+          hash="similar-artists"
+          hashScrollIntoView={{
+            block: 'start',
+            behavior: 'instant',
+          }}
+          params={{ artistId }}
+          resetScroll={false}
+          to="/artist/$artistId"
+        >
+          Similar artists
+        </Link>
+      </h2>
+
+      <CardGrid>
+        {presentArtists == null
+          ? new Array<null>(6).fill(null).map((_, i) => <ArtistCard key={i} />)
+          : presentArtists
+              .slice(0, 6)
+              .map(id => (
+                <ArtistCard
+                  key={id}
+                  coverArtSizes={CARD_GRID_COVER_ART_SIZES}
+                  id={id}
+                />
+              ))}
+      </CardGrid>
     </section>
   );
 }
