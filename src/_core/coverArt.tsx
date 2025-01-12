@@ -72,18 +72,31 @@ export function CoverArt({
       className={cn('my-0 aspect-square h-auto w-full', className)}
     />
   ) : (
-    <img
-      alt=""
-      decoding="async"
-      loading="lazy"
-      {...otherProps}
+    <span
       className={cn(
-        'rounded-md border-none bg-muted bg-cover bg-center object-contain bg-blend-multiply shadow-lg [background-image:_var(--coverArtUrl)]',
+        'relative inline-flex place-content-center place-items-center overflow-clip rounded-md shadow-lg',
         className,
       )}
-      sizes={sizes}
-      src={src}
-      style={{ ['--coverArtUrl' as string]: `url(${src})` }}
-    />
+    >
+      <img
+        alt=""
+        decoding="async"
+        loading="lazy"
+        {...otherProps}
+        className="absolute size-full object-cover blur-sm"
+        sizes={sizes}
+        src={src}
+      />
+
+      <img
+        alt=""
+        decoding="async"
+        loading="lazy"
+        {...otherProps}
+        className="relative size-full object-contain"
+        sizes={sizes}
+        src={src}
+      />
+    </span>
   );
 }
