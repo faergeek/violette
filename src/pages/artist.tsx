@@ -340,34 +340,58 @@ export function ArtistPage({
 
         <TabsContent id="similar-artists" value={ArtistTab.SimilarArtists}>
           {renderSimilarArtists(
-            similarArtists =>
-              similarArtists.length === 0 ? (
-                <EmptyState message="No similar artists" />
-              ) : (
-                <>
-                  <CardGrid>
-                    {similarArtists
-                      .map(x => (x.present ? x.id : null))
-                      .filter(similarArtist => similarArtist != null)
-                      .map(id => (
+            similarArtists => {
+              if (similarArtists.length === 0) {
+                return <EmptyState message="No similar artists" />;
+              }
+
+              const presentArtists = similarArtists
+                .map(x => (x.present ? x.id : null))
+                .filter(similarArtist => similarArtist != null);
+
+              const notPresentArtists = similarArtists
+                .map(x => (x.present ? null : { name: x.name }))
+                .filter(similarArtist => similarArtist != null);
+
+              return (
+                <div className="space-y-8">
+                  {presentArtists.length !== 0 && (
+                    <CardGrid>
+                      {presentArtists.map(id => (
                         <ArtistCard
                           key={id}
                           coverArtSizes={CARD_GRID_COVER_ART_SIZES}
                           id={id}
                         />
                       ))}
-                  </CardGrid>
+                    </CardGrid>
+                  )}
 
-                  <ul className="list-outside list-disc space-y-2 ps-5">
-                    {similarArtists
-                      .map(x => (x.present ? null : { name: x.name }))
-                      .filter(similarArtist => similarArtist != null)
-                      .map(similarArtist => (
-                        <li key={similarArtist.name}>{similarArtist.name}</li>
-                      ))}
-                  </ul>
-                </>
-              ),
+                  {notPresentArtists.length !== 0 && (
+                    <div className="text-center text-sm text-muted-foreground">
+                      <h2 className="font-bold">Not found in a library:</h2>
+
+                      <ul className="space-y-2 text-balance">
+                        {notPresentArtists.map(similarArtist => (
+                          <li
+                            key={similarArtist.name}
+                            className="inline after:text-primary after:content-['_•_'] last:after:content-['']"
+                          >
+                            <a
+                              href={`https://www.last.fm/music/${encodeURIComponent(similarArtist.name)}`}
+                              rel="noopener"
+                              target="_blank"
+                            >
+                              {similarArtist.name}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              );
+            },
             <CardGrid>
               {new Array<null>(12).fill(null).map((_, i) => (
                 <ArtistCard key={i} />
