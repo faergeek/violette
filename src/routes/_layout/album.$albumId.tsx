@@ -1,14 +1,10 @@
 import { createFileRoute, invariant } from '@tanstack/react-router';
-import * as v from 'valibot';
 
 import { MEDIA_HEADER_COVER_ART_SIZES } from '../../_core/mediaHeader';
 import { preloadCoverArt } from '../../_core/preloadCoverArt';
 import { requireSubsonicCredentials } from '../../_core/requireSubsonicCredentials';
 
 export const Route = createFileRoute('/_layout/album/$albumId')({
-  validateSearch: v.object({
-    song: v.optional(v.string()),
-  }),
   beforeLoad: requireSubsonicCredentials,
   async loader({ context: { store }, params: { albumId } }) {
     const { auth } = store.getState();

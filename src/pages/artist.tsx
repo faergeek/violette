@@ -1,5 +1,5 @@
-import { Await, Link } from '@tanstack/react-router';
-import { cloneElement, useRef } from 'react';
+import { Await, Link, useLocation } from '@tanstack/react-router';
+import { cloneElement } from 'react';
 
 import { AlbumCard } from '../_core/albumCard';
 import { ArtistCard } from '../_core/artistCard';
@@ -17,6 +17,7 @@ import type { ArtistInfo, BaseArtist } from '../api/types';
 import { ArtistTab } from '../routes/_layout/artist.$artistId';
 import type { SimilarArtist } from '../slices/artists';
 import { StoreConsumer, useAppStore } from '../store/react';
+import { getAlbumSongElementId } from './album';
 
 export function ArtistPage({
   deferredArtistInfo,
@@ -25,7 +26,6 @@ export function ArtistPage({
   initialAlbumIds,
   initialArtist,
   params,
-  search,
 }: {
   deferredArtistInfo?: Promise<Omit<ArtistInfo, 'similarArtist'>>;
   deferredSimilarArtists?: Promise<SimilarArtist[]>;
@@ -33,13 +33,12 @@ export function ArtistPage({
   initialAlbumIds?: string[];
   initialArtist?: BaseArtist;
   params: { artistId: string };
-  search: { tab?: ArtistTab };
 }) {
+  const location = useLocation();
+
   const artist = useAppStore(
     state => state.artists.byId.get(params.artistId) ?? initialArtist,
   );
-
-  const tabsListRef = useRef<HTMLDivElement | null>(null);
 
   function renderArtistInfo(
     children: (
@@ -153,7 +152,10 @@ export function ArtistPage({
             <H1>
               {artist ? (
                 <>
-                  {artist.name}
+                  <Link params={{ artistId: artist.id }} to="/artist/$artistId">
+                    {artist.name}
+                  </Link>
+
                   <StarButton
                     className="ms-2"
                     artistId={artist.id}
@@ -168,8 +170,12 @@ export function ArtistPage({
             <div className="text-muted-foreground">
               {artist ? (
                 <Link
+                  hash="albums"
+                  hashScrollIntoView={{
+                    block: 'start',
+                    behavior: 'instant',
+                  }}
                   params={{ artistId: artist.id }}
-                  search={{ tab: ArtistTab.Albums }}
                   to="/artist/$artistId"
                 >
                   {artist.albumCount} albums
@@ -188,19 +194,26 @@ export function ArtistPage({
         </div>
       </MediaHeader>
 
-      <Tabs value={search.tab ?? ''}>
-        <TabsList ref={tabsListRef}>
-          <TabsTrigger asChild value="">
-            <Link params={params} resetScroll={false} to="/artist/$artistId">
+      <Tabs value={location.hash || 'main'}>
+        <TabsList>
+          <TabsTrigger asChild value="main">
+            <Link
+              hash="main"
+              hashScrollIntoView={false}
+              params={params}
+              resetScroll={false}
+              to="/artist/$artistId"
+            >
               Main
             </Link>
           </TabsTrigger>
 
           <TabsTrigger asChild value={ArtistTab.TopSongs}>
             <Link
+              hash="top-songs"
+              hashScrollIntoView={false}
               params={params}
               resetScroll={false}
-              search={{ tab: ArtistTab.TopSongs }}
               to="/artist/$artistId"
             >
               Top songs
@@ -209,9 +222,10 @@ export function ArtistPage({
 
           <TabsTrigger asChild value={ArtistTab.Albums}>
             <Link
+              hash="albums"
+              hashScrollIntoView={false}
               params={params}
               resetScroll={false}
-              search={{ tab: ArtistTab.Albums }}
               to="/artist/$artistId"
             >
               Albums
@@ -220,9 +234,10 @@ export function ArtistPage({
 
           <TabsTrigger asChild value={ArtistTab.SimilarArtists}>
             <Link
+              hash="similar-artists"
+              hashScrollIntoView={false}
               params={params}
               resetScroll={false}
-              search={{ tab: ArtistTab.SimilarArtists }}
               to="/artist/$artistId"
             >
               Similar artists
@@ -230,12 +245,13 @@ export function ArtistPage({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent className="space-y-4" value="">
+        <TabsContent className="space-y-4" id="main" value="main">
           {renderTopSongs(
             data =>
               data.topSongIds.length !== 0 && (
                 <TopSongsSection params={params}>
                   <SongList
+                    getSongElementId={getAlbumSongElementId}
                     primaryArtist={data.artist.name}
                     songIds={data.topSongIds.slice(0, 5)}
                     songIdsToPlay={data.topSongIds}
@@ -252,13 +268,14 @@ export function ArtistPage({
               {cloneElement(
                 artist ? (
                   <Link
+                    hash="albums"
+                    hashScrollIntoView={{
+                      block: 'start',
+                      behavior: 'instant',
+                    }}
                     params={{ artistId: artist.id }}
                     resetScroll={false}
-                    search={{ tab: ArtistTab.Albums }}
                     to="/artist/$artistId"
-                    onClick={() => {
-                      tabsListRef.current?.scrollIntoView({ block: 'nearest' });
-                    }}
                   />
                 ) : (
                   <span />
@@ -287,13 +304,14 @@ export function ArtistPage({
           </section>
         </TabsContent>
 
-        <TabsContent value={ArtistTab.TopSongs}>
+        <TabsContent id="top-songs" value={ArtistTab.TopSongs}>
           {renderTopSongs(
             data =>
               data.topSongIds.length === 0 ? (
                 <EmptyState message="No top songs" />
               ) : (
                 <SongList
+                  getSongElementId={getAlbumSongElementId}
                   primaryArtist={data.artist.name}
                   songIds={data.topSongIds}
                 />
@@ -302,7 +320,7 @@ export function ArtistPage({
           )}
         </TabsContent>
 
-        <TabsContent value={ArtistTab.Albums}>
+        <TabsContent id="albums" value={ArtistTab.Albums}>
           <CardGrid>
             {albumIds
               ? albumIds
@@ -320,7 +338,7 @@ export function ArtistPage({
           </CardGrid>
         </TabsContent>
 
-        <TabsContent value={ArtistTab.SimilarArtists}>
+        <TabsContent id="similar-artists" value={ArtistTab.SimilarArtists}>
           {renderSimilarArtists(
             similarArtists =>
               similarArtists.length === 0 ? (
@@ -375,9 +393,13 @@ function TopSongsSection({
     <section>
       <h2 className="mb-2 text-lg font-bold">
         <Link
+          hash="top-songs"
+          hashScrollIntoView={{
+            block: 'start',
+            behavior: 'instant',
+          }}
           params={params}
           resetScroll={false}
-          search={{ tab: ArtistTab.TopSongs }}
           to="/artist/$artistId"
         >
           Top songs

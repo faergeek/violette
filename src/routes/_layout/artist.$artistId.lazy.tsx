@@ -4,11 +4,10 @@ import { ArtistPage } from '../../pages/artist';
 
 export const Route = createLazyFileRoute('/_layout/artist/$artistId')({
   pendingComponent: function ArtistPending() {
-    return <ArtistPage params={Route.useParams()} search={Route.useSearch()} />;
+    return <ArtistPage params={Route.useParams()} />;
   },
   component: function ArtistRoute() {
     const params = Route.useParams();
-    const search = Route.useSearch();
 
     const {
       deferredArtistInfo,
@@ -26,7 +25,6 @@ export const Route = createLazyFileRoute('/_layout/artist/$artistId')({
         initialAlbumIds={initialAlbumIds}
         initialArtist={initialArtist}
         params={params}
-        search={search}
       />
     );
   },

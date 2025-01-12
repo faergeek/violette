@@ -54,6 +54,10 @@
     @apply text-primary;
   }
 
+  html {
+    @apply scroll-pb-24 scroll-pt-4;
+  }
+
   body {
     @apply min-w-80 bg-background font-sans text-foreground accent-primary selection:bg-primary selection:text-background;
   }
