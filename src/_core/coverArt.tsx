@@ -1,50 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { subsonicGetCoverArtUrl } from '../api/subsonic';
-import type { SubsonicCredentials } from '../api/types';
 import { useAppStore } from '../store/react';
 import { cn } from './cn';
+import { createCoverArtSrcSet } from './createCoverArtSrcSet';
 import { Skeleton } from './skeleton';
-
-function createCoverArtSrcSet({
-  coverArt,
-  credentials,
-}: {
-  coverArt: string;
-  credentials: SubsonicCredentials;
-}) {
-  return Array.from(
-    new Set(
-      [48, 64, 100, 143, 200].flatMap(w =>
-        [1, 1.5, 2, 2.5, 3, 3.5, 4].map(x => w * x),
-      ),
-    ),
-  )
-    .sort((a, b) => a - b)
-    .map(w =>
-      [
-        subsonicGetCoverArtUrl(credentials, coverArt, { size: w }),
-        w != null ? `${w}w` : undefined,
-      ]
-        .filter(Boolean)
-        .join(' '),
-    )
-    .join(',');
-}
-
-export function preloadCoverArt({
-  coverArt,
-  credentials,
-  sizes,
-}: {
-  coverArt: string;
-  credentials: SubsonicCredentials;
-  sizes?: string;
-}) {
-  const img = new Image();
-  if (sizes != null) img.sizes = sizes;
-  img.srcset = createCoverArtSrcSet({ coverArt, credentials });
-}
 
 export function CoverArt({
   className,
@@ -113,18 +72,31 @@ export function CoverArt({
       className={cn('my-0 aspect-square h-auto w-full', className)}
     />
   ) : (
-    <img
-      alt=""
-      decoding="async"
-      loading="lazy"
-      {...otherProps}
+    <span
       className={cn(
-        'rounded-md border-none bg-muted bg-cover bg-center object-contain bg-blend-multiply shadow-lg [background-image:_var(--coverArtUrl)]',
+        'relative inline-flex place-content-center place-items-center overflow-clip rounded-md shadow-lg',
         className,
       )}
-      sizes={sizes}
-      src={src}
-      style={{ ['--coverArtUrl' as string]: `url(${src})` }}
-    />
+    >
+      <img
+        alt=""
+        decoding="async"
+        loading="lazy"
+        {...otherProps}
+        className="absolute size-full object-cover blur-sm"
+        sizes={sizes}
+        src={src}
+      />
+
+      <img
+        alt=""
+        decoding="async"
+        loading="lazy"
+        {...otherProps}
+        className="relative size-full object-contain"
+        sizes={sizes}
+        src={src}
+      />
+    </span>
   );
 }
