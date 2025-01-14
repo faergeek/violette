@@ -5,7 +5,7 @@ import {
   invariant,
   RouterProvider,
 } from '@tanstack/react-router';
-import { lazy, StrictMode } from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { routeTree } from './routeTree.gen';
@@ -36,21 +36,10 @@ declare module '@tanstack/react-router' {
   }
 }
 
-const RouterDevtools =
-  process.env.NODE_ENV === 'production'
-    ? () => null
-    : lazy(() =>
-        import('@tanstack/router-devtools').then(mod => ({
-          default: mod.TanStackRouterDevtools,
-        })),
-      );
-
 createRoot(rootEl).render(
   <StrictMode>
     <StoreProvider store={store}>
       <RouterProvider router={router} />
     </StoreProvider>
-
-    <RouterDevtools position="top-left" router={router} />
   </StrictMode>,
 );

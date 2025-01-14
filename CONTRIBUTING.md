@@ -45,4 +45,4 @@ pnpm run format
 
 ## Artwork
 
-- [Favicon](https://www.figma.com/design/4fi9GDFXvHlNJapC230Ly0/Player?m=auto&t=fRHQmte8FPE2NACS-7)
+- [Favicon](https://www.figma.com/design/4fi9GDFXvHlNJapC230Ly0/Violette?m=auto&t=k5jszBlmYI9ksUQ3-7)
