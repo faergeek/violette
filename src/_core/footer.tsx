@@ -13,7 +13,7 @@ export function Footer() {
       <Container>
         <footer className="flex flex-wrap items-center justify-center gap-2 whitespace-nowrap py-6 text-center text-muted-foreground">
           <a
-            href="https://github.com/faergeek/player/blob/master/LICENSE"
+            href="https://github.com/faergeek/violette/blob/master/LICENSE"
             rel="noopener"
             target="_blank"
           >
@@ -30,7 +30,7 @@ export function Footer() {
           </address>
           <a
             className="group flex items-center gap-2"
-            href="https://github.com/faergeek/player"
+            href="https://github.com/faergeek/violette"
             rel="noopener"
             target="_blank"
           >
