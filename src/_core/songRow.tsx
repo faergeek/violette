@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useLocation } from '@tanstack/react-router';
 import {
   CirclePause,
   CirclePlay,
@@ -30,7 +30,6 @@ interface Props {
   elementId?: string;
   isAlbumView?: boolean;
   isCompilation?: boolean;
-  isSelected: boolean;
   primaryArtist?: string;
   songId: string | undefined;
   songIdsToPlay?: string[];
@@ -40,13 +39,15 @@ export function SongRow({
   elementId,
   isAlbumView,
   isCompilation,
-  isSelected,
   primaryArtist,
   songId,
   songIdsToPlay,
 }: Props) {
+  const location = useLocation();
   const startPlaying = useAppStore(state => state.player.startPlaying);
   const togglePaused = useAppStore(state => state.player.togglePaused);
+
+  const isSelected = location.hash === elementId;
 
   return (
     <div
@@ -169,8 +170,10 @@ export function SongRow({
               {song ? (
                 <div>
                   <Link
+                    hash={elementId}
+                    hashScrollIntoView={false}
                     params={{ albumId: song.albumId }}
-                    search={{ song: song.id }}
+                    resetScroll={false}
                     to="/album/$albumId"
                   >
                     {song.title}

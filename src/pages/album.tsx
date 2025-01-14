@@ -13,14 +13,16 @@ import { StarButton } from '../_core/starButton';
 import type { AlbumInfo } from '../api/types';
 import { StoreConsumer, useAppStore } from '../store/react';
 
+export function getAlbumSongElementId(songId: string) {
+  return `song-${songId}`;
+}
+
 export function AlbumPage({
   albumId,
   deferredAlbumInfo,
-  search,
 }: {
   albumId: string;
   deferredAlbumInfo?: Promise<AlbumInfo>;
-  search: { song?: string };
 }) {
   const base = useAppStore(state => state.albums.baseById.get(albumId));
   const details = useAppStore(state => state.albums.detailsById.get(albumId));
@@ -102,7 +104,10 @@ export function AlbumPage({
             <H1>
               {base ? (
                 <>
-                  {base.name}
+                  <Link params={{ albumId: base.id }} to="/album/$albumId">
+                    {base.name}
+                  </Link>
+
                   <StarButton
                     className="ms-2"
                     albumId={base.id}
@@ -152,10 +157,10 @@ export function AlbumPage({
               </h2>
 
               <SongList
+                getSongElementId={getAlbumSongElementId}
                 isAlbumView
                 isCompilation={details.isCompilation}
                 primaryArtist={base.artist}
-                selectedSongId={search.song}
                 songIds={disc.songIds}
                 songIdsToPlay={songIds}
               />
@@ -164,10 +169,10 @@ export function AlbumPage({
         </div>
       ) : (
         <SongList
+          getSongElementId={getAlbumSongElementId}
           isAlbumView
           isCompilation={details.isCompilation}
           primaryArtist={base.artist}
-          selectedSongId={search.song}
           songIds={songIds}
         />
       )}

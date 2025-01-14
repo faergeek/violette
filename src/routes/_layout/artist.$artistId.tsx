@@ -1,5 +1,4 @@
 import { createFileRoute, invariant } from '@tanstack/react-router';
-import * as v from 'valibot';
 
 import { MEDIA_HEADER_COVER_ART_SIZES } from '../../_core/mediaHeader';
 import { preloadCoverArt } from '../../_core/preloadCoverArt';
@@ -12,9 +11,6 @@ export enum ArtistTab {
 }
 
 export const Route = createFileRoute('/_layout/artist/$artistId')({
-  validateSearch: v.object({
-    tab: v.optional(v.enum(ArtistTab)),
-  }),
   beforeLoad: requireSubsonicCredentials,
   async loader({ context: { store }, params: { artistId } }) {
     const fetchOnePromise = store

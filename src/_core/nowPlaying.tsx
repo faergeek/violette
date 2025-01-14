@@ -15,6 +15,7 @@ import {
 import { cloneElement, useEffect, useState } from 'react';
 import * as v from 'valibot';
 
+import { getAlbumSongElementId } from '../pages/album';
 import { PreferredGain } from '../slices/player';
 import type { StoreState } from '../store/create';
 import { StoreConsumer, useAppStore } from '../store/react';
@@ -110,18 +111,13 @@ export function NowPlaying() {
         <StoreConsumer selector={getCurrentSong}>
           {song =>
             song ? (
-              <Link
-                className="shrink-0"
-                params={{ albumId: song.albumId }}
-                search={{ song: song.id }}
-                to="/album/$albumId"
-              >
+              <span className="shrink-0">
                 <CoverArt
                   className="size-16 rounded-none"
                   coverArt={song.coverArt}
                   sizes="4em"
                 />
-              </Link>
+              </span>
             ) : (
               <CoverArt className="size-16 rounded-none" />
             )
@@ -282,7 +278,6 @@ export function NowPlaying() {
               <Link
                 className="shrink-0"
                 params={{ albumId: song.albumId }}
-                search={{ song: song.id }}
                 to="/album/$albumId"
               >
                 <CoverArt
@@ -303,8 +298,12 @@ export function NowPlaying() {
               <div className="min-w-0">
                 <div className="truncate">
                   <Link
+                    hash={getAlbumSongElementId(song.id)}
+                    hashScrollIntoView={{
+                      block: 'nearest',
+                      behavior: 'instant',
+                    }}
                     params={{ albumId: song.albumId }}
-                    search={{ song: song.id }}
                     to="/album/$albumId"
                   >
                     {song.title}
