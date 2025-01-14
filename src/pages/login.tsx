@@ -1,5 +1,5 @@
 import { invariant } from '@tanstack/react-router';
-import { CassetteTape, KeyRound } from 'lucide-react';
+import { KeyRound } from 'lucide-react';
 import { useActionState } from 'react';
 import SparkMD5 from 'spark-md5';
 import * as v from 'valibot';
@@ -18,6 +18,7 @@ import { Footer } from '../_core/footer';
 import { Fx } from '../_core/fx';
 import { Input } from '../_core/input';
 import { Label } from '../_core/label';
+import { Logo } from '../_core/logo';
 import { SubsonicApiError } from '../_core/subsonicApiError';
 import { subsonicPing } from '../api/subsonic';
 import type { SubsonicCredentials, SubsonicError } from '../api/types';
@@ -77,8 +78,8 @@ export function LoginPage() {
     <div className="flex min-h-lvh flex-col">
       <Container className="max-w-96 flex-1">
         <header className="flex items-center justify-center gap-2 py-4">
-          <CassetteTape />
-          Player
+          <Logo className="size-8" />
+          <strong>Violette</strong>
         </header>
 
         <Card

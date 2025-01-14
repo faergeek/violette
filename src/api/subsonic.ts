@@ -25,7 +25,7 @@ function buildSubsonicApiUrl(
   request: SubsonicRequest,
 ) {
   const url = new URL(request.method, serverBaseUrl);
-  url.searchParams.set('c', 'Player');
+  url.searchParams.set('c', 'Violette');
   url.searchParams.set('f', 'json');
   url.searchParams.set('s', salt);
   url.searchParams.set('t', token);
