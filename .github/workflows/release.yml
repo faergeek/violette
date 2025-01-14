@@ -24,7 +24,7 @@ jobs:
         with:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run build --base /violette
+      - run: pnpm run build
       - run: rm dist/stats.html && cp dist/{index,404}.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
