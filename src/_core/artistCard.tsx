@@ -34,7 +34,7 @@ export function ArtistCard({
                 sizes={coverArtSizes}
               />
 
-              <h2 className="text-balance font-bold leading-tight">
+              <h2 className="font-bold leading-tight">
                 {artist == null ? <Skeleton className="w-24" /> : artist.name}
               </h2>
             </>

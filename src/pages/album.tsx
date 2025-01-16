@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { formatDuration } from '../_core/formatDuration';
-import { H1 } from '../_core/headings';
+import { H1, H2 } from '../_core/headings';
 import { MediaHeader } from '../_core/mediaHeader';
 import { MediaLinks } from '../_core/mediaLinks';
 import { Prose } from '../_core/prose';
@@ -99,7 +99,9 @@ export function AlbumPage({
       >
         <div className="space-y-2">
           <div>
-            <div className="text-sm uppercase text-muted-foreground">Album</div>
+            <div className="text-sm font-bold tracking-widest text-muted-foreground [font-variant-caps:all-small-caps]">
+              Album
+            </div>
 
             <H1>
               {base ? (
@@ -151,10 +153,10 @@ export function AlbumPage({
         <div className="space-y-4">
           {discs.map(disc => (
             <div key={disc.number}>
-              <h2 className="text-md mb-2 font-semibold text-muted-foreground">
+              <H2 className="text-md mb-2 font-semibold text-muted-foreground">
                 Disc {disc.number}
                 {disc.title && <> - {disc.title}</>}
-              </h2>
+              </H2>
 
               <SongList
                 getSongElementId={getAlbumSongElementId}

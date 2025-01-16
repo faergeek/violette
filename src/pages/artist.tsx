@@ -5,7 +5,7 @@ import { AlbumCard } from '../_core/albumCard';
 import { ArtistCard } from '../_core/artistCard';
 import { CARD_GRID_COVER_ART_SIZES, CardGrid } from '../_core/cardGrid';
 import { EmptyState } from '../_core/emptyState';
-import { H1 } from '../_core/headings';
+import { H1, H2 } from '../_core/headings';
 import { MediaHeader } from '../_core/mediaHeader';
 import { MediaLinks } from '../_core/mediaLinks';
 import { Prose } from '../_core/prose';
@@ -145,7 +145,7 @@ export function ArtistPage({
       >
         <div className="space-y-2">
           <div>
-            <div className="text-sm uppercase text-muted-foreground">
+            <div className="text-sm font-bold tracking-widest text-muted-foreground [font-variant-caps:all-small-caps]">
               Artist
             </div>
 
@@ -264,7 +264,7 @@ export function ArtistPage({
           )}
 
           <section>
-            <h2 className="mb-2 text-lg font-bold">
+            <H2 className="mb-2">
               {cloneElement(
                 artist ? (
                   <Link
@@ -283,7 +283,7 @@ export function ArtistPage({
                 {},
                 'Albums',
               )}
-            </h2>
+            </H2>
 
             <CardGrid>
               {albumIds
@@ -387,7 +387,7 @@ export function ArtistPage({
 
                   {notPresentArtists.length !== 0 && (
                     <div className="text-center text-sm text-muted-foreground">
-                      <h2 className="font-bold">Not found in a library:</h2>
+                      <H2 className="font-bold">Not found in a library:</H2>
 
                       <ul className="space-y-2 text-balance">
                         {notPresentArtists.map(similarArtist => (
@@ -433,7 +433,7 @@ function TopSongsSection({
 }) {
   return (
     <section>
-      <h2 className="mb-2 text-lg font-bold">
+      <H2 className="mb-2">
         <Link
           hash="top-songs"
           hashScrollIntoView={{
@@ -446,7 +446,7 @@ function TopSongsSection({
         >
           Top songs
         </Link>
-      </h2>
+      </H2>
 
       {children}
     </section>
@@ -462,7 +462,7 @@ function SimilarArtistsSection({
 }) {
   return (
     <section>
-      <h2 className="mb-2 text-lg font-bold">
+      <H2 className="mb-2">
         <Link
           hash="similar-artists"
           hashScrollIntoView={{
@@ -475,7 +475,7 @@ function SimilarArtistsSection({
         >
           Similar artists
         </Link>
-      </h2>
+      </H2>
 
       <CardGrid>
         {presentArtists == null
