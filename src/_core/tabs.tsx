@@ -12,7 +12,7 @@ export function TabsList({
     <div className="overflow-auto">
       <List
         className={cn(
-          'inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground',
+          'inline-flex items-center justify-center space-x-2 p-1 text-sm font-bold text-muted-foreground',
           className,
         )}
         {...otherProps}
@@ -28,7 +28,7 @@ export function TabsTrigger({
   return (
     <Trigger
       className={cn(
-        'focus-visible:ring-ring inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm',
+        'whitespace-nowrap border-b-2 border-transparent p-1 tracking-widest transition-colors [font-variant-caps:all-small-caps] data-[state=active]:border-primary data-[state=active]:text-foreground',
         className,
       )}
       {...otherProps}
@@ -40,13 +40,5 @@ export function TabsContent({
   className,
   ...props
 }: React.ComponentProps<typeof Content>) {
-  return (
-    <Content
-      className={cn(
-        'focus-visible:ring-ring mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-        className,
-      )}
-      {...props}
-    />
-  );
+  return <Content className={cn('mt-2', className)} {...props} />;
 }

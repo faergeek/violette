@@ -36,7 +36,7 @@ export function AlbumCard({
             sizes={coverArtSizes}
           />
 
-          <h2 className="text-balance font-bold leading-tight">
+          <h2 className="font-bold leading-tight">
             {album == null ? <Skeleton className="w-24" /> : album.name}
           </h2>
         </>,
