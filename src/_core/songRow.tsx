@@ -1,30 +1,16 @@
 import { Link, useRouterState } from '@tanstack/react-router';
-import {
-  CirclePause,
-  CirclePlay,
-  Download,
-  EllipsisVertical,
-  Info,
-  ListEnd,
-  ListPlus,
-  ListStart,
-  Play,
-} from 'lucide-react';
-import { cloneElement, memo } from 'react';
+import { CirclePause, CirclePlay, EllipsisVertical } from 'lucide-react';
+import { cloneElement, lazy, memo, Suspense } from 'react';
 
 import { StoreConsumer, useAppStore } from '../store/react';
 import { cn } from './cn';
 import { CoverArt } from './coverArt';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from './dropdownMenu';
 import { formatDuration } from './formatDuration';
 import { IconButton } from './iconButton';
 import { Skeleton } from './skeleton';
 import { StarButton } from './starButton';
+
+const SongMenu = lazy(() => import('./songMenu'));
 
 interface Props {
   elementId?: string;
@@ -271,73 +257,13 @@ export const SongRow = memo(function SongRow({
           }
         </StoreConsumer>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild className="ms-2">
-            <IconButton icon={<EllipsisVertical />} />
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <Play />
-              Play now
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <ListStart />
-              Play next
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <ListEnd />
-              Play last
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <ListPlus />
-              Add to Playlist&hellip;
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <Info />
-              Info
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <Download />
-              Download
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <span className="ms-2 flex">
+          <Suspense
+            fallback={<IconButton disabled icon={<EllipsisVertical />} />}
+          >
+            <SongMenu />
+          </Suspense>
+        </span>
       </div>
     </div>
   );
