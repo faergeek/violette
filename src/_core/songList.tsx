@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { SongRow } from './songRow';
 
 interface Props {
@@ -9,7 +11,7 @@ interface Props {
   songIdsToPlay?: string[];
 }
 
-export function SongList({
+export const SongList = memo(function SongList({
   getSongElementId,
   isAlbumView,
   isCompilation,
@@ -35,4 +37,4 @@ export function SongList({
       ))}
     </>
   );
-}
+});

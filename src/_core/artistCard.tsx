@@ -1,17 +1,21 @@
 import { Link } from '@tanstack/react-router';
-import { cloneElement } from 'react';
+import { cloneElement, memo } from 'react';
 
 import { useAppStore } from '../store/react';
 import { CoverArt } from './coverArt';
 import { Skeleton } from './skeleton';
 
-export function ArtistCard({
-  coverArtSizes,
-  id,
-}: {
+interface Props {
   coverArtSizes?: string;
   id?: string;
-}) {
+  loadCoverArtLazily?: boolean;
+}
+
+export const ArtistCard = memo(function ArtistCard({
+  coverArtSizes,
+  id,
+  loadCoverArtLazily,
+}: Props) {
   const artist = useAppStore(state =>
     id == null ? undefined : state.artists.byId.get(id),
   );
@@ -29,8 +33,9 @@ export function ArtistCard({
           children: (
             <>
               <CoverArt
-                className="aspect-square w-full"
+                className="aspect-square w-full bg-muted/75"
                 coverArt={artist?.coverArt}
+                lazy={loadCoverArtLazily}
                 sizes={coverArtSizes}
               />
 
@@ -43,4 +48,4 @@ export function ArtistCard({
       )}
     </article>
   );
-}
+});

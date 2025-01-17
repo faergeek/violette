@@ -1,6 +1,5 @@
 import { Range, Root, Thumb, Track } from '@radix-ui/react-slider';
-
-import { cn } from './cn';
+import clsx from 'clsx';
 
 export function Slider({
   className,
@@ -8,7 +7,7 @@ export function Slider({
 }: React.ComponentProps<typeof Root>) {
   return (
     <Root
-      className={cn(
+      className={clsx(
         'group relative flex touch-none select-none items-center data-[orientation=vertical]:flex-col',
         className,
       )}

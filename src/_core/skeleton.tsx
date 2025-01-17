@@ -1,4 +1,4 @@
-import { cn } from './cn';
+import clsx from 'clsx';
 
 export function Skeleton({
   className,
@@ -6,7 +6,7 @@ export function Skeleton({
 }: React.ComponentProps<'span'>) {
   return (
     <span
-      className={cn(
+      className={clsx(
         'my-[0.25lh] block h-[0.75lh] animate-pulse rounded-md bg-muted',
         className,
       )}

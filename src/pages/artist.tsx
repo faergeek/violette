@@ -1,4 +1,4 @@
-import { Await, Link, useLocation } from '@tanstack/react-router';
+import { Await, Link, useRouterState } from '@tanstack/react-router';
 import { cloneElement } from 'react';
 
 import { AlbumCard } from '../_core/albumCard';
@@ -34,7 +34,9 @@ export function ArtistPage({
   initialArtist?: BaseArtist;
   params: { artistId: string };
 }) {
-  const location = useLocation();
+  const tabValue = useRouterState({
+    select: state => state.location.hash || 'main',
+  });
 
   const artist = useAppStore(
     state => state.artists.byId.get(params.artistId) ?? initialArtist,
@@ -194,7 +196,7 @@ export function ArtistPage({
         </div>
       </MediaHeader>
 
-      <Tabs value={location.hash || 'main'}>
+      <Tabs value={tabValue}>
         <TabsList>
           <TabsTrigger asChild value="main">
             <Link
@@ -295,6 +297,7 @@ export function ArtistPage({
                         key={id}
                         coverArtSizes={CARD_GRID_COVER_ART_SIZES}
                         id={id}
+                        loadCoverArtLazily
                       />
                     ))
                 : new Array<null>(6)
@@ -348,6 +351,7 @@ export function ArtistPage({
                       key={id}
                       coverArtSizes={CARD_GRID_COVER_ART_SIZES}
                       id={id}
+                      loadCoverArtLazily
                     />
                   ))
               : new Array<null>(12)
@@ -380,6 +384,7 @@ export function ArtistPage({
                           key={id}
                           coverArtSizes={CARD_GRID_COVER_ART_SIZES}
                           id={id}
+                          loadCoverArtLazily
                         />
                       ))}
                     </CardGrid>
@@ -487,6 +492,7 @@ function SimilarArtistsSection({
                   key={id}
                   coverArtSizes={CARD_GRID_COVER_ART_SIZES}
                   id={id}
+                  loadCoverArtLazily
                 />
               ))}
       </CardGrid>

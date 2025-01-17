@@ -1,101 +1,71 @@
-import { useEffect, useState } from 'react';
+import clsx from 'clsx';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useAppStore } from '../store/react';
-import { cn } from './cn';
 import { createCoverArtSrcSet } from './createCoverArtSrcSet';
-import { Skeleton } from './skeleton';
 
 export function CoverArt({
+  alt = '',
   className,
   coverArt,
+  lazy,
   sizes,
   ...otherProps
-}: Omit<React.ComponentProps<'img'>, 'src'> & {
+}: Omit<
+  React.ComponentProps<'img'>,
+  'decoding' | 'loading' | 'src' | 'srcset' | 'onError'
+> & {
   coverArt?: string;
+  lazy?: boolean;
 }) {
   const credentials = useAppStore(state => state.auth.credentials);
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [src, setSrc] = useState<string>();
 
+  const srcSet = useMemo(
+    () =>
+      coverArt == null || credentials == null
+        ? undefined
+        : createCoverArtSrcSet({ coverArt, credentials }),
+    [coverArt, credentials],
+  );
+
+  const [lastLoadedSrc, setLastLoadedSrc] = useState<string>();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const imgRef = useRef<HTMLImageElement | null>(null);
   useEffect(() => {
-    if (coverArt == null || credentials == null || !shouldLoad) return;
+    const img = imgRef.current;
+    if (!img) return;
 
-    const srcSet = createCoverArtSrcSet({ coverArt, credentials });
-    const img = new Image();
-    const controller = new AbortController();
-    const signal = controller.signal;
+    setLastLoadedSrc(img.currentSrc || undefined);
+    setIsLoaded(img.complete);
+  }, []);
 
-    img.addEventListener(
-      'load',
-      () => {
-        setSrc(img.currentSrc);
-      },
-      { signal },
-    );
-
-    let retryTimeout: ReturnType<typeof setTimeout> | undefined;
-    img.addEventListener(
-      'error',
-      () => {
-        retryTimeout = setTimeout(() => {
-          img.srcset = srcSet;
-        }, 1000);
-      },
-      { signal },
-    );
-
-    if (sizes != null) img.sizes = sizes;
-
-    img.decoding = 'async';
-    img.srcset = srcSet;
-
-    return () => {
-      img.srcset = '';
-      controller.abort();
-      clearTimeout(retryTimeout);
-    };
-  }, [coverArt, credentials, shouldLoad, sizes]);
-
-  return src == null ? (
-    <Skeleton
-      ref={skeleton => {
-        if (!skeleton) return;
-
-        const observer = new IntersectionObserver(entries => {
-          setShouldLoad(entries.some(entry => entry.isIntersecting));
-        });
-
-        observer.observe(skeleton);
-
-        return () => observer.unobserve(skeleton);
-      }}
-      className={cn('my-0 aspect-square h-auto w-full', className)}
-    />
-  ) : (
-    <span
-      className={cn(
-        'relative inline-flex place-content-center place-items-center overflow-clip rounded-md shadow-lg',
-        className,
-      )}
-    >
+  return (
+    <span className={clsx('inline-block rounded-md', className)}>
       <img
-        alt=""
-        decoding="async"
-        loading="lazy"
         {...otherProps}
-        className="absolute size-full object-cover blur-sm"
+        ref={imgRef}
+        alt={alt}
+        className={clsx('size-full overflow-clip object-contain opacity-0', {
+          'opacity-100': isLoaded && srcSet,
+        })}
+        decoding={lazy ? 'async' : undefined}
+        loading={lazy ? 'lazy' : undefined}
         sizes={sizes}
-        src={src}
-      />
+        src={lastLoadedSrc}
+        srcSet={srcSet}
+        onError={event => {
+          setIsLoaded(false);
+          const img = event.currentTarget;
 
-      <img
-        alt=""
-        decoding="async"
-        loading="lazy"
-        {...otherProps}
-        className="relative size-full object-contain"
-        sizes={sizes}
-        src={src}
+          setTimeout(() => {
+            img.src = img.currentSrc;
+          }, 3000);
+        }}
+        onLoad={event => {
+          setLastLoadedSrc(event.currentTarget.currentSrc);
+          setIsLoaded(event.currentTarget.complete);
+        }}
       />
     </span>
   );

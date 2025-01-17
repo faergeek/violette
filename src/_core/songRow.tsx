@@ -1,30 +1,16 @@
-import { Link, useLocation } from '@tanstack/react-router';
-import {
-  CirclePause,
-  CirclePlay,
-  Download,
-  EllipsisVertical,
-  Info,
-  ListEnd,
-  ListPlus,
-  ListStart,
-  Play,
-} from 'lucide-react';
-import { cloneElement } from 'react';
+import { Link, useRouterState } from '@tanstack/react-router';
+import clsx from 'clsx';
+import { CirclePause, CirclePlay, EllipsisVertical } from 'lucide-react';
+import { cloneElement, lazy, memo, Suspense } from 'react';
 
 import { StoreConsumer, useAppStore } from '../store/react';
-import { cn } from './cn';
 import { CoverArt } from './coverArt';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from './dropdownMenu';
 import { formatDuration } from './formatDuration';
 import { IconButton } from './iconButton';
 import { Skeleton } from './skeleton';
 import { StarButton } from './starButton';
+
+const SongMenu = lazy(() => import('./songMenu'));
 
 interface Props {
   elementId?: string;
@@ -35,7 +21,7 @@ interface Props {
   songIdsToPlay?: string[];
 }
 
-export function SongRow({
+export const SongRow = memo(function SongRow({
   elementId,
   isAlbumView,
   isCompilation,
@@ -43,15 +29,16 @@ export function SongRow({
   songId,
   songIdsToPlay,
 }: Props) {
-  const location = useLocation();
   const startPlaying = useAppStore(state => state.player.startPlaying);
   const togglePaused = useAppStore(state => state.player.togglePaused);
 
-  const isSelected = location.hash === elementId;
+  const isSelected = useRouterState({
+    select: state => state.location.hash === elementId,
+  });
 
   return (
     <div
-      className={cn(
+      className={clsx(
         'group -mt-[1px] flex items-center gap-2 border-y p-2 first:mt-0 hover:bg-muted/50',
         {
           'relative border-primary bg-secondary hover:bg-secondary': isSelected,
@@ -60,7 +47,7 @@ export function SongRow({
       id={elementId}
     >
       <div
-        className={cn(
+        className={clsx(
           'relative flex shrink-0 justify-end text-right',
           isAlbumView ? 'basis-6' : 'basis-12',
         )}
@@ -77,7 +64,7 @@ export function SongRow({
               >
                 {isCurrentInPlayer => (
                   <span
-                    className={cn(
+                    className={clsx(
                       'slashed-zero tabular-nums text-muted-foreground group-hover:text-transparent',
                       { 'text-transparent': isCurrentInPlayer },
                     )}
@@ -92,10 +79,11 @@ export function SongRow({
               >
                 {isCurrentInPlayer => (
                   <CoverArt
-                    className={cn('size-12 group-hover:opacity-25', {
+                    className={clsx('size-12 group-hover:opacity-25', {
                       'opacity-25': isCurrentInPlayer,
                     })}
                     coverArt={song.coverArt}
+                    lazy
                     sizes="3em"
                   />
                 )}
@@ -129,7 +117,7 @@ export function SongRow({
                 >
                   {isCurrentInPlayer => (
                     <button
-                      className={cn(
+                      className={clsx(
                         'invisible absolute inset-0 m-auto flex items-center justify-center rounded-full group-hover:visible',
                         { visible: isCurrentInPlayer && paused },
                       )}
@@ -269,74 +257,14 @@ export function SongRow({
           }
         </StoreConsumer>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild className="ms-2">
-            <IconButton icon={<EllipsisVertical />} />
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <Play />
-              Play now
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <ListStart />
-              Play next
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <ListEnd />
-              Play last
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <ListPlus />
-              Add to Playlist&hellip;
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <Info />
-              Info
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => {
-                // eslint-disable-next-line no-alert
-                alert('TODO');
-              }}
-            >
-              <Download />
-              Download
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <span className="ms-2 flex">
+          <Suspense
+            fallback={<IconButton disabled icon={<EllipsisVertical />} />}
+          >
+            <SongMenu />
+          </Suspense>
+        </span>
       </div>
     </div>
   );
-}
+});
