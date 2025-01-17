@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useAppStore } from '../store/react';
 import { createCoverArtSrcSet } from './createCoverArtSrcSet';
@@ -28,22 +28,45 @@ export function CoverArt({
     [coverArt, credentials],
   );
 
-  return (
-    <img
-      {...otherProps}
-      alt={alt}
-      className={clsx('rounded-md object-contain', className)}
-      decoding={lazy ? 'async' : undefined}
-      loading={lazy ? 'lazy' : undefined}
-      sizes={sizes}
-      srcSet={srcSet}
-      onError={event => {
-        const img = event.currentTarget;
+  const [lastLoadedSrc, setLastLoadedSrc] = useState<string>();
+  const [isLoaded, setIsLoaded] = useState(false);
 
-        setTimeout(() => {
-          img.src = img.currentSrc;
-        }, 3000);
-      }}
-    />
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return;
+
+    setLastLoadedSrc(img.currentSrc || undefined);
+    setIsLoaded(img.complete);
+  }, []);
+
+  return (
+    <span className={clsx('inline-block rounded-md', className)}>
+      <img
+        {...otherProps}
+        ref={imgRef}
+        alt={alt}
+        className={clsx('size-full overflow-clip object-contain opacity-0', {
+          'opacity-100': isLoaded && srcSet,
+        })}
+        decoding={lazy ? 'async' : undefined}
+        loading={lazy ? 'lazy' : undefined}
+        sizes={sizes}
+        src={lastLoadedSrc}
+        srcSet={srcSet}
+        onError={event => {
+          setIsLoaded(false);
+          const img = event.currentTarget;
+
+          setTimeout(() => {
+            img.src = img.currentSrc;
+          }, 3000);
+        }}
+        onLoad={event => {
+          setLastLoadedSrc(event.currentTarget.currentSrc);
+          setIsLoaded(event.currentTarget.complete);
+        }}
+      />
+    </span>
   );
 }
