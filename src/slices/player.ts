@@ -1,9 +1,9 @@
 import { Result } from '@faergeek/monads';
 import { invariant } from '@tanstack/react-router';
-import { deepEqual } from 'fast-equals';
 import * as v from 'valibot';
 import type { StateCreator } from 'zustand';
 
+import { deepEqual } from '../_core/deepEqual';
 import { getLocalStorageValue } from '../_core/localStorage';
 import { mergeIntoMap } from '../_core/mergeIntoMap';
 import { throttle } from '../_core/throttle';

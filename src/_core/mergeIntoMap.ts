@@ -1,4 +1,4 @@
-import { deepEqual } from 'fast-equals';
+import { deepEqual } from './deepEqual';
 
 export function mergeIntoMap<T>(
   original: Map<string, T>,
