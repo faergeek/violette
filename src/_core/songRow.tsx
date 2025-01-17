@@ -96,6 +96,7 @@ export function SongRow({
                       'opacity-25': isCurrentInPlayer,
                     })}
                     coverArt={song.coverArt}
+                    lazy
                     sizes="3em"
                   />
                 )}

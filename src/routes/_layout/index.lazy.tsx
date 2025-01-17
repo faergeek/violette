@@ -28,6 +28,7 @@ export const Route = createLazyFileRoute('/_layout/')({
             key={id}
             coverArtSizes={CARD_GRID_COVER_ART_SIZES}
             id={id}
+            loadCoverArtLazily
           />
         ))}
       </CardGrid>

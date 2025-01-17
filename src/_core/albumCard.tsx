@@ -8,9 +8,11 @@ import { Skeleton } from './skeleton';
 export function AlbumCard({
   coverArtSizes,
   id,
+  loadCoverArtLazily,
 }: {
   coverArtSizes?: string;
   id?: string;
+  loadCoverArtLazily?: boolean;
 }) {
   const album = useAppStore(state =>
     id == null ? undefined : state.albums.baseById.get(id),
@@ -31,8 +33,9 @@ export function AlbumCard({
         {},
         <>
           <CoverArt
-            className="aspect-square w-full"
+            className="aspect-square w-full bg-muted/75"
             coverArt={album?.coverArt}
+            lazy={loadCoverArtLazily}
             sizes={coverArtSizes}
           />
 

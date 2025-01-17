@@ -114,6 +114,7 @@ export function NowPlaying() {
               <CoverArt
                 className="size-16 shrink-0 rounded-none"
                 coverArt={song.coverArt}
+                lazy
                 sizes="4em"
               />
             ) : (
@@ -281,6 +282,7 @@ export function NowPlaying() {
                 <CoverArt
                   className="size-12"
                   coverArt={song.coverArt}
+                  lazy
                   sizes="3em"
                 />
               </Link>

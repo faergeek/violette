@@ -295,6 +295,7 @@ export function ArtistPage({
                         key={id}
                         coverArtSizes={CARD_GRID_COVER_ART_SIZES}
                         id={id}
+                        loadCoverArtLazily
                       />
                     ))
                 : new Array<null>(6)
@@ -348,6 +349,7 @@ export function ArtistPage({
                       key={id}
                       coverArtSizes={CARD_GRID_COVER_ART_SIZES}
                       id={id}
+                      loadCoverArtLazily
                     />
                   ))
               : new Array<null>(12)
@@ -380,6 +382,7 @@ export function ArtistPage({
                           key={id}
                           coverArtSizes={CARD_GRID_COVER_ART_SIZES}
                           id={id}
+                          loadCoverArtLazily
                         />
                       ))}
                     </CardGrid>
@@ -487,6 +490,7 @@ function SimilarArtistsSection({
                   key={id}
                   coverArtSizes={CARD_GRID_COVER_ART_SIZES}
                   id={id}
+                  loadCoverArtLazily
                 />
               ))}
       </CardGrid>
