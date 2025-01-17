@@ -1,7 +1,6 @@
+import clsx from 'clsx';
 import type { JSX } from 'react';
 import { createElement } from 'react';
-
-import { cn } from './cn';
 
 export function Card<
   T extends
@@ -16,7 +15,7 @@ export function Card<
   as?: T;
 }) {
   return createElement(as ?? 'article', {
-    className: cn(
+    className: clsx(
       'rounded-lg border bg-card text-card-foreground shadow-sm',
       className,
     ),
@@ -37,7 +36,7 @@ export function CardHeader<
   as?: T;
 }) {
   return createElement(as ?? 'header', {
-    className: cn('flex flex-col space-y-1.5 p-6', className),
+    className: clsx('flex flex-col space-y-1.5 p-6', className),
     ...otherProps,
   });
 }
@@ -55,7 +54,10 @@ export function CardTitle<
   as?: T;
 }) {
   return createElement(as ?? 'h2', {
-    className: cn('text-2xl font-bold leading-none tracking-tight', className),
+    className: clsx(
+      'text-2xl font-bold leading-none tracking-tight',
+      className,
+    ),
     ...otherProps,
   });
 }
@@ -73,7 +75,7 @@ export function CardDescription<
   as?: T;
 }) {
   return createElement(as ?? 'div', {
-    className: cn('text-sm text-muted-foreground', className),
+    className: clsx('text-sm text-muted-foreground', className),
     ...otherProps,
   });
 }
@@ -91,7 +93,7 @@ export function CardContent<
   as?: T;
 }) {
   return createElement(as ?? 'div', {
-    className: cn('p-6 pt-0', className),
+    className: clsx('p-6 pt-0', className),
     ...otherProps,
   });
 }
@@ -109,7 +111,7 @@ export function CardFooter<
   as?: T;
 }) {
   return createElement(as ?? 'footer', {
-    className: cn('p-6 pt-0', className),
+    className: clsx('p-6 pt-0', className),
     ...otherProps,
   });
 }

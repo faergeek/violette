@@ -1,9 +1,9 @@
 import { Link, useRouterState } from '@tanstack/react-router';
+import clsx from 'clsx';
 import { CirclePause, CirclePlay, EllipsisVertical } from 'lucide-react';
 import { cloneElement, lazy, memo, Suspense } from 'react';
 
 import { StoreConsumer, useAppStore } from '../store/react';
-import { cn } from './cn';
 import { CoverArt } from './coverArt';
 import { formatDuration } from './formatDuration';
 import { IconButton } from './iconButton';
@@ -38,7 +38,7 @@ export const SongRow = memo(function SongRow({
 
   return (
     <div
-      className={cn(
+      className={clsx(
         'group -mt-[1px] flex items-center gap-2 border-y p-2 first:mt-0 hover:bg-muted/50',
         {
           'relative border-primary bg-secondary hover:bg-secondary': isSelected,
@@ -47,7 +47,7 @@ export const SongRow = memo(function SongRow({
       id={elementId}
     >
       <div
-        className={cn(
+        className={clsx(
           'relative flex shrink-0 justify-end text-right',
           isAlbumView ? 'basis-6' : 'basis-12',
         )}
@@ -64,7 +64,7 @@ export const SongRow = memo(function SongRow({
               >
                 {isCurrentInPlayer => (
                   <span
-                    className={cn(
+                    className={clsx(
                       'slashed-zero tabular-nums text-muted-foreground group-hover:text-transparent',
                       { 'text-transparent': isCurrentInPlayer },
                     )}
@@ -79,7 +79,7 @@ export const SongRow = memo(function SongRow({
               >
                 {isCurrentInPlayer => (
                   <CoverArt
-                    className={cn('size-12 group-hover:opacity-25', {
+                    className={clsx('size-12 group-hover:opacity-25', {
                       'opacity-25': isCurrentInPlayer,
                     })}
                     coverArt={song.coverArt}
@@ -117,7 +117,7 @@ export const SongRow = memo(function SongRow({
                 >
                   {isCurrentInPlayer => (
                     <button
-                      className={cn(
+                      className={clsx(
                         'invisible absolute inset-0 m-auto flex items-center justify-center rounded-full group-hover:visible',
                         { visible: isCurrentInPlayer && paused },
                       )}

@@ -1,6 +1,5 @@
 import { Root } from '@radix-ui/react-separator';
-
-import { cn } from './cn';
+import clsx from 'clsx';
 
 export function Separator({
   className,
@@ -10,7 +9,7 @@ export function Separator({
 }: React.ComponentProps<typeof Root>) {
   return (
     <Root
-      className={cn(
+      className={clsx(
         'shrink-0 bg-border',
         orientation === 'horizontal' ? 'h-[1px] w-full' : 'h-full w-[1px]',
         className,

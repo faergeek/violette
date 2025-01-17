@@ -1,7 +1,6 @@
+import clsx from 'clsx';
 import type { JSX } from 'react';
 import { createElement } from 'react';
-
-import { cn } from './cn';
 
 export function Container<
   T extends
@@ -16,7 +15,7 @@ export function Container<
   as?: T;
 }) {
   return createElement(as ?? 'div', {
-    className: cn('container mx-auto px-4', className),
+    className: clsx('container mx-auto px-4', className),
     ...otherProps,
   });
 }

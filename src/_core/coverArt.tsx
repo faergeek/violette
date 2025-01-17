@@ -1,7 +1,7 @@
+import clsx from 'clsx';
 import { useMemo } from 'react';
 
 import { useAppStore } from '../store/react';
-import { cn } from './cn';
 import { createCoverArtSrcSet } from './createCoverArtSrcSet';
 
 export function CoverArt({
@@ -32,7 +32,7 @@ export function CoverArt({
     <img
       {...otherProps}
       alt={alt}
-      className={cn('rounded-md object-contain', className)}
+      className={clsx('rounded-md object-contain', className)}
       decoding={lazy ? 'async' : undefined}
       loading={lazy ? 'lazy' : undefined}
       sizes={sizes}

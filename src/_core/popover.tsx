@@ -1,6 +1,5 @@
 import { Arrow, Content, Portal, Root, Trigger } from '@radix-ui/react-popover';
-
-import { cn } from './cn';
+import clsx from 'clsx';
 
 export const Popover = Root;
 export const PopoverTrigger = Trigger;
@@ -13,7 +12,7 @@ export function PopoverContent({
   return (
     <Portal>
       <Content
-        className={cn(
+        className={clsx(
           'z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
           className,
         )}
@@ -30,7 +29,7 @@ export function PopoverArrow({
 }: React.ComponentProps<typeof Arrow>) {
   return (
     <Arrow
-      className={cn('-mt-[1px] fill-background drop-shadow-md', className)}
+      className={clsx('-mt-[1px] fill-background drop-shadow-md', className)}
       {...otherProps}
     />
   );

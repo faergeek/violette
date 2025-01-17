@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import clsx from 'clsx';
 import {
   ListMusic,
   Pause,
@@ -19,7 +20,6 @@ import { getAlbumSongElementId } from '../pages/album';
 import { PreferredGain } from '../slices/player';
 import type { StoreState } from '../store/create';
 import { StoreConsumer, useAppStore } from '../store/react';
-import { cn } from './cn';
 import { CoverArt } from './coverArt';
 import { IconButton } from './iconButton';
 import { Label } from './label';
@@ -243,7 +243,7 @@ export function NowPlaying() {
         </StoreConsumer>
 
         <IconButton
-          className={cn({
+          className={clsx({
             'text-primary enabled:hover:text-primary': repeatMode != null,
           })}
           icon={repeatMode === 'repeat-one' ? <Repeat1 /> : <Repeat />}
@@ -384,7 +384,7 @@ export function NowPlaying() {
             >
               {preferredGain => (
                 <RadioGroup
-                  className="mb-4 flex"
+                  className="mb-4 grid-flow-col justify-start"
                   value={preferredGain || ''}
                   onValueChange={newValue => {
                     setReplayGainSettings(replayGainSettings => ({

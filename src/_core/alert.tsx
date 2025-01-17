@@ -1,7 +1,6 @@
 import type { VariantProps } from 'class-variance-authority';
 import { cva } from 'class-variance-authority';
-
-import { cn } from './cn';
+import clsx from 'clsx';
 
 const alertVariants = cva(
   'relative w-full rounded-lg border p-4 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7',
@@ -26,7 +25,7 @@ export function Alert({
 }: React.ComponentProps<'div'> & VariantProps<typeof alertVariants>) {
   return (
     <div
-      className={cn(alertVariants({ variant }), className)}
+      className={clsx(alertVariants({ variant }), className)}
       role="alert"
       {...otherProps}
     />
@@ -39,7 +38,10 @@ export function AlertTitle({
 }: React.ComponentProps<'h5'>) {
   return (
     <h5
-      className={cn('mb-1 font-medium leading-none tracking-tight', className)}
+      className={clsx(
+        'mb-1 font-medium leading-none tracking-tight',
+        className,
+      )}
       {...otherProps}
     />
   );
@@ -51,7 +53,7 @@ export function AlertDescription({
 }: React.ComponentProps<'div'>) {
   return (
     <div
-      className={cn('text-sm [&_p]:leading-relaxed', className)}
+      className={clsx('text-sm [&_p]:leading-relaxed', className)}
       {...otherProps}
     />
   );

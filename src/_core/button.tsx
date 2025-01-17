@@ -1,8 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
+import clsx from 'clsx';
 import { Loader2 } from 'lucide-react';
 import type { JSX } from 'react';
-
-import { cn } from './cn';
 
 const variants = cva(
   'inline-flex cursor-not-allowed items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium opacity-50 transition-colors [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0 [:where(:enabled,:any-link)&]:cursor-pointer [:where(:enabled,:any-link)&]:opacity-100',
@@ -63,12 +62,17 @@ export function Button<
   } = props;
 
   return (
-    <As className={cn(variants({ className, size, variant }))} {...otherProps}>
+    <As
+      className={clsx(variants({ className, size, variant }))}
+      {...otherProps}
+    >
       {loading && (
         <Loader2 className="absolute animate-spin self-center text-primary-foreground" />
       )}
 
-      <span className={cn('contents', { invisible: loading })}>{children}</span>
+      <span className={clsx('contents', { invisible: loading })}>
+        {children}
+      </span>
     </As>
   );
 }

@@ -1,4 +1,4 @@
-import { cn } from './cn';
+import clsx from 'clsx';
 
 export function Label({
   className,
@@ -6,7 +6,7 @@ export function Label({
 }: React.ComponentProps<'label'>) {
   return (
     <label
-      className={cn(
+      className={clsx(
         'block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
         className,
       )}

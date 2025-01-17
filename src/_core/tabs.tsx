@@ -1,6 +1,5 @@
 import { Content, List, Root, Trigger } from '@radix-ui/react-tabs';
-
-import { cn } from './cn';
+import clsx from 'clsx';
 
 export const Tabs = Root;
 
@@ -11,7 +10,7 @@ export function TabsList({
   return (
     <div className="overflow-auto">
       <List
-        className={cn(
+        className={clsx(
           'inline-flex items-center justify-center space-x-2 p-1 text-sm font-bold text-muted-foreground',
           className,
         )}
@@ -27,7 +26,7 @@ export function TabsTrigger({
 }: React.ComponentProps<typeof Trigger>) {
   return (
     <Trigger
-      className={cn(
+      className={clsx(
         'whitespace-nowrap border-b-2 border-transparent p-1 tracking-widest transition-colors [font-variant-caps:all-small-caps] data-[state=active]:border-primary data-[state=active]:text-foreground',
         className,
       )}
@@ -40,5 +39,5 @@ export function TabsContent({
   className,
   ...props
 }: React.ComponentProps<typeof Content>) {
-  return <Content className={cn('mt-2', className)} {...props} />;
+  return <Content className={clsx('mt-2', className)} {...props} />;
 }
