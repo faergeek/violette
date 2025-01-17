@@ -1,4 +1,4 @@
-import { Link, useLocation } from '@tanstack/react-router';
+import { Link, useRouterState } from '@tanstack/react-router';
 import {
   CirclePause,
   CirclePlay,
@@ -43,11 +43,12 @@ export function SongRow({
   songId,
   songIdsToPlay,
 }: Props) {
-  const location = useLocation();
   const startPlaying = useAppStore(state => state.player.startPlaying);
   const togglePaused = useAppStore(state => state.player.togglePaused);
 
-  const isSelected = location.hash === elementId;
+  const isSelected = useRouterState({
+    select: state => state.location.hash === elementId,
+  });
 
   return (
     <div
