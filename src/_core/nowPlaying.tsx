@@ -111,13 +111,11 @@ export function NowPlaying() {
         <StoreConsumer selector={getCurrentSong}>
           {song =>
             song ? (
-              <span className="shrink-0">
-                <CoverArt
-                  className="size-16 rounded-none"
-                  coverArt={song.coverArt}
-                  sizes="4em"
-                />
-              </span>
+              <CoverArt
+                className="size-16 shrink-0 rounded-none"
+                coverArt={song.coverArt}
+                sizes="4em"
+              />
             ) : (
               <CoverArt className="size-16 rounded-none" />
             )
