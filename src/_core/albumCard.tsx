@@ -1,19 +1,21 @@
 import { Link } from '@tanstack/react-router';
-import { cloneElement } from 'react';
+import { cloneElement, memo } from 'react';
 
 import { useAppStore } from '../store/react';
 import { CoverArt } from './coverArt';
 import { Skeleton } from './skeleton';
 
-export function AlbumCard({
-  coverArtSizes,
-  id,
-  loadCoverArtLazily,
-}: {
+interface Props {
   coverArtSizes?: string;
   id?: string;
   loadCoverArtLazily?: boolean;
-}) {
+}
+
+export const AlbumCard = memo(function AlbumCard({
+  coverArtSizes,
+  id,
+  loadCoverArtLazily,
+}: Props) {
   const album = useAppStore(state =>
     id == null ? undefined : state.albums.baseById.get(id),
   );
@@ -64,4 +66,4 @@ export function AlbumCard({
       </div>
     </article>
   );
-}
+});

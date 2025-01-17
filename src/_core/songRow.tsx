@@ -10,7 +10,7 @@ import {
   ListStart,
   Play,
 } from 'lucide-react';
-import { cloneElement } from 'react';
+import { cloneElement, memo } from 'react';
 
 import { StoreConsumer, useAppStore } from '../store/react';
 import { cn } from './cn';
@@ -35,7 +35,7 @@ interface Props {
   songIdsToPlay?: string[];
 }
 
-export function SongRow({
+export const SongRow = memo(function SongRow({
   elementId,
   isAlbumView,
   isCompilation,
@@ -341,4 +341,4 @@ export function SongRow({
       </div>
     </div>
   );
-}
+});
