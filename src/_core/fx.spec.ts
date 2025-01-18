@@ -345,6 +345,27 @@ test('Fx.ask', () => {
   );
 });
 
+test('Fx#provide', () => {
+  expectTypeOf(
+    Fx.ask<{ numbers: number[] }>().provide({ numbers: [1, 2, 3] }),
+  ).toEqualTypeOf<Fx<{ numbers: number[] }, never, unknown>>();
+
+  expectTypeOf(
+    Fx.ask<{ strings: string[] }>().provide({ strings: ['foo', 'bar'] }),
+  ).toEqualTypeOf<Fx<{ strings: string[] }, never, unknown>>();
+
+  fc.assert(
+    fc.property(fc.anything(), thing => {
+      const result = Fx.ask().provide(thing).run(null);
+
+      result.match({
+        Err: () => expect.unreachable(),
+        Ok: env => expect(env).toBe(thing),
+      });
+    }),
+  );
+});
+
 test('Fx.sync', () => {
   const getNumber = Fx.sync(function* f() {
     const { numbers } = yield* Fx.ask<{ numbers: number[] }>();

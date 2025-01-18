@@ -1,6 +1,6 @@
 import { AlertCircle } from 'lucide-react';
 
-import type { SubsonicError } from '../api/types';
+import type { SubsonicError } from '../api/subsonic/makeRequest';
 import { Alert, AlertDescription, AlertTitle } from './alert';
 
 function formatSubsonicError(error: SubsonicError) {

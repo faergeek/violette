@@ -20,8 +20,9 @@ import { Input } from '../_core/input';
 import { Label } from '../_core/label';
 import { Logo } from '../_core/logo';
 import { SubsonicApiError } from '../_core/subsonicApiError';
-import { subsonicPing } from '../api/subsonic';
-import type { SubsonicCredentials, SubsonicError } from '../api/types';
+import type { SubsonicError } from '../api/subsonic/makeRequest';
+import { subsonicPing } from '../api/subsonic/methods/ping';
+import type { SubsonicCredentials } from '../api/subsonic/types/credentials';
 import { useAppStore } from '../store/react';
 
 const loginFormSchema = v.object({

@@ -54,6 +54,23 @@ export class Fx<T = never, E = never, R = unknown> {
     return Fx.Sync<R, never, R>(Fx.Ok);
   }
 
+  provide(env: R): Fx<T, E, unknown> {
+    const v = this.#v;
+
+    switch (v.tag) {
+      case OK:
+        return Fx.Ok(v.value);
+      case ERR:
+        return Fx.Err(v.err);
+      case SYNC:
+        return Fx.Sync<T, E, unknown>(() => v.f(env).provide(env));
+      case ASYNC:
+        return Fx.Async<T, E, unknown>(() =>
+          v.f(env).then(fx => fx.provide(env)),
+        );
+    }
+  }
+
   flatMap<U, F>(f: (value: T) => Fx<U, F, R>): Fx<U, E | F, R> {
     const v = this.#v;
 

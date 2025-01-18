@@ -1,7 +1,7 @@
 import type { StateCreator } from 'zustand';
 
 import { getLocalStorageValue } from '../_core/localStorage';
-import { SubsonicCredentials } from '../api/types';
+import { SubsonicCredentials } from '../api/subsonic/types/credentials';
 import type { StoreState } from '../store/create';
 
 const CREDENTIALS_LOCAL_STORAGE_KEY = 'subsonic-credentials';
@@ -14,7 +14,6 @@ export interface AuthSlice {
 
 export const authSlice: StateCreator<StoreState, [], [], AuthSlice> = (
   set,
-  get,
 ): AuthSlice => ({
   clearSubsonicCredentials() {
     set(prevState => ({
@@ -37,10 +36,6 @@ export const authSlice: StateCreator<StoreState, [], [], AuthSlice> = (
         credentials,
       },
     }));
-
-    const { player } = get();
-
-    player.init(credentials);
 
     localStorage.setItem(
       CREDENTIALS_LOCAL_STORAGE_KEY,

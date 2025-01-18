@@ -1,5 +1,5 @@
-import { subsonicGetCoverArtUrl } from '../api/subsonic';
-import type { SubsonicCredentials } from '../api/types';
+import { subsonicGetCoverArtUrl } from '../api/subsonic/methods/getCoverArtUrl';
+import type { SubsonicCredentials } from '../api/subsonic/types/credentials';
 
 export function createCoverArtSrcSet({
   coverArt,
