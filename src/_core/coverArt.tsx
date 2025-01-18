@@ -46,7 +46,8 @@ export function CoverArt({
         {...otherProps}
         ref={imgRef}
         alt={alt}
-        className={clsx('size-full overflow-clip object-contain opacity-0', {
+        className={clsx('size-full overflow-clip object-contain', {
+          'opacity-0': !isLoaded || !srcSet,
           'opacity-100': isLoaded && srcSet,
         })}
         decoding={lazy ? 'async' : undefined}
