@@ -47,7 +47,7 @@
   }
 
   * {
-    @apply break-all border-border;
+    @apply break-words border-border;
   }
 
   :any-link:hover {

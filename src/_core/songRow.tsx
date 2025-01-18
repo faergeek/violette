@@ -39,8 +39,9 @@ export const SongRow = memo(function SongRow({
   return (
     <div
       className={clsx(
-        'group -mt-[1px] flex items-center gap-2 border-y p-2 first:mt-0 hover:bg-muted/50',
+        'group -mt-[1px] flex items-center gap-2 border-y p-2 first:mt-0',
         {
+          'hover:bg-muted/50': !isSelected,
           'relative border-primary bg-secondary hover:bg-secondary': isSelected,
         },
       )}
@@ -64,10 +65,11 @@ export const SongRow = memo(function SongRow({
               >
                 {isCurrentInPlayer => (
                   <span
-                    className={clsx(
-                      'slashed-zero tabular-nums text-muted-foreground group-hover:text-transparent',
-                      { 'text-transparent': isCurrentInPlayer },
-                    )}
+                    className={clsx('slashed-zero tabular-nums', {
+                      'text-muted-foreground group-hover:text-transparent':
+                        !isCurrentInPlayer,
+                      'text-transparent': isCurrentInPlayer,
+                    })}
                   >
                     {song?.track ?? '\u00a0'}
                   </span>
@@ -118,8 +120,12 @@ export const SongRow = memo(function SongRow({
                   {isCurrentInPlayer => (
                     <button
                       className={clsx(
-                        'invisible absolute inset-0 m-auto flex items-center justify-center rounded-full group-hover:visible',
-                        { visible: isCurrentInPlayer && paused },
+                        'absolute inset-0 m-auto flex items-center justify-center rounded-full',
+                        {
+                          'invisible group-hover:visible':
+                            !isCurrentInPlayer || !paused,
+                          visible: isCurrentInPlayer && paused,
+                        },
                       )}
                       type="button"
                       onClick={() => {
