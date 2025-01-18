@@ -1,4 +1,4 @@
-import type { SubsonicCredentials } from '../api/types';
+import type { SubsonicCredentials } from '../api/subsonic/types/credentials';
 import { createCoverArtSrcSet } from './createCoverArtSrcSet';
 
 export function preloadCoverArt({

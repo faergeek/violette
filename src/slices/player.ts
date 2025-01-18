@@ -1,20 +1,14 @@
-import { Result } from '@faergeek/monads';
 import { invariant } from '@tanstack/react-router';
-import { deepEqual } from 'fast-equals';
 import * as v from 'valibot';
 import type { StateCreator } from 'zustand';
 
+import { deepEqual } from '../_core/deepEqual';
 import { getLocalStorageValue } from '../_core/localStorage';
-import { mergeIntoMap } from '../_core/mergeIntoMap';
 import { throttle } from '../_core/throttle';
-import {
-  subsonicGetCoverArtUrl,
-  subsonicGetPlayQueue,
-  subsonicGetStreamUrl,
-  subsonicSavePlayQueue,
-  subsonicScrobble,
-} from '../api/subsonic';
-import type { SubsonicCredentials } from '../api/types';
+import { subsonicGetCoverArtUrl } from '../api/subsonic/methods/getCoverArtUrl';
+import { subsonicGetStreamUrl } from '../api/subsonic/methods/getStreamUrl';
+import { subsonicSavePlayQueue } from '../api/subsonic/methods/savePlayQueue';
+import { subsonicScrobble } from '../api/subsonic/methods/scrobble';
 import type { StoreState } from '../store/create';
 
 const REPLAY_GAIN_LOCAL_STORAGE_KEY = 'replayGain';
@@ -43,7 +37,6 @@ export interface PlayerSlice {
   duration: number | undefined;
   goToNextSong: () => void;
   goToPrevSong: () => void;
-  init(credentials: SubsonicCredentials): Promise<void>;
   isInitialized: boolean;
   muted: boolean;
   paused: boolean;
@@ -108,8 +101,8 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
     songId: string,
     queuedSongIds = get().player.queuedSongIds,
   ) {
-    const { auth } = get();
-    invariant(auth.credentials);
+    const { credentials } = get().auth;
+    invariant(credentials);
 
     set(prevState => ({
       player: {
@@ -122,7 +115,7 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
     play();
 
     await subsonicSavePlayQueue(queuedSongIds, songId)
-      .runAsync({ credentials: auth.credentials })
+      .runAsync({ credentials })
       .then(result => result.assertOk());
   }
 
@@ -202,12 +195,13 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
   }
 
   const saveCurrentTime = throttle(5000, async () => {
-    const { auth, player } = get();
-    if (auth.credentials == null || player.currentSongId == null) return;
+    const { player } = get();
+    const { credentials } = get().auth;
+    if (credentials == null || player.currentSongId == null) return;
 
     await subsonicSavePlayQueue(player.queuedSongIds, player.currentSongId, {
       position: Math.floor(audio.currentTime * 1000),
-    }).runAsync({ credentials: auth.credentials });
+    }).runAsync({ credentials });
   });
 
   audio.addEventListener('ended', goToNextSong);
@@ -421,42 +415,6 @@ export const playerSlice: StateCreator<StoreState, [], [], PlayerSlice> = (
     duration: undefined,
     goToNextSong,
     goToPrevSong,
-    async init(credentials) {
-      if (!credentials || get().player.isInitialized) return;
-
-      const playQueue = await subsonicGetPlayQueue()
-        .runAsync({ credentials })
-        .then(result =>
-          result
-            .flatMapErr(err =>
-              err.type === 'api-error' && err.code === 70
-                ? Result.Ok(undefined)
-                : Result.Err(err),
-            )
-            .assertOk(),
-        );
-
-      const currentSongId = playQueue?.current;
-
-      if (currentSongId != null) {
-        setCurrentTime((playQueue?.position ?? 0) / 1000);
-      }
-
-      set(prevState => ({
-        player: {
-          ...prevState.player,
-          currentSongId,
-          isInitialized: true,
-          queuedSongIds: playQueue?.entry.map(song => song.id) ?? [],
-        },
-        songs: {
-          ...prevState.songs,
-          byId: playQueue?.entry
-            ? mergeIntoMap(get().songs.byId, playQueue.entry, x => x.id)
-            : get().songs.byId,
-        },
-      }));
-    },
     isInitialized: false,
     muted: false,
     paused: true,

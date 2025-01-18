@@ -3,7 +3,8 @@ import { createContext, useContext } from 'react';
 import type { StoreApi } from 'zustand';
 import { useStore } from 'zustand';
 
-import type { StoreState } from './create';
+import type { Fx } from '../_core/fx';
+import type { AppStore, StoreState } from './create';
 
 const StoreContext = createContext<StoreApi<StoreState> | null>(null);
 
@@ -25,6 +26,12 @@ function useStoreFromContext() {
 
 export function useAppStore<T>(selector: (state: StoreState) => T) {
   return useStore(useStoreFromContext(), selector);
+}
+
+export function useRunStoreFx() {
+  const store = useStoreFromContext();
+
+  return <T, E>(fx: Fx<T, E, { store: AppStore }>) => fx.runAsync({ store });
 }
 
 export function StoreConsumer<T>({

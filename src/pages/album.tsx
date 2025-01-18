@@ -10,7 +10,7 @@ import { Prose } from '../_core/prose';
 import { Skeleton } from '../_core/skeleton';
 import { SongList } from '../_core/songList';
 import { StarButton } from '../_core/starButton';
-import type { AlbumInfo } from '../api/types';
+import type { AlbumInfo } from '../api/subsonic/types/albumInfo';
 import { StoreConsumer, useAppStore } from '../store/react';
 
 export function getAlbumSongElementId(songId: string) {

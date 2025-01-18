@@ -3,6 +3,9 @@ import { createFileRoute, invariant } from '@tanstack/react-router';
 import { MEDIA_HEADER_COVER_ART_SIZES } from '../../_core/mediaHeader';
 import { preloadCoverArt } from '../../_core/preloadCoverArt';
 import { requireSubsonicCredentials } from '../../_core/requireSubsonicCredentials';
+import { fetchArtistInfo } from '../../storeFx/fetchArtistInfo';
+import { fetchOneArtist } from '../../storeFx/fetchOneArtist';
+import { fetchTopSongs } from '../../storeFx/fetchTopSongs';
 
 export enum ArtistTab {
   Albums = 'albums',
@@ -13,9 +16,9 @@ export enum ArtistTab {
 export const Route = createFileRoute('/_layout/artist/$artistId')({
   beforeLoad: requireSubsonicCredentials,
   async loader({ context: { store }, params: { artistId } }) {
-    const fetchOnePromise = store
-      .getState()
-      .artists.fetchOne(artistId)
+    const fetchOnePromise = fetchOneArtist(artistId)
+      .runAsync({ store })
+      .then(result => result.assertOk())
       .then(() => {
         const state = store.getState();
         const initialArtist = state.artists.byId.get(artistId);
@@ -24,11 +27,9 @@ export const Route = createFileRoute('/_layout/artist/$artistId')({
         return initialArtist;
       });
 
-    const artistInfoPromise = store
-      .getState()
-      .artists.fetchArtistInfo(artistId, {
-        includeNotPresent: true,
-      });
+    const artistInfoPromise = fetchArtistInfo(artistId)
+      .runAsync({ store })
+      .then(result => result.assertOk());
 
     const deferredArtistInfo = artistInfoPromise.then(() => {
       const state = store.getState();
@@ -63,8 +64,9 @@ export const Route = createFileRoute('/_layout/artist/$artistId')({
     const initialAlbumIds = artists.albumIdsByArtistId.get(artistId);
     invariant(initialAlbumIds);
 
-    const deferredTopSongIds = artists
-      .fetchTopSongs(initialArtist.name)
+    const deferredTopSongIds = fetchTopSongs(initialArtist.name)
+      .runAsync({ store })
+      .then(result => result.assertOk())
       .then(() => {
         const state = store.getState();
         const topSongIds = state.artists.topSongIdsByArtistName.get(

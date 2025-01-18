@@ -1,12 +1,13 @@
-import { createFileRoute, invariant } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
 import { requireSubsonicCredentials } from '../_core/requireSubsonicCredentials';
+import { initializePlayQueue } from '../storeFx/initializePlayQueue';
 
 export const Route = createFileRoute('/_layout')({
   beforeLoad: requireSubsonicCredentials,
-  async loader({ context: { store } }) {
-    const { auth, player } = store.getState();
-    invariant(auth.credentials);
-    player.init(auth.credentials);
+  loader({ context: { store } }) {
+    initializePlayQueue()
+      .runAsync({ store })
+      .then(result => result.assertOk());
   },
 });

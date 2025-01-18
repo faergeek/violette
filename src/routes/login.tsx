@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import * as v from 'valibot';
 
 import { Fx } from '../_core/fx';
-import { subsonicPing } from '../api/subsonic';
+import { subsonicPing } from '../api/subsonic/methods/ping';
 
 export const Route = createFileRoute('/login')({
   validateSearch: v.object({

@@ -3,6 +3,8 @@ import { createFileRoute, invariant } from '@tanstack/react-router';
 import { MEDIA_HEADER_COVER_ART_SIZES } from '../../_core/mediaHeader';
 import { preloadCoverArt } from '../../_core/preloadCoverArt';
 import { requireSubsonicCredentials } from '../../_core/requireSubsonicCredentials';
+import { fetchAlbumInfo } from '../../storeFx/fetchAlbumInfo';
+import { fetchOneAlbum } from '../../storeFx/fetchOneAlbum';
 
 export const Route = createFileRoute('/_layout/album/$albumId')({
   beforeLoad: requireSubsonicCredentials,
@@ -10,7 +12,9 @@ export const Route = createFileRoute('/_layout/album/$albumId')({
     const { auth } = store.getState();
     invariant(auth.credentials);
 
-    const albumPromise = store.getState().albums.fetchOne(albumId);
+    const albumPromise = fetchOneAlbum(albumId)
+      .runAsync({ store })
+      .then(result => result.assertOk());
 
     const basePromise = albumPromise.then(() => {
       const state = store.getState();
@@ -35,9 +39,9 @@ export const Route = createFileRoute('/_layout/album/$albumId')({
     });
 
     return {
-      deferredAlbumInfo: store
-        .getState()
-        .albums.fetchInfo(albumId)
+      deferredAlbumInfo: fetchAlbumInfo(albumId)
+        .runAsync({ store })
+        .then(result => result.assertOk())
         .then(() => {
           const state = store.getState();
           const albumInfo = state.albums.infoById.get(albumId);

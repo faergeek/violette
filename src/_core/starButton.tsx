@@ -1,8 +1,10 @@
 import { Heart } from 'lucide-react';
 import { useOptimistic } from 'react';
 
-import type { StarParams } from '../api/types';
-import { useAppStore } from '../store/react';
+import type { StarParams } from '../api/subsonic/types/starParams';
+import { useRunStoreFx } from '../store/react';
+import { star } from '../storeFx/star';
+import { unstar } from '../storeFx/unstar';
 import { IconButton } from './iconButton';
 
 type Props = { className?: string } & (
@@ -25,8 +27,7 @@ export function StarButton({
   starred: starredProp,
   ...starParams
 }: Props) {
-  const star = useAppStore(state => state.star);
-  const unstar = useAppStore(state => state.unstar);
+  const runStoreFx = useRunStoreFx();
 
   const [starred, addOptimistic] = useOptimistic(
     starredProp,
@@ -50,7 +51,11 @@ export function StarButton({
 
         addOptimistic(newStarred);
 
-        return newStarred ? star(starParams) : unstar(starParams);
+        const result = newStarred
+          ? await runStoreFx(star(starParams))
+          : await runStoreFx(unstar(starParams));
+
+        result.assertOk();
       }}
       className="inline-flex"
     >
