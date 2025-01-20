@@ -35,6 +35,7 @@ export function PlaybackPosition() {
 
   return (
     <div
+      aria-label="Playback position"
       className="relative h-5 w-full touch-none select-none overflow-hidden bg-secondary"
       onPointerDownCapture={event => {
         if (duration == null) return;
@@ -93,7 +94,7 @@ export function PlaybackPosition() {
         >
           {scaleX => (
             <div
-              className="pointer-events-none absolute h-full w-full origin-left transform-gpu bg-primary will-change-transform"
+              className="pointer-events-none absolute h-full w-full origin-left transform bg-primary will-change-transform"
               style={{ ['--tw-scale-x' as string]: scaleX }}
             />
           )}
@@ -109,16 +110,22 @@ export function PlaybackPosition() {
           }
         >
           {formatted => (
-            <div className="pointer-events-none relative transform-gpu text-sm will-change-contents">
+            <time
+              aria-label="Position"
+              className="pointer-events-none relative text-sm will-change-contents"
+            >
               {formatted}
-            </div>
+            </time>
           )}
         </StoreConsumer>
 
         {duration != null && (
-          <div className="pointer-events-none relative ms-auto transform-gpu text-sm">
+          <time
+            aria-label="Song duration"
+            className="pointer-events-none relative ms-auto text-sm"
+          >
             {formatDuration(duration)}
-          </div>
+          </time>
         )}
       </div>
     </div>

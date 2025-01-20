@@ -22,6 +22,7 @@ export function MediaLinks({
     icon: React.ReactElement<{
       'aria-hidden': boolean;
       className: string;
+      style: React.CSSProperties;
     }>;
     label: string;
     url: string;
@@ -62,15 +63,15 @@ export function MediaLinks({
           links.map(link => (
             <a
               key={link.url}
-              className="inline-block space-x-2 whitespace-nowrap text-[color:var(--brand-color)]"
+              className="inline-flex items-center space-x-2 whitespace-nowrap"
               href={link.url}
               rel="noopener"
-              style={{ ['--brand-color' as string]: link.color }}
               target="_blank"
             >
               {cloneElement(link.icon, {
                 'aria-hidden': true,
-                className: 'inline-block',
+                className: 'inline-block ',
+                style: { color: link.color },
               })}
 
               <span className="align-middle">{link.label}</span>

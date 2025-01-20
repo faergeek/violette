@@ -1,4 +1,4 @@
-import { deepEqual } from './deepEqual';
+import { deepEqual } from '@tanstack/react-router';
 
 export function mergeIntoMap<T>(
   original: Map<string, T>,

@@ -41,7 +41,7 @@ export function CoverArt({
   }, []);
 
   return (
-    <span className={clsx('inline-block rounded-md', className)}>
+    <div className={clsx('overflow-clip rounded-md', className)}>
       <img
         {...otherProps}
         ref={imgRef}
@@ -68,6 +68,6 @@ export function CoverArt({
           setIsLoaded(event.currentTarget.complete);
         }}
       />
-    </span>
+    </div>
   );
 }

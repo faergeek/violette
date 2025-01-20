@@ -199,7 +199,7 @@ export function ArtistPage({
 
       <Tabs value={tabValue}>
         <TabsList>
-          <TabsTrigger asChild value="main">
+          <TabsTrigger value="main">
             <Link
               hash="main"
               hashScrollIntoView={false}
@@ -211,7 +211,7 @@ export function ArtistPage({
             </Link>
           </TabsTrigger>
 
-          <TabsTrigger asChild value={ArtistTab.TopSongs}>
+          <TabsTrigger value={ArtistTab.TopSongs}>
             <Link
               hash="top-songs"
               hashScrollIntoView={false}
@@ -223,7 +223,7 @@ export function ArtistPage({
             </Link>
           </TabsTrigger>
 
-          <TabsTrigger asChild value={ArtistTab.Albums}>
+          <TabsTrigger value={ArtistTab.Albums}>
             <Link
               hash="albums"
               hashScrollIntoView={false}
@@ -235,7 +235,7 @@ export function ArtistPage({
             </Link>
           </TabsTrigger>
 
-          <TabsTrigger asChild value={ArtistTab.SimilarArtists}>
+          <TabsTrigger value={ArtistTab.SimilarArtists}>
             <Link
               hash="similar-artists"
               hashScrollIntoView={false}

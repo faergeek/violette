@@ -1,4 +1,5 @@
-import { deepEqual } from '../_core/deepEqual';
+import { deepEqual } from '@tanstack/react-router';
+
 import { Fx } from '../_core/fx';
 import { mergeIntoMap } from '../_core/mergeIntoMap';
 import { subsonicGetArtists } from '../api/subsonic/methods/getArtists';
