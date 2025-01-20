@@ -1,13 +1,12 @@
 import { SiGithub } from '@icons-pack/react-simple-icons';
 
 import { Container } from './container';
-import { Separator } from './separator';
 
 export function Footer() {
   return (
     <footer className="mt-auto">
       <div className="mx-2 mt-10">
-        <Separator />
+        <hr className="h-[1px] w-full shrink-0 bg-border" />
       </div>
 
       <Container>

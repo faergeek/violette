@@ -7,7 +7,7 @@ export function Label({
   return (
     <label
       className={clsx(
-        'block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+        'block text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
         className,
       )}
       {...otherProps}

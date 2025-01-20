@@ -80,7 +80,7 @@ export function LoginPage() {
       <Container className="max-w-96 flex-1">
         <header className="flex items-center justify-center gap-2 py-4">
           <Logo className="size-8" />
-          <strong>Violette</strong>
+          <strong aria-hidden>Violette</strong>
         </header>
 
         <Card

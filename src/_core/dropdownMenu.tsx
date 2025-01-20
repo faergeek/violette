@@ -1,48 +1,41 @@
-import {
-  Content,
-  Item,
-  Portal,
-  Root,
-  Trigger,
-} from '@radix-ui/react-dropdown-menu';
+import type { Placement } from '@floating-ui/dom';
 import clsx from 'clsx';
 
-export const DropdownMenu = Root;
-export const DropdownMenuTrigger = Trigger;
+import { Popover, PopoverContent, PopoverReference } from './popover';
+
+export const DropdownMenu = Popover;
+export const DropdownMenuReference = PopoverReference;
 
 export function DropdownMenuContent({
-  className,
-  sideOffset = 4,
+  placement,
   ...otherProps
-}: React.ComponentProps<typeof Content>) {
+}: React.ComponentProps<'div'> & {
+  placement?: Placement | undefined;
+}) {
   return (
-    <Portal>
-      <Content
-        sideOffset={sideOffset}
-        className={clsx(
-          'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
-          className,
-        )}
+    <PopoverContent offsetOptions={{ mainAxis: 4 }} placement={placement}>
+      <div
         {...otherProps}
+        className="m-0 origin-top-right rounded-md border bg-background p-1 shadow-md [&:popover-open]:animate-in [&:popover-open]:fade-in-0 [&:popover-open]:zoom-in-95 [&:popover-open]:slide-in-from-top-2"
+        popover="auto"
+        role="menu"
       />
-    </Portal>
+    </PopoverContent>
   );
 }
 
 export function DropdownMenuItem({
   className,
-  inset,
   ...otherProps
-}: React.ComponentProps<typeof Item> & {
-  inset?: boolean;
-}) {
+}: React.ComponentProps<'button'>) {
   return (
-    <Item
+    <button
       className={clsx(
-        'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
-        inset && 'pl-8',
+        'flex w-full cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0',
         className,
       )}
+      role="menuitem"
+      type="button"
       {...otherProps}
     />
   );

@@ -1,6 +1,7 @@
 export function Logo(props: React.ComponentProps<'svg'>) {
   return (
     <svg
+      aria-label="Violette"
       width="24"
       height="24"
       fill="currentColor"

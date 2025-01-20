@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { createElement, memo } from 'react';
 
 import { SongRow } from './songRow';
 
@@ -19,12 +19,11 @@ export const SongList = memo(function SongList({
   songIds,
   songIdsToPlay = songIds,
 }: Props) {
-  return (
-    <>
-      {(songIds == null
-        ? new Array<undefined>(5).fill(undefined)
-        : songIds
-      ).map((songId, index) => (
+  return createElement(
+    isAlbumView ? 'ol' : 'ul',
+    {},
+    (songIds == null ? new Array<undefined>(5).fill(undefined) : songIds).map(
+      (songId, index) => (
         <SongRow
           key={songId ?? index}
           elementId={songId ? getSongElementId?.(songId) : undefined}
@@ -34,7 +33,7 @@ export const SongList = memo(function SongList({
           songId={songId}
           songIdsToPlay={songIdsToPlay}
         />
-      ))}
-    </>
+      ),
+    ),
   );
 });

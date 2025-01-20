@@ -2,16 +2,16 @@
   {
     "name": "css",
     "path": "dist/assets/**/*.css",
-    "limit": "6 kB"
+    "limit": "5 kB"
   },
   {
     "name": "js:eager",
     "path": "dist/assets/index-*.js",
-    "limit": "83 kB"
+    "limit": "79 kB"
   },
   {
     "name": "js:lazy",
     "path": ["dist/assets/**/*.js", "!dist/assets/index-*.js"],
-    "limit": "50 kB"
+    "limit": "30 kB"
   }
 ]

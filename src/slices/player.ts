@@ -1,8 +1,7 @@
-import { invariant } from '@tanstack/react-router';
+import { deepEqual, invariant } from '@tanstack/react-router';
 import * as v from 'valibot';
 import type { StateCreator } from 'zustand';
 
-import { deepEqual } from '../_core/deepEqual';
 import { getLocalStorageValue } from '../_core/localStorage';
 import { throttle } from '../_core/throttle';
 import { subsonicGetCoverArtUrl } from '../api/subsonic/methods/getCoverArtUrl';

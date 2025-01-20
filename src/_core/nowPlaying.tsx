@@ -20,17 +20,14 @@ import { getAlbumSongElementId } from '../pages/album';
 import { PreferredGain } from '../slices/player';
 import type { StoreState } from '../store/create';
 import { StoreConsumer, useAppStore } from '../store/react';
+import { Button } from './button';
 import { CoverArt } from './coverArt';
-import { IconButton } from './iconButton';
+import { formatGain } from './formatGain';
+import { H2 } from './headings';
 import { Label } from './label';
 import { PlaybackPosition } from './playbackPosition';
-import {
-  Popover,
-  PopoverArrow,
-  PopoverContent,
-  PopoverTrigger,
-} from './popover';
-import { RadioGroup, RadioGroupItem } from './radioGroup';
+import { Popover, PopoverContent, PopoverReference } from './popover';
+import { RadioGroup, RadioGroupItem, RadioGroupLabel } from './radio';
 import { Slider } from './slider';
 import { StarButton } from './starButton';
 
@@ -127,11 +124,15 @@ export function NowPlaying() {
           <StoreConsumer selector={getCurrentSong}>
             {song =>
               song && (
-                <div className="min-w-0">
-                  <div className="truncate">{song.title}</div>
+                <div aria-label="Song info" className="min-w-0">
+                  <div aria-label="Title" className="truncate">
+                    {song.title}
+                  </div>
 
                   <div className="truncate text-muted-foreground">
-                    <span>{song.artist}</span> &ndash; {song.album}
+                    <span aria-label="Artist">{song.artist}</span>
+                    <span aria-hidden> &ndash; </span>
+                    <span aria-label="Album">{song.album}</span>
                   </div>
                 </div>
               )
@@ -157,12 +158,15 @@ export function NowPlaying() {
               selector={state => state.player.queuedSongIds.length}
             >
               {queuedSongCount => (
-                <IconButton
+                <Button
+                  aria-label="Previous song"
                   className="hidden p-5 sm:block"
                   disabled={queuedSongCount === 0}
-                  icon={<SkipBack />}
+                  variant="icon"
                   onClick={goToPrevSong}
-                />
+                >
+                  <SkipBack role="none" />
+                </Button>
               )}
             </StoreConsumer>
 
@@ -172,14 +176,17 @@ export function NowPlaying() {
               {hasCurrentSong => (
                 <StoreConsumer selector={state => state.player.paused}>
                   {paused => (
-                    <IconButton
+                    <Button
+                      aria-label={paused ? 'Play' : 'Pause'}
                       className="p-5"
                       disabled={!hasCurrentSong}
-                      icon={paused ? <Play /> : <Pause />}
+                      variant="icon"
                       onClick={() => {
                         togglePaused();
                       }}
-                    />
+                    >
+                      {paused ? <Play role="none" /> : <Pause role="none" />}
+                    </Button>
                   )}
                 </StoreConsumer>
               )}
@@ -189,12 +196,15 @@ export function NowPlaying() {
               selector={state => state.player.queuedSongIds.length}
             >
               {queuedSongCount => (
-                <IconButton
+                <Button
+                  aria-label="Next song"
                   className="hidden p-5 sm:block"
                   disabled={queuedSongCount === 0}
-                  icon={<SkipForward />}
+                  variant="icon"
                   onClick={goToNextSong}
-                />
+                >
+                  <SkipForward role="none" />
+                </Button>
               )}
             </StoreConsumer>
           </div>
@@ -204,11 +214,14 @@ export function NowPlaying() {
       <div className="hidden items-center gap-4 px-4 py-2 md:flex">
         <StoreConsumer selector={state => state.player.queuedSongIds.length}>
           {queuedSongCount => (
-            <IconButton
+            <Button
+              aria-label="Previous song"
               disabled={queuedSongCount === 0}
-              icon={<SkipBack />}
+              variant="icon"
               onClick={goToPrevSong}
-            />
+            >
+              <SkipBack role="none" />
+            </Button>
           )}
         </StoreConsumer>
 
@@ -216,13 +229,16 @@ export function NowPlaying() {
           {hasCurrentSong => (
             <StoreConsumer selector={state => state.player.paused}>
               {paused => (
-                <IconButton
+                <Button
+                  aria-label={paused ? 'Play' : 'Pause'}
                   disabled={!hasCurrentSong}
-                  icon={paused ? <Play /> : <Pause />}
+                  variant="icon"
                   onClick={() => {
                     togglePaused();
                   }}
-                />
+                >
+                  {paused ? <Play role="none" /> : <Pause role="none" />}
+                </Button>
               )}
             </StoreConsumer>
           )}
@@ -230,23 +246,40 @@ export function NowPlaying() {
 
         <StoreConsumer selector={state => state.player.queuedSongIds.length}>
           {queuedSongCount => (
-            <IconButton
+            <Button
+              aria-label="Next song"
               disabled={queuedSongCount === 0}
-              icon={<SkipForward />}
+              variant="icon"
               onClick={goToNextSong}
-            />
+            >
+              <SkipForward role="none" />
+            </Button>
           )}
         </StoreConsumer>
 
         <StoreConsumer selector={state => state.player.queuedSongIds.length}>
-          {songCount => <IconButton icon={<ListMusic />} label={songCount} />}
+          {songCount => (
+            <Button aria-label="Now playing queue" variant="icon">
+              <ListMusic role="none" />
+              <span aria-label="Number of songs in a queue">{songCount}</span>
+            </Button>
+          )}
         </StoreConsumer>
 
-        <IconButton
+        <Button
+          aria-label={
+            repeatMode == null
+              ? 'Repeat all'
+              : {
+                  'repeat-all': 'Repeat all',
+                  'repeat-one': 'Repeat one',
+                }[repeatMode]
+          }
+          aria-pressed={repeatMode == null ? 'false' : 'true'}
           className={clsx({
             'text-primary enabled:hover:text-primary': repeatMode != null,
           })}
-          icon={repeatMode === 'repeat-one' ? <Repeat1 /> : <Repeat />}
+          variant="icon"
           onClick={() => {
             setRepeatMode(prevState => {
               switch (prevState) {
@@ -259,7 +292,13 @@ export function NowPlaying() {
               }
             });
           }}
-        />
+        >
+          {repeatMode === 'repeat-one' ? (
+            <Repeat1 role="none" />
+          ) : (
+            <Repeat role="none" />
+          )}
+        </Button>
 
         <StoreConsumer selector={getCurrentSong}>
           {song =>
@@ -275,6 +314,7 @@ export function NowPlaying() {
           {song =>
             song ? (
               <Link
+                aria-hidden
                 className="shrink-0"
                 params={{ albumId: song.albumId }}
                 to="/album/$albumId"
@@ -295,9 +335,10 @@ export function NowPlaying() {
         <StoreConsumer selector={getCurrentSong}>
           {song =>
             song && (
-              <div className="min-w-0">
+              <div aria-label="Song info" className="min-w-0">
                 <div className="truncate">
                   <Link
+                    aria-label="Title"
                     hash={getAlbumSongElementId(song.id)}
                     hashScrollIntoView={{
                       block: 'nearest',
@@ -320,11 +361,17 @@ export function NowPlaying() {
                     ) : (
                       <span />
                     ),
-                    {},
+                    { 'aria-label': 'Artist' },
                     song.artist,
-                  )}{' '}
-                  &ndash;{' '}
-                  <Link params={{ albumId: song.albumId }} to="/album/$albumId">
+                  )}
+
+                  <span aria-hidden> &ndash; </span>
+
+                  <Link
+                    aria-label="Album"
+                    params={{ albumId: song.albumId }}
+                    to="/album/$albumId"
+                  >
                     {song.album}
                   </Link>
                 </div>
@@ -343,119 +390,153 @@ export function NowPlaying() {
           }
         >
           {state => (
-            <IconButton
+            <Button
+              aria-label="Mute"
+              aria-pressed={state === 'muted'}
               className="ms-auto"
-              icon={
+              variant="icon"
+              onClick={toggleMuted}
+            >
+              {
                 {
-                  muted: <VolumeX />,
-                  volume1: <Volume1 />,
-                  volume2: <Volume2 />,
+                  muted: <VolumeX role="none" />,
+                  volume1: <Volume1 role="none" />,
+                  volume2: <Volume2 role="none" />,
                 }[state]
               }
-              onClick={toggleMuted}
-            />
+            </Button>
           )}
         </StoreConsumer>
 
-        <StoreConsumer selector={state => state.player.volume}>
-          {volume => (
-            <Slider
-              className="shrink-0 basis-32"
-              max={1}
-              step={0.05}
-              value={[volume]}
-              onValueChange={([newVolume]) => {
-                setVolume(newVolume);
-              }}
-            />
-          )}
-        </StoreConsumer>
+        <div>
+          <Label
+            className="text-center text-xs [font-variant-caps:all-small-caps]"
+            htmlFor="volume"
+          >
+            Volume
+          </Label>
+
+          <StoreConsumer selector={state => state.player.volume}>
+            {volume => (
+              <Slider
+                className="w-32"
+                id="volume"
+                max={1}
+                step={0.05}
+                value={volume}
+                onValueChange={setVolume}
+              />
+            )}
+          </StoreConsumer>
+        </div>
 
         <Popover>
-          <PopoverTrigger asChild>
-            <IconButton icon={<SlidersVertical />} />
-          </PopoverTrigger>
-
-          <PopoverContent align="end" className="hidden w-80 md:block">
-            <h2 className="mb-2 font-bold">ReplayGain</h2>
-
-            <StoreConsumer
-              selector={state => state.player.replayGainOptions.preferredGain}
+          <PopoverReference>
+            <Button
+              aria-label="ReplayGain settings"
+              popoverTarget="replay-gain-settings"
+              variant="icon"
             >
-              {preferredGain => (
-                <RadioGroup
-                  className="mb-4 grid-flow-col justify-start"
-                  value={preferredGain || ''}
-                  onValueChange={newValue => {
-                    setReplayGainSettings(replayGainSettings => ({
-                      ...replayGainSettings,
-                      preferredGain: v.parse(
-                        v.optional(v.enum(PreferredGain)),
-                        newValue || undefined,
-                      ),
-                    }));
-                  }}
+              <SlidersVertical role="none" />
+            </Button>
+          </PopoverReference>
+
+          <PopoverContent
+            offsetOptions={{ mainAxis: 4 }}
+            placement="bottom-end"
+            shiftOptions={{ padding: 4 }}
+            strategy="fixed"
+          >
+            <div
+              className="m-0 w-96 rounded-md border bg-background p-3 shadow-md [&:not(:popover-open)]:animate-out [&:popover-open]:animate-in [&:popover-open]:fade-in-0 [&:popover-open]:zoom-in-95 [&:popover-open]:slide-in-from-bottom-2"
+              id="replay-gain-settings"
+              popover="auto"
+            >
+              <H2 className="mb-4 [font-variant-caps:small-caps]">
+                ReplayGain
+              </H2>
+
+              <div className="space-y-1">
+                <StoreConsumer
+                  selector={state =>
+                    state.player.replayGainOptions.preferredGain
+                  }
                 >
-                  <Label className="flex cursor-pointer items-center space-x-2">
-                    <RadioGroupItem id="preferred-gain-none" value="" />
-                    <span>None</span>
+                  {preferredGain => (
+                    <RadioGroup
+                      className="[font-variant-caps:all-small-caps]"
+                      name="replay-gain"
+                      value={preferredGain || ''}
+                      onValueChange={newValue => {
+                        setReplayGainSettings(replayGainSettings => ({
+                          ...replayGainSettings,
+                          preferredGain: v.parse(
+                            v.optional(v.enum(PreferredGain)),
+                            newValue || undefined,
+                          ),
+                        }));
+                      }}
+                    >
+                      <RadioGroupLabel className="me-2">
+                        Normalization
+                      </RadioGroupLabel>
+
+                      <RadioGroupItem label="None" value="" />
+                      <RadioGroupItem
+                        label="Album"
+                        value={PreferredGain.Album}
+                      />
+                      <RadioGroupItem
+                        label="Track"
+                        value={PreferredGain.Track}
+                      />
+                    </RadioGroup>
+                  )}
+                </StoreConsumer>
+
+                <div className="flex items-center gap-2">
+                  <Label
+                    className="mt-2 shrink-0 pb-2 [font-variant-caps:all-small-caps]"
+                    htmlFor="pre-amp"
+                  >
+                    Pre-amp
                   </Label>
 
-                  <Label className="flex cursor-pointer items-center space-x-2">
-                    <RadioGroupItem
-                      id="preferred-gain-album"
-                      value={PreferredGain.Album}
-                    />
+                  <StoreConsumer
+                    selector={state => state.player.replayGainOptions.preAmp}
+                  >
+                    {preAmp => (
+                      <>
+                        <Slider
+                          id="pre-amp"
+                          markers={[-15, -10, -5, 0, 5, 10, 15].map(value => ({
+                            label: formatGain(value),
+                            value,
+                          }))}
+                          max={15}
+                          min={-15}
+                          step={0.5}
+                          value={preAmp}
+                          onValueChange={newPreAmp => {
+                            setReplayGainSettings(replayGainSettings => ({
+                              ...replayGainSettings,
+                              preAmp: newPreAmp,
+                              preferredGain:
+                                replayGainSettings.preferredGain ??
+                                PreferredGain.Album,
+                            }));
+                          }}
+                        />
 
-                    <span>Album</span>
-                  </Label>
-
-                  <Label className="flex cursor-pointer items-center space-x-2">
-                    <RadioGroupItem
-                      id="preferred-gain-track"
-                      value={PreferredGain.Track}
-                    />
-
-                    <span>Track</span>
-                  </Label>
-                </RadioGroup>
-              )}
-            </StoreConsumer>
-
-            <Label className="pb-2">Pre-amplification</Label>
-
-            <StoreConsumer
-              selector={state => state.player.replayGainOptions.preAmp}
-            >
-              {preAmp => (
-                <div className="flex flex-col gap-2">
-                  <Slider
-                    max={15}
-                    min={-15}
-                    step={0.5}
-                    value={[preAmp]}
-                    onValueChange={([newPreAmp]) => {
-                      setReplayGainSettings(replayGainSettings => ({
-                        ...replayGainSettings,
-                        preAmp: newPreAmp,
-                        preferredGain:
-                          replayGainSettings.preferredGain ??
-                          PreferredGain.Album,
-                      }));
-                    }}
-                  />
-
-                  <div className="flex justify-between text-sm slashed-zero tabular-nums">
-                    <div className="ms-auto">
-                      {preAmp > 0 ? '+' : preAmp < 0 ? '-' : undefined}
-                      {Math.abs(preAmp).toFixed(1)} dB
-                    </div>
-                  </div>
+                        <span className="shrink-0 font-mono text-xs">
+                          {formatGain(preAmp)} dB
+                        </span>
+                      </>
+                    )}
+                  </StoreConsumer>
                 </div>
-              )}
-            </StoreConsumer>
-
-            <PopoverArrow />
+              </div>
+            </div>
           </PopoverContent>
         </Popover>
       </div>

@@ -1,16 +1,30 @@
 import { Link, useRouterState } from '@tanstack/react-router';
 import clsx from 'clsx';
-import { CirclePause, CirclePlay, EllipsisVertical } from 'lucide-react';
-import { cloneElement, lazy, memo, Suspense } from 'react';
+import {
+  CirclePause,
+  CirclePlay,
+  Download,
+  EllipsisVertical,
+  Info,
+  ListEnd,
+  ListPlus,
+  ListStart,
+  Play,
+} from 'lucide-react';
+import { cloneElement, memo, useId } from 'react';
 
 import { StoreConsumer, useAppStore } from '../store/react';
+import { Button } from './button';
 import { CoverArt } from './coverArt';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuReference,
+} from './dropdownMenu';
 import { formatDuration } from './formatDuration';
-import { IconButton } from './iconButton';
 import { Skeleton } from './skeleton';
 import { StarButton } from './starButton';
-
-const SongMenu = lazy(() => import('./songMenu'));
 
 interface Props {
   elementId?: string;
@@ -36,10 +50,13 @@ export const SongRow = memo(function SongRow({
     select: state => state.location.hash === elementId,
   });
 
+  const menuPopoverId = useId();
+
   return (
-    <div
+    <li
+      aria-label="Song"
       className={clsx(
-        'group -mt-[1px] flex items-center gap-2 border-y p-2 first:mt-0',
+        'group -mt-[1px] flex items-center gap-2 overflow-clip border-y p-2 first:mt-0',
         {
           'hover:bg-muted/50': !isSelected,
           'relative border-primary bg-secondary hover:bg-secondary': isSelected,
@@ -105,9 +122,9 @@ export const SongRow = memo(function SongRow({
                 {isCurrentInPlayer =>
                   isCurrentInPlayer &&
                   !paused && (
-                    <span className="absolute inset-0 m-auto flex h-3 w-3 group-hover:invisible">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                    <span className="absolute inset-0 m-auto flex h-3 w-3 overflow-clip group-hover:invisible">
                       <span className="relative inline-flex h-3 w-3 rounded-full bg-primary" />
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                     </span>
                   )
                 }
@@ -119,6 +136,9 @@ export const SongRow = memo(function SongRow({
                 >
                   {isCurrentInPlayer => (
                     <button
+                      aria-label={
+                        isCurrentInPlayer && !paused ? 'Pause' : 'Play'
+                      }
                       className={clsx(
                         'absolute inset-0 m-auto flex items-center justify-center rounded-full',
                         {
@@ -138,9 +158,9 @@ export const SongRow = memo(function SongRow({
                     >
                       {cloneElement(
                         isCurrentInPlayer && !paused ? (
-                          <CirclePause />
+                          <CirclePause role="none" />
                         ) : (
-                          <CirclePlay />
+                          <CirclePlay role="none" />
                         ),
                         { className: 'stroke-primary size-8' },
                       )}
@@ -164,6 +184,7 @@ export const SongRow = memo(function SongRow({
               {song ? (
                 <div>
                   <Link
+                    aria-label="Title"
                     hash={elementId}
                     hashScrollIntoView={false}
                     params={{ albumId: song.albumId }}
@@ -218,6 +239,7 @@ export const SongRow = memo(function SongRow({
                       </>
                     )}
                     <Link
+                      aria-label="Album"
                       params={{ albumId: song.albumId }}
                       to="/album/$albumId"
                     >
@@ -240,7 +262,7 @@ export const SongRow = memo(function SongRow({
         >
           {song =>
             song ? (
-              formatDuration(song.duration)
+              <span aria-label="Duration">{formatDuration(song.duration)}</span>
             ) : (
               <Skeleton className="inline-block w-full" />
             )
@@ -264,13 +286,81 @@ export const SongRow = memo(function SongRow({
         </StoreConsumer>
 
         <span className="ms-2 flex">
-          <Suspense
-            fallback={<IconButton disabled icon={<EllipsisVertical />} />}
-          >
-            <SongMenu />
-          </Suspense>
+          <DropdownMenu>
+            <DropdownMenuReference>
+              <Button
+                aria-label="Song menu"
+                popoverTarget={menuPopoverId}
+                variant="icon"
+              >
+                <EllipsisVertical role="none" />
+              </Button>
+            </DropdownMenuReference>
+
+            <DropdownMenuContent id={menuPopoverId} placement="bottom-end">
+              <DropdownMenuItem
+                onClick={() => {
+                  // eslint-disable-next-line no-alert
+                  alert('TODO');
+                }}
+              >
+                <Play role="none" />
+                Play now
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => {
+                  // eslint-disable-next-line no-alert
+                  alert('TODO');
+                }}
+              >
+                <ListStart role="none" />
+                Play next
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => {
+                  // eslint-disable-next-line no-alert
+                  alert('TODO');
+                }}
+              >
+                <ListEnd role="none" />
+                Play last
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => {
+                  // eslint-disable-next-line no-alert
+                  alert('TODO');
+                }}
+              >
+                <ListPlus role="none" />
+                Add to Playlist&hellip;
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => {
+                  // eslint-disable-next-line no-alert
+                  alert('TODO');
+                }}
+              >
+                <Info role="none" />
+                Info
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => {
+                  // eslint-disable-next-line no-alert
+                  alert('TODO');
+                }}
+              >
+                <Download role="none" />
+                Download
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </span>
       </div>
-    </div>
+    </li>
   );
 });

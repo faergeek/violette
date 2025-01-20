@@ -19,7 +19,7 @@ export function Layout() {
         <header className="flex items-center gap-4 py-4">
           <Link className="flex items-center gap-2" to="/">
             <Logo className="size-8" />
-            <strong>Violette</strong>
+            <strong aria-hidden>Violette</strong>
           </Link>
 
           <form
@@ -31,7 +31,7 @@ export function Layout() {
           >
             <Button variant="link" type="submit">
               Logout
-              <LogOut />
+              <LogOut role="none" />
             </Button>
           </form>
         </header>
@@ -43,7 +43,7 @@ export function Layout() {
 
       <Footer />
 
-      <div className="sticky bottom-0 isolate transform-gpu touch-none overflow-hidden bg-background">
+      <div className="sticky bottom-0 isolate touch-none overflow-hidden bg-background">
         <NowPlaying />
       </div>
     </div>

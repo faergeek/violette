@@ -5,7 +5,7 @@ import type { StarParams } from '../api/subsonic/types/starParams';
 import { useRunStoreFx } from '../store/react';
 import { star } from '../storeFx/star';
 import { unstar } from '../storeFx/unstar';
-import { IconButton } from './iconButton';
+import { Button } from './button';
 
 type Props = { className?: string } & (
   | {
@@ -58,6 +58,7 @@ export function StarButton({
         result.assertOk();
       }}
       className="inline-flex"
+      role="none"
     >
       <input
         name="starred"
@@ -65,14 +66,25 @@ export function StarButton({
         value={starred ? '' : new Date().toISOString()}
       />
 
-      <IconButton
+      <Button
+        aria-label="Star"
+        aria-pressed={starred != null}
         className={className}
         disabled={disabled}
-        icon={
-          <Heart className={starred ? 'fill-primary stroke-primary' : ''} />
-        }
         type="submit"
-      />
+        variant="icon"
+      >
+        <Heart
+          className={starred ? 'fill-primary stroke-primary' : ''}
+          role="none"
+        />
+      </Button>
+
+      {starred != null && (
+        <time aria-label="Starred" className="sr-only" dateTime={starred}>
+          {new Date(starred).toLocaleString()}
+        </time>
+      )}
     </form>
   );
 }
