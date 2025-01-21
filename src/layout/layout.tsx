@@ -43,7 +43,7 @@ export function Layout() {
 
       <Footer />
 
-      <div className="sticky bottom-0 isolate touch-none overflow-hidden bg-background">
+      <div className="sticky bottom-0 isolate overflow-hidden bg-background">
         <NowPlaying />
       </div>
     </div>
