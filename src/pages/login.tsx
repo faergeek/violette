@@ -1,7 +1,6 @@
 import { invariant } from '@tanstack/react-router';
 import { KeyRound } from 'lucide-react';
 import { useActionState } from 'react';
-import SparkMD5 from 'spark-md5';
 import * as v from 'valibot';
 
 import { Button } from '../_core/button';
@@ -66,7 +65,7 @@ export function LoginPage() {
         credentials: {
           salt,
           serverBaseUrl,
-          token: SparkMD5.hash(password + salt),
+          token: (await import('spark-md5')).default.hash(password + salt),
           username,
         },
       })
