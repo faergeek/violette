@@ -122,9 +122,9 @@ export const SongRow = memo(function SongRow({
                 {isCurrentInPlayer =>
                   isCurrentInPlayer &&
                   !paused && (
-                    <span className="absolute inset-0 m-auto flex h-3 w-3 overflow-clip group-hover:invisible">
+                    <span className="absolute inset-0 m-auto flex h-6 w-6 items-center justify-center overflow-clip group-hover:invisible">
                       <span className="relative inline-flex h-3 w-3 rounded-full bg-primary" />
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                      <span className="absolute inline-flex h-3 w-3 animate-ping rounded-full bg-primary opacity-75" />
                     </span>
                   )
                 }
