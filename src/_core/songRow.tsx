@@ -59,7 +59,7 @@ export const SongRow = memo(function SongRow({
         'group -mt-[1px] flex items-center gap-2 overflow-clip border-y p-2 first:mt-0',
         {
           'hover:bg-muted/50': !isSelected,
-          'relative border-primary bg-secondary hover:bg-secondary': isSelected,
+          'relative border-primary': isSelected,
         },
       )}
       id={elementId}

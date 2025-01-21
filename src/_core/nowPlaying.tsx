@@ -410,7 +410,7 @@ export function NowPlaying() {
 
         <div>
           <Label
-            className="text-center text-xs [font-variant-caps:all-small-caps]"
+            className="text-center text-xs text-muted-foreground [font-variant-caps:all-small-caps]"
             htmlFor="volume"
           >
             Volume

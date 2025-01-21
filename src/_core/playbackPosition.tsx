@@ -101,7 +101,7 @@ export function PlaybackPosition() {
         </StoreConsumer>
       )}
 
-      <div className="flex px-1 slashed-zero tabular-nums">
+      <div className="relative flex px-1 text-sm slashed-zero tabular-nums text-white mix-blend-difference">
         <StoreConsumer
           selector={state =>
             formatDuration(
@@ -112,7 +112,7 @@ export function PlaybackPosition() {
           {formatted => (
             <time
               aria-label="Position"
-              className="pointer-events-none relative text-sm will-change-contents"
+              className="pointer-events-none will-change-contents"
             >
               {formatted}
             </time>
@@ -122,7 +122,7 @@ export function PlaybackPosition() {
         {duration != null && (
           <time
             aria-label="Song duration"
-            className="pointer-events-none relative ms-auto text-sm"
+            className="pointer-events-none ms-auto"
           >
             {formatDuration(duration)}
           </time>
