@@ -1,4 +1,3 @@
-import { Fx } from '../../../_core/fx';
 import {
   handleJsonResponse,
   makeSubsonicRequest,
@@ -6,20 +5,9 @@ import {
 } from '../makeRequest';
 import type { StarParams } from '../types/starParams';
 
-export const subsonicUnstar = Fx.async(async function* f({
-  albumId,
-  artistId,
-  id,
-}: StarParams) {
-  const response = yield* makeSubsonicRequest({
-    method: 'rest/unstar',
-    albumId,
-    artistId,
-    id,
-  });
-
-  const json = yield* parseJsonResponse(response, {});
-  yield* handleJsonResponse(json['subsonic-response']);
-
-  return Fx.Ok();
-});
+export function subsonicUnstar({ albumId, artistId, id }: StarParams) {
+  return makeSubsonicRequest({ method: 'rest/unstar', albumId, artistId, id })
+    .flatMap(response => parseJsonResponse(response, {}))
+    .flatMap(json => handleJsonResponse(json['subsonic-response']))
+    .map(() => {});
+}

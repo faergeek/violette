@@ -244,6 +244,76 @@ test('Fx#flatMap', async () => {
   );
 });
 
+test('Fx#map', async () => {
+  const fx: Fx<number, 'foo'> = Math.random() > 0.5 ? Fx.Ok(42) : Fx.Err('foo');
+
+  expectTypeOf(fx.map(n => String(n))).toEqualTypeOf<Fx<string, 'foo'>>();
+
+  expectTypeOf(
+    fx.map(n => (Math.random() > 0.75 ? n > 5 : 'bar')),
+  ).toEqualTypeOf<Fx<boolean | 'bar', 'foo'>>();
+
+  fc.assert(
+    fc.property(fc.double(), input => {
+      const result = Fx.Sync(() => Fx.Ok(input))
+        .map(n => String(n))
+        .run(null);
+
+      result.match({
+        Err: () => expect.unreachable(),
+        Ok: value => expect(value).toBe(String(input)),
+      });
+    }),
+  );
+
+  fc.assert(
+    fc.property(fc.string(), input => {
+      const f = vi.fn();
+
+      const result = Fx.Sync(() => Fx.Err(input))
+        .flatMap(f)
+        .run(null);
+
+      result.match({
+        Err: err => expect(err).toBe(input),
+        Ok: () => expect.unreachable(),
+      });
+
+      expect(f).not.toBeCalled();
+    }),
+  );
+
+  await fc.assert(
+    fc.asyncProperty(fc.double(), async input => {
+      const result = await Fx.Async(() => Promise.resolve(Fx.Ok(input)))
+        .flatMap(n => Fx.Ok(String(n)))
+        .runAsync(null);
+
+      result.match({
+        Err: () => expect.unreachable(),
+        Ok: value => expect(value).toBe(String(input)),
+      });
+    }),
+  );
+
+  await fc.assert(
+    fc.asyncProperty(fc.string(), async input => {
+      const f = vi.fn();
+
+      const result = await Fx.Async(() => Promise.resolve(Fx.Err(input)))
+        .flatMap(f)
+        .runAsync(null);
+
+      result.match({
+        Err: err => expect(err).toBe(input),
+        Ok: () => expect.unreachable(),
+      });
+
+      expect(f).not.toBeCalled();
+    }),
+  );
+});
+
 test('Fx#catch', async () => {
   const fx: Fx<number, 'foo'> = Math.random() > 0.5 ? Fx.Ok(42) : Fx.Err('foo');
 

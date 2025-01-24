@@ -1,23 +1,27 @@
-export function throttle<A extends unknown[]>(
+export function throttle<A extends unknown[], R>(
   ms: number,
-  f: (...args: A) => void,
+  f: (...args: A) => Promise<Awaited<R>>,
 ) {
   let timeout: ReturnType<typeof setTimeout> | undefined;
 
   function throttled(...args: A) {
-    if (timeout != null) return;
+    return new Promise<R>((resolve, reject) => {
+      if (timeout != null) return;
 
-    timeout = setTimeout(async () => {
-      timeout = undefined;
-      f(...args);
-    }, ms);
+      timeout = setTimeout(async () => {
+        timeout = undefined;
+        f(...args).then(resolve, reject);
+      }, ms);
+    });
   }
 
-  throttled.now = (...args: A) => {
+  async function throttledNow(...args: A) {
     clearTimeout(timeout);
     timeout = undefined;
-    f(...args);
-  };
+    return f(...args);
+  }
+
+  throttled.now = throttledNow;
 
   return throttled;
 }

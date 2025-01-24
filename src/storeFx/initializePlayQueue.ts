@@ -2,11 +2,12 @@ import { Fx } from '../_core/fx';
 import { mergeIntoMap } from '../_core/mergeIntoMap';
 import { subsonicGetPlayQueue } from '../api/subsonic/methods/getPlayQueue';
 import type { AppStore } from '../store/create';
+import { setCurrentTime } from './setCurrentTime';
 
 export const initializePlayQueue = Fx.async(async function* f() {
   const { store } = yield* Fx.ask<{ store: AppStore }>();
   const { credentials } = store.getState().auth;
-  if (!credentials || store.getState().player.isInitialized) return Fx.Ok();
+  if (!credentials) return Fx.Ok();
 
   const playQueue = yield* subsonicGetPlayQueue()
     .provide({ credentials })
@@ -19,7 +20,7 @@ export const initializePlayQueue = Fx.async(async function* f() {
   const currentSongId = playQueue?.current;
 
   if (currentSongId != null) {
-    store.getState().player.setCurrentTime((playQueue?.position ?? 0) / 1000);
+    setCurrentTime((playQueue?.position ?? 0) / 1000).runAsync({ store });
   }
 
   store.setState(prevState => ({

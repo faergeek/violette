@@ -18,6 +18,7 @@
     --destructive-foreground: 210 20% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
+    --now-playing-height: 84px;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -51,11 +52,18 @@
   }
 
   html {
-    @apply scroll-pb-24 scroll-pt-4;
+    @apply scroll-pt-4;
+    scroll-padding-bottom: var(--now-playing-height);
   }
 
   body {
     @apply min-w-80 bg-background font-sans text-foreground accent-primary selection:bg-primary selection:text-background;
+  }
+
+  body[data-scroll-lock] {
+    overflow: hidden;
+    margin-inline-end: var(--scrollbar-inline-size);
+    margin-block-end: var(--scrollbar-block-size);
   }
 }
 

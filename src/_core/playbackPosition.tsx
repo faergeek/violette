@@ -1,6 +1,8 @@
+import clsx from 'clsx';
 import { useState } from 'react';
 
-import { StoreConsumer, useAppStore } from '../store/react';
+import { StoreConsumer, useAppStore, useRunAsyncStoreFx } from '../store/react';
+import { setCurrentTime } from '../storeFx/setCurrentTime';
 import { formatDuration } from './formatDuration';
 
 function clientXToTime({
@@ -15,17 +17,17 @@ function clientXToTime({
   return Math.max(0, Math.min((duration * offsetX) / width, duration));
 }
 
-export function PlaybackPosition() {
+export function PlaybackPosition({ className }: { className?: string }) {
   const buffered = useAppStore(state => state.player.buffered);
   const duration = useAppStore(state => state.player.duration);
-
-  const setCurrentTime = useAppStore(state => state.player.setCurrentTime);
 
   const [draggedToTime, setDraggedToTime] = useState<number>();
   const [hoveredTime, setHoveredTime] = useState<number>();
 
+  const runAsyncStoreFx = useRunAsyncStoreFx();
+
   function releasePoinerCapture(event: React.PointerEvent<HTMLDivElement>) {
-    if (draggedToTime != null) setCurrentTime(draggedToTime);
+    if (draggedToTime != null) runAsyncStoreFx(setCurrentTime(draggedToTime));
 
     if (event.currentTarget.hasPointerCapture(event.pointerId))
       event.currentTarget.releasePointerCapture(event.pointerId);
@@ -36,7 +38,10 @@ export function PlaybackPosition() {
   return (
     <div
       aria-label="Playback position"
-      className="relative h-5 w-full touch-none select-none overflow-hidden bg-secondary"
+      className={clsx(
+        'relative h-5 w-full touch-none select-none overflow-hidden bg-secondary',
+        className,
+      )}
       onPointerDownCapture={event => {
         if (duration == null) return;
         event.currentTarget.setPointerCapture(event.pointerId);
@@ -101,7 +106,7 @@ export function PlaybackPosition() {
         </StoreConsumer>
       )}
 
-      <div className="flex px-1 slashed-zero tabular-nums">
+      <div className="relative flex px-1 text-sm slashed-zero tabular-nums text-white mix-blend-difference">
         <StoreConsumer
           selector={state =>
             formatDuration(
@@ -112,7 +117,7 @@ export function PlaybackPosition() {
           {formatted => (
             <time
               aria-label="Position"
-              className="pointer-events-none relative text-sm will-change-contents"
+              className="pointer-events-none will-change-contents"
             >
               {formatted}
             </time>
@@ -122,7 +127,7 @@ export function PlaybackPosition() {
         {duration != null && (
           <time
             aria-label="Song duration"
-            className="pointer-events-none relative ms-auto text-sm"
+            className="pointer-events-none ms-auto"
           >
             {formatDuration(duration)}
           </time>

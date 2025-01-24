@@ -1,26 +1,30 @@
-import { Link, useRouterState } from '@tanstack/react-router';
+import { invariant, Link, useRouterState } from '@tanstack/react-router';
 import clsx from 'clsx';
 import {
   CirclePause,
   CirclePlay,
   Download,
-  EllipsisVertical,
+  Ellipsis,
   Info,
   ListEnd,
   ListPlus,
   ListStart,
   Play,
+  Trash2,
 } from 'lucide-react';
-import { cloneElement, memo, useId } from 'react';
+import { cloneElement, memo } from 'react';
 
-import { StoreConsumer, useAppStore } from '../store/react';
+import { StoreConsumer, useRunAsyncStoreFx } from '../store/react';
+import { startPlaying } from '../storeFx/startPlaying';
+import { togglePaused } from '../storeFx/togglePaused';
+import { updatePlayQueue } from '../storeFx/updatePlayQueue';
 import { Button } from './button';
 import { CoverArt } from './coverArt';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuReference,
+  DropdownMenuTrigger,
 } from './dropdownMenu';
 import { formatDuration } from './formatDuration';
 import { Skeleton } from './skeleton';
@@ -30,6 +34,7 @@ interface Props {
   elementId?: string;
   isAlbumView?: boolean;
   isCompilation?: boolean;
+  isQueueView?: boolean;
   primaryArtist?: string;
   songId: string | undefined;
   songIdsToPlay?: string[];
@@ -39,37 +44,32 @@ export const SongRow = memo(function SongRow({
   elementId,
   isAlbumView,
   isCompilation,
+  isQueueView,
   primaryArtist,
   songId,
   songIdsToPlay,
 }: Props) {
-  const startPlaying = useAppStore(state => state.player.startPlaying);
-  const togglePaused = useAppStore(state => state.player.togglePaused);
+  const runAsyncStoreFx = useRunAsyncStoreFx();
 
   const isSelected = useRouterState({
     select: state => state.location.hash === elementId,
   });
 
-  const menuPopoverId = useId();
-
   return (
-    <li
+    <div
       aria-label="Song"
       className={clsx(
-        'group -mt-[1px] flex items-center gap-2 overflow-clip border-y p-2 first:mt-0',
+        'group/song-row -mt-[1px] grid grid-flow-col items-center gap-2 overflow-clip border-2 px-2 py-1 text-sm first:mt-0 even:bg-muted/50',
         {
-          'hover:bg-muted/50': !isSelected,
-          'relative border-primary bg-secondary hover:bg-secondary': isSelected,
+          '[grid-template-columns:24px_1fr_auto_40px]': isAlbumView,
+          '[grid-template-columns:48px_1fr_auto_40px]': !isAlbumView,
+          'border-transparent': !isSelected,
+          'rounded-md border-primary': isSelected,
         },
       )}
       id={elementId}
     >
-      <div
-        className={clsx(
-          'relative flex shrink-0 justify-end text-right',
-          isAlbumView ? 'basis-6' : 'basis-12',
-        )}
-      >
+      <div className="group/song-row-play-controls relative flex justify-end text-right">
         <StoreConsumer
           selector={state =>
             songId == null ? null : state.songs.byId.get(songId)
@@ -82,8 +82,9 @@ export const SongRow = memo(function SongRow({
               >
                 {isCurrentInPlayer => (
                   <span
+                    aria-hidden
                     className={clsx('slashed-zero tabular-nums', {
-                      'text-muted-foreground group-hover:text-transparent':
+                      'text-muted-foreground focus-visible:text-transparent group-hover/song-row:text-transparent group-has-[:focus-visible]/song-row-play-controls:text-transparent':
                         !isCurrentInPlayer,
                       'text-transparent': isCurrentInPlayer,
                     })}
@@ -98,9 +99,10 @@ export const SongRow = memo(function SongRow({
               >
                 {isCurrentInPlayer => (
                   <CoverArt
-                    className={clsx('size-12 group-hover:opacity-25', {
-                      'opacity-25': isCurrentInPlayer,
-                    })}
+                    className={clsx(
+                      'size-12 focus-visible:opacity-25 group-hover/song-row:opacity-25 group-has-[:focus-visible]/song-row-play-controls:opacity-25',
+                      { 'opacity-25': isCurrentInPlayer },
+                    )}
                     coverArt={song.coverArt}
                     lazy
                     sizes="3em"
@@ -122,9 +124,9 @@ export const SongRow = memo(function SongRow({
                 {isCurrentInPlayer =>
                   isCurrentInPlayer &&
                   !paused && (
-                    <span className="absolute inset-0 m-auto flex h-3 w-3 overflow-clip group-hover:invisible">
+                    <span className="absolute inset-0 m-auto flex h-6 w-6 items-center justify-center overflow-clip group-hover/song-row:opacity-0 group-has-[:focus-visible]/song-row-play-controls:opacity-0">
                       <span className="relative inline-flex h-3 w-3 rounded-full bg-primary" />
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                      <span className="absolute inline-flex h-3 w-3 animate-ping rounded-full bg-primary opacity-75" />
                     </span>
                   )
                 }
@@ -136,24 +138,30 @@ export const SongRow = memo(function SongRow({
                 >
                   {isCurrentInPlayer => (
                     <button
-                      aria-label={
-                        isCurrentInPlayer && !paused ? 'Pause' : 'Play'
-                      }
+                      aria-label="Play"
+                      aria-pressed={isCurrentInPlayer && !paused}
                       className={clsx(
                         'absolute inset-0 m-auto flex items-center justify-center rounded-full',
                         {
-                          'invisible group-hover:visible':
+                          'opacity-0 group-hover/song-row:opacity-100 group-has-[:focus-visible]/song-row-play-controls:opacity-100':
                             !isCurrentInPlayer || !paused,
-                          visible: isCurrentInPlayer && paused,
+                          'opacity-100': isCurrentInPlayer && paused,
+                          'size-6': isAlbumView,
+                          'size-8': !isAlbumView,
                         },
                       )}
                       type="button"
-                      onClick={() => {
-                        if (isCurrentInPlayer) {
-                          togglePaused();
-                        } else {
-                          startPlaying(songId, songIdsToPlay);
-                        }
+                      onClick={async () => {
+                        const result = await runAsyncStoreFx(
+                          isCurrentInPlayer
+                            ? togglePaused()
+                            : startPlaying({
+                                current: songId,
+                                queued: songIdsToPlay,
+                              }),
+                        );
+
+                        result.assertOk();
                       }}
                     >
                       {cloneElement(
@@ -162,7 +170,9 @@ export const SongRow = memo(function SongRow({
                         ) : (
                           <CirclePlay role="none" />
                         ),
-                        { className: 'stroke-primary size-8' },
+                        {
+                          className: 'stroke-primary size-full max-w-8 max-h-8',
+                        },
                       )}
                     </button>
                   )}
@@ -173,7 +183,7 @@ export const SongRow = memo(function SongRow({
         </StoreConsumer>
       </div>
 
-      <div className="me-2 min-w-0 grow basis-0">
+      <div>
         <StoreConsumer
           selector={state =>
             songId == null ? null : state.songs.byId.get(songId)
@@ -182,7 +192,7 @@ export const SongRow = memo(function SongRow({
           {song => (
             <>
               {song ? (
-                <div>
+                <>
                   <Link
                     aria-label="Title"
                     hash={elementId}
@@ -196,9 +206,8 @@ export const SongRow = memo(function SongRow({
 
                   {isAlbumView &&
                     (isCompilation || primaryArtist !== song.artist) && (
-                      <span className="text-sm text-muted-foreground">
-                        {' '}
-                        &ndash;{' '}
+                      <span className="text-muted-foreground">
+                        <span aria-hidden> &ndash; </span>
                         {cloneElement(
                           song.artistId ? (
                             <Link
@@ -208,12 +217,12 @@ export const SongRow = memo(function SongRow({
                           ) : (
                             <span />
                           ),
-                          {},
+                          { 'aria-label': 'Artist' },
                           song.artist,
                         )}
                       </span>
                     )}
-                </div>
+                </>
               ) : (
                 <Skeleton className="max-w-40" />
               )}
@@ -234,8 +243,8 @@ export const SongRow = memo(function SongRow({
                           ),
                           {},
                           song.artist,
-                        )}{' '}
-                        &ndash;{' '}
+                        )}
+                        <span aria-hidden> &ndash; </span>
                       </>
                     )}
                     <Link
@@ -254,54 +263,78 @@ export const SongRow = memo(function SongRow({
         </StoreConsumer>
       </div>
 
-      <div className="relative ms-auto shrink-0 basis-12 items-center text-right slashed-zero tabular-nums text-muted-foreground">
+      <StoreConsumer
+        selector={state =>
+          songId == null ? null : state.songs.byId.get(songId)
+        }
+      >
+        {song =>
+          song ? (
+            <StarButton id={song.id} starred={song.starred} />
+          ) : (
+            <StarButton disabled />
+          )
+        }
+      </StoreConsumer>
+
+      <div className="group/song-row-menu relative flex justify-end">
         <StoreConsumer
           selector={state =>
             songId == null ? null : state.songs.byId.get(songId)
           }
         >
-          {song =>
-            song ? (
-              <span aria-label="Duration">{formatDuration(song.duration)}</span>
-            ) : (
-              <Skeleton className="inline-block w-full" />
-            )
-          }
-        </StoreConsumer>
-      </div>
-
-      <div className="ms-2 flex shrink-0 basis-5">
-        <StoreConsumer
-          selector={state =>
-            songId == null ? null : state.songs.byId.get(songId)
-          }
-        >
-          {song =>
-            song ? (
-              <StarButton id={song.id} starred={song.starred} />
-            ) : (
-              <StarButton disabled />
-            )
-          }
+          {song => (
+            <div
+              aria-label="Duration"
+              className="slashed-zero tabular-nums group-focus-within/song-row-menu:opacity-0 group-hover/song-row:opacity-0"
+            >
+              {song ? (
+                formatDuration(song.duration)
+              ) : (
+                <Skeleton className="inline-block w-full" />
+              )}
+            </div>
+          )}
         </StoreConsumer>
 
-        <span className="ms-2 flex">
+        <div className="opacity-0 group-focus-within/song-row-menu:opacity-100 group-hover/song-row:opacity-100">
           <DropdownMenu>
-            <DropdownMenuReference>
+            <DropdownMenuTrigger>
               <Button
                 aria-label="Song menu"
-                popoverTarget={menuPopoverId}
+                className="absolute inset-0 left-auto"
                 variant="icon"
               >
-                <EllipsisVertical role="none" />
+                <Ellipsis role="none" />
               </Button>
-            </DropdownMenuReference>
+            </DropdownMenuTrigger>
 
-            <DropdownMenuContent id={menuPopoverId} placement="bottom-end">
+            <DropdownMenuContent placement="bottom-end">
               <DropdownMenuItem
-                onClick={() => {
-                  // eslint-disable-next-line no-alert
-                  alert('TODO');
+                onClick={async () => {
+                  invariant(songId != null);
+
+                  const result = await runAsyncStoreFx(
+                    startPlaying(({ current, queued }) => {
+                      if (songId === current) {
+                        return { current, queued };
+                      }
+
+                      const newSongIds = queued.filter(id => id !== songId);
+
+                      const index =
+                        current == null ? 0 : newSongIds.indexOf(current);
+
+                      newSongIds.splice(index, 0, songId);
+
+                      return {
+                        current: songId,
+                        queued: newSongIds,
+                      };
+                    }),
+                  );
+
+                  result.assertOk();
                 }}
               >
                 <Play role="none" />
@@ -309,9 +342,49 @@ export const SongRow = memo(function SongRow({
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                onClick={() => {
-                  // eslint-disable-next-line no-alert
-                  alert('TODO');
+                onClick={async () => {
+                  invariant(songId != null);
+
+                  const result = await runAsyncStoreFx(
+                    startPlaying(prevState => {
+                      if (songId === prevState.current) {
+                        const currentIndex =
+                          prevState.current == null
+                            ? 0
+                            : prevState.queued.indexOf(prevState.current);
+
+                        const newSongIds = prevState.queued.filter(
+                          id => id !== songId,
+                        );
+
+                        newSongIds.splice(currentIndex + 1, 0, songId);
+
+                        return {
+                          current: newSongIds[currentIndex],
+                          queued: newSongIds,
+                        };
+                      }
+
+                      const newSongIds = prevState.queued.filter(
+                        id => id !== songId,
+                      );
+
+                      newSongIds.splice(
+                        (prevState.current == null
+                          ? 0
+                          : newSongIds.indexOf(prevState.current)) + 1,
+                        0,
+                        songId,
+                      );
+
+                      return {
+                        current: prevState.current ?? songId,
+                        queued: newSongIds,
+                      };
+                    }),
+                  );
+
+                  result.assertOk();
                 }}
               >
                 <ListStart role="none" />
@@ -319,9 +392,30 @@ export const SongRow = memo(function SongRow({
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                onClick={() => {
-                  // eslint-disable-next-line no-alert
-                  alert('TODO');
+                onClick={async () => {
+                  invariant(songId != null);
+
+                  const result = await runAsyncStoreFx(
+                    startPlaying(prevState => {
+                      const queued = prevState.queued
+                        .filter(id => id !== songId)
+                        .concat(songId);
+
+                      return {
+                        current:
+                          songId === prevState.current
+                            ? prevState.queued[
+                                (prevState.queued.indexOf(prevState.current) +
+                                  1) %
+                                  prevState.queued.length
+                              ]
+                            : (prevState.current ?? queued[0]),
+                        queued,
+                      };
+                    }),
+                  );
+
+                  result.assertOk();
                 }}
               >
                 <ListEnd role="none" />
@@ -359,8 +453,26 @@ export const SongRow = memo(function SongRow({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </span>
+        </div>
       </div>
-    </li>
+
+      {isQueueView && (
+        <Button
+          aria-label="Remove from queue"
+          variant="icon"
+          onClick={async () => {
+            const result = await runAsyncStoreFx(
+              updatePlayQueue(({ queued }) => ({
+                queued: queued.filter(id => id !== songId),
+              })),
+            );
+
+            result.assertOk();
+          }}
+        >
+          <Trash2 role="none" />
+        </Button>
+      )}
+    </div>
   );
 });

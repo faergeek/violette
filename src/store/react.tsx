@@ -31,6 +31,12 @@ export function useAppStore<T>(selector: (state: StoreState) => T) {
 export function useRunStoreFx() {
   const store = useStoreFromContext();
 
+  return <T, E>(fx: Fx<T, E, { store: AppStore }>) => fx.run({ store });
+}
+
+export function useRunAsyncStoreFx() {
+  const store = useStoreFromContext();
+
   return <T, E>(fx: Fx<T, E, { store: AppStore }>) => fx.runAsync({ store });
 }
 

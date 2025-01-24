@@ -42,10 +42,7 @@ export function Layout() {
       </Container>
 
       <Footer />
-
-      <div className="sticky bottom-0 isolate touch-none overflow-hidden bg-background">
-        <NowPlaying />
-      </div>
+      <NowPlaying />
     </div>
   );
 }

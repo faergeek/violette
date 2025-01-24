@@ -71,7 +71,7 @@ export class Fx<T = never, E = never, R = unknown> {
     }
   }
 
-  flatMap<U, F>(f: (value: T) => Fx<U, F, R>): Fx<U, E | F, R> {
+  flatMap<U, F, S>(f: (value: T) => Fx<U, F, S>): Fx<U, E | F, R & S> {
     const v = this.#v;
 
     switch (v.tag) {
@@ -80,9 +80,9 @@ export class Fx<T = never, E = never, R = unknown> {
       case ERR:
         return Fx.Err(v.err);
       case SYNC:
-        return Fx.Sync<U, E | F, R>(env => v.f(env).flatMap(f));
+        return Fx.Sync<U, E | F, R & S>(env => v.f(env).flatMap(f));
       case ASYNC:
-        return Fx.Async<U, E | F, R>(env =>
+        return Fx.Async<U, E | F, R & S>(env =>
           v.f(env).then(result => result.flatMap(f)),
         );
     }
@@ -103,6 +103,10 @@ export class Fx<T = never, E = never, R = unknown> {
           v.f(env).then(result => result.catch(f)),
         );
     }
+  }
+
+  map<U>(f: (value: T) => U) {
+    return this.flatMap(value => Fx.Ok(f(value)));
   }
 
   static sync<T, E, R, A extends unknown[]>(

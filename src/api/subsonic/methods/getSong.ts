@@ -1,4 +1,3 @@
-import { Fx } from '../../../_core/fx';
 import {
   handleJsonResponse,
   makeSubsonicRequest,
@@ -6,11 +5,9 @@ import {
 } from '../makeRequest';
 import { Song } from '../types/song';
 
-export const subsonicGetSong = Fx.async(async function* f(id: string) {
-  const response = yield* makeSubsonicRequest({ method: 'rest/getSong', id });
-
-  const json = yield* parseJsonResponse(response, { song: Song });
-  const result = yield* handleJsonResponse(json['subsonic-response']);
-
-  return Fx.Ok(result.song);
-});
+export function subsonicGetSong(id: string) {
+  return makeSubsonicRequest({ method: 'rest/getSong', id })
+    .flatMap(response => parseJsonResponse(response, { song: Song }))
+    .flatMap(json => handleJsonResponse(json['subsonic-response']))
+    .map(result => result.song);
+}

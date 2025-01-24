@@ -2,7 +2,7 @@ import { Heart } from 'lucide-react';
 import { useOptimistic } from 'react';
 
 import type { StarParams } from '../api/subsonic/types/starParams';
-import { useRunStoreFx } from '../store/react';
+import { useRunAsyncStoreFx } from '../store/react';
 import { star } from '../storeFx/star';
 import { unstar } from '../storeFx/unstar';
 import { Button } from './button';
@@ -27,7 +27,7 @@ export function StarButton({
   starred: starredProp,
   ...starParams
 }: Props) {
-  const runStoreFx = useRunStoreFx();
+  const runAsyncStoreFx = useRunAsyncStoreFx();
 
   const [starred, addOptimistic] = useOptimistic(
     starredProp,
@@ -52,8 +52,8 @@ export function StarButton({
         addOptimistic(newStarred);
 
         const result = newStarred
-          ? await runStoreFx(star(starParams))
-          : await runStoreFx(unstar(starParams));
+          ? await runAsyncStoreFx(star(starParams))
+          : await runAsyncStoreFx(unstar(starParams));
 
         result.assertOk();
       }}
@@ -67,7 +67,7 @@ export function StarButton({
       />
 
       <Button
-        aria-label="Star"
+        aria-label="Favorite"
         aria-pressed={starred != null}
         className={className}
         disabled={disabled}

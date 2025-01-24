@@ -28,7 +28,7 @@ export function Footer() {
             </a>
           </address>
           <a
-            className="group flex items-center gap-2"
+            className="flex items-center gap-2"
             href="https://github.com/faergeek/violette"
             rel="noopener"
             target="_blank"

@@ -13,15 +13,14 @@ export const Route = createFileRoute('/login')({
       next: opts.search.next,
     };
   },
-  async loader({ context: { store }, deps }) {
+  loader({ context: { store }, deps }) {
     const state = store.getState();
     if (!state.auth.credentials) return;
 
-    await subsonicPing()
-      .flatMap<never, never>(() => {
-        throw redirect({ replace: true, to: deps.next });
-      })
+    return subsonicPing()
+      .map(() => redirect({ replace: true, to: deps.next }))
       .catch(() => Fx.Ok())
-      .runAsync({ credentials: state.auth.credentials });
+      .runAsync({ credentials: state.auth.credentials })
+      .then(result => result.assertOk());
   },
 });
