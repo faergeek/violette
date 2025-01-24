@@ -7,7 +7,7 @@ import {
 
 export const subsonicSavePlayQueue = Fx.async(async function* f(
   id: string[],
-  current: string,
+  current?: string,
   { position = 0 }: { position?: number } = {},
 ) {
   const response = yield* makeSubsonicRequest({
@@ -19,7 +19,5 @@ export const subsonicSavePlayQueue = Fx.async(async function* f(
 
   const json = yield* parseJsonResponse(response, {});
 
-  yield* handleJsonResponse(json['subsonic-response']);
-
-  return Fx.Ok();
+  return handleJsonResponse(json['subsonic-response']).map(() => {});
 });

@@ -1,6 +1,5 @@
 import * as v from 'valibot';
 
-import { Fx } from '../../../_core/fx';
 import {
   handleJsonResponse,
   makeSubsonicRequest,
@@ -17,14 +16,11 @@ const PlayQueue = v.object({
   username: v.string(),
 });
 
-export const subsonicGetPlayQueue = Fx.async(async function* f() {
-  const response = yield* makeSubsonicRequest({ method: 'rest/getPlayQueue' });
-
-  const json = yield* parseJsonResponse(response, {
-    playQueue: PlayQueue,
-  });
-
-  const result = yield* handleJsonResponse(json['subsonic-response']);
-
-  return Fx.Ok(result.playQueue);
-});
+export function subsonicGetPlayQueue() {
+  return makeSubsonicRequest({ method: 'rest/getPlayQueue' })
+    .flatMap(response =>
+      parseJsonResponse(response, { playQueue: v.optional(PlayQueue) }),
+    )
+    .flatMap(json => handleJsonResponse(json['subsonic-response']))
+    .map(result => result.playQueue);
+}

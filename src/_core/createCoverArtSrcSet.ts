@@ -8,14 +8,7 @@ export function createCoverArtSrcSet({
   coverArt: string;
   credentials: SubsonicCredentials;
 }) {
-  return Array.from(
-    new Set(
-      [48, 64, 100, 143, 200, 300, 400].flatMap(w =>
-        [1, 1.5, 2, 2.5, 3, 3.5, 4].map(x => Math.round(w * x)),
-      ),
-    ),
-  )
-    .sort((a, b) => a - b)
+  return [50, 100, 200, 300, 400, 500, 750, 1000, 1250, 1500, 2000]
     .map(w =>
       [
         subsonicGetCoverArtUrl(credentials, coverArt, { size: w }),

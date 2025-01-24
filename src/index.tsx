@@ -1,4 +1,5 @@
 import './index.css';
+import './_core/measureScrollbar';
 
 import {
   createRouter,
@@ -11,6 +12,7 @@ import { createRoot } from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
 import { createAppStore } from './store/create';
 import { StoreProvider } from './store/react';
+import { subscribeToStoreStateUpdates } from './storeFx/subscribeToStoreStateUpdates';
 
 const rootEl = document.getElementById('app');
 invariant(rootEl);
@@ -29,6 +31,10 @@ store.subscribe((state, prevState) => {
 
   router.invalidate();
 });
+
+subscribeToStoreStateUpdates()
+  .runAsync({ store })
+  .then(result => result.assertOk());
 
 declare module '@tanstack/react-router' {
   interface Register {

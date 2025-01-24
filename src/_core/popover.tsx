@@ -38,7 +38,7 @@ export function usePopoverContext() {
 export function PopoverReference({
   children,
 }: {
-  children: React.ReactElement<{ ref: React.RefCallback<HTMLElement> }>;
+  children: React.ReactElement<{ ref?: React.RefCallback<HTMLElement> }>;
 }) {
   const { setReference } = usePopoverContext();
 

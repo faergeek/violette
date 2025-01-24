@@ -1,15 +1,11 @@
-import type {
-  OffsetOptions,
-  Placement,
-  ShiftOptions,
-  Strategy,
-} from '@floating-ui/dom';
+import type { Padding, Placement, Strategy } from '@floating-ui/dom';
 import {
   autoUpdate,
   computePosition,
   flip,
   offset,
   shift,
+  size,
 } from '@floating-ui/dom';
 import { cloneElement, useCallback, useEffect, useState } from 'react';
 
@@ -17,19 +13,19 @@ import { usePopoverContext } from './popover';
 
 export default function PopoverContentEager({
   children,
-  offsetOptions,
+  mainAxisOffset,
+  padding,
   placement,
-  shiftOptions,
   strategy = 'absolute',
 }: {
   children: React.ReactElement<{
-    ref: (node: HTMLElement | null) => void;
-    style: React.CSSProperties;
-    onToggle: (event: React.ToggleEvent<HTMLElement>) => void;
+    ref?: React.Ref<HTMLElement>;
+    style?: React.CSSProperties;
+    onToggle?: (event: React.ToggleEvent<HTMLElement>) => void;
   }>;
-  offsetOptions?: OffsetOptions;
+  mainAxisOffset?: number;
+  padding?: Padding;
   placement?: Placement | undefined;
-  shiftOptions?: ShiftOptions;
   strategy?: Strategy | undefined;
 }) {
   const [floating, setFloating] = useState<HTMLElement | null>(null);
@@ -44,7 +40,19 @@ export default function PopoverContentEager({
     }
 
     const { x, y } = await computePosition(reference, floating, {
-      middleware: [offset(offsetOptions), flip(), shift(shiftOptions)],
+      middleware: [
+        offset({ mainAxis: mainAxisOffset }),
+        flip({ padding }),
+        shift({ padding }),
+        size({
+          apply({ availableWidth, availableHeight, elements }) {
+            Object.assign(elements.floating.style, {
+              maxWidth: `${Math.max(0, availableWidth)}px`,
+              maxHeight: `${Math.max(0, availableHeight)}px`,
+            });
+          },
+        }),
+      ],
       placement,
       strategy,
     });
@@ -53,10 +61,10 @@ export default function PopoverContentEager({
   }, [
     floating,
     isOpen,
-    offsetOptions,
+    mainAxisOffset,
+    padding,
     placement,
     reference,
-    shiftOptions,
     strategy,
   ]);
 
@@ -68,13 +76,26 @@ export default function PopoverContentEager({
   }, [floating, isOpen, reference, updateStyle]);
 
   return cloneElement(children, {
-    ref: setFloating,
+    ref: node => {
+      setFloating(node);
+
+      const { ref } = children.props;
+
+      if (ref) {
+        if (typeof ref === 'function') {
+          return ref(node);
+        } else {
+          ref.current = node;
+        }
+      }
+    },
     style: {
       ...children.props.style,
       ...(style ?? { visibility: 'hidden' }),
     },
     onToggle: event => {
       setIsOpen(event.newState === 'open');
+      children.props.onToggle?.(event);
     },
   });
 }

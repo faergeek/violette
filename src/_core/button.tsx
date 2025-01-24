@@ -4,14 +4,14 @@ import { Loader2 } from 'lucide-react';
 import type { JSX } from 'react';
 
 const variants = cva(
-  'inline-flex cursor-not-allowed items-center justify-center gap-2 whitespace-nowrap rounded-lg opacity-50 transition-colors [&_svg]:shrink-0 [:where(:enabled,:any-link)&]:cursor-pointer [:where(:enabled,:any-link)&]:opacity-100',
+  'inline-flex cursor-not-allowed items-center justify-center gap-2 whitespace-nowrap opacity-50 [&_svg]:shrink-0 [:where(:enabled,:any-link)&]:cursor-pointer [:where(:enabled,:any-link)&]:opacity-100',
   {
     variants: {
       variant: {
         primary:
-          'bg-primary px-3 py-2 text-sm text-primary-foreground [&_svg]:size-5 [:where(:enabled,:any-link)&]:hover:bg-primary/90',
-        icon: 'text-muted-foreground outline-offset-4 [:where(:enabled,:any-link)&]:hover:text-secondary-foreground',
-        link: 'px-3 py-2 text-base text-foreground [&_svg]:size-5 [:where(:enabled,:any-link)&]:hover:text-primary',
+          'rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground [&_svg]:size-5 [:where(:enabled,:any-link)&]:hover:bg-primary/90',
+        icon: 'rounded-sm text-muted-foreground outline-offset-4 [:where(:enabled,:any-link)&]:hover:text-secondary-foreground',
+        link: 'rounded-lg px-3 py-2 text-base text-foreground [&_svg]:size-5 [:where(:enabled,:any-link)&]:hover:text-primary',
       },
     },
     defaultVariants: {

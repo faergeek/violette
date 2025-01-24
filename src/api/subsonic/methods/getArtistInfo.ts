@@ -1,4 +1,3 @@
-import { Fx } from '../../../_core/fx';
 import {
   handleJsonResponse,
   makeSubsonicRequest,
@@ -6,7 +5,7 @@ import {
 } from '../makeRequest';
 import { ArtistInfo } from '../types/artistInfo';
 
-export const subsonicGetArtistInfo = Fx.async(async function* f(
+export function subsonicGetArtistInfo(
   id: string,
   {
     count,
@@ -16,18 +15,15 @@ export const subsonicGetArtistInfo = Fx.async(async function* f(
     includeNotPresent?: boolean;
   } = {},
 ) {
-  const response = yield* makeSubsonicRequest({
+  return makeSubsonicRequest({
     method: 'rest/getArtistInfo2',
-    id,
     count,
+    id,
     includeNotPresent,
-  });
-
-  const json = yield* parseJsonResponse(response, {
-    artistInfo2: ArtistInfo,
-  });
-
-  const result = yield* handleJsonResponse(json['subsonic-response']);
-
-  return Fx.Ok(result.artistInfo2);
-});
+  })
+    .flatMap(response =>
+      parseJsonResponse(response, { artistInfo2: ArtistInfo }),
+    )
+    .flatMap(json => handleJsonResponse(json['subsonic-response']))
+    .map(result => result.artistInfo2);
+}
