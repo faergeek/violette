@@ -1,25 +1,19 @@
 import { Heart } from 'lucide-react';
 import { useOptimistic } from 'react';
 
-import type { StarParams } from '../api/subsonic/types/starParams';
 import { useRunAsyncStoreFx } from '../store/react';
 import { star } from '../storeFx/star';
 import { unstar } from '../storeFx/unstar';
 import { Button } from './button';
 
-type Props = { className?: string } & (
-  | {
-      albumId?: never;
-      artistId?: never;
-      disabled: true;
-      id?: never;
-      starred?: never;
-    }
-  | (StarParams & {
-      disabled?: false;
-      starred: string | undefined;
-    })
-);
+interface Props {
+  albumId?: string;
+  artistId?: string;
+  className?: string;
+  disabled?: boolean;
+  id?: string;
+  starred: string | undefined;
+}
 
 export function StarButton({
   className,

@@ -3,9 +3,16 @@ import {
   makeSubsonicRequest,
   parseJsonResponse,
 } from '../makeRequest';
-import type { StarParams } from '../types/starParams';
 
-export function subsonicStar({ albumId, artistId, id }: StarParams) {
+export function subsonicStar({
+  albumId,
+  artistId,
+  id,
+}: {
+  albumId?: string;
+  artistId?: string;
+  id?: string;
+}) {
   return makeSubsonicRequest({
     method: 'rest/star',
     albumId,

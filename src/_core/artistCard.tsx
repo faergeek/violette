@@ -21,7 +21,7 @@ export const ArtistCard = memo(function ArtistCard({
   );
 
   return (
-    <article>
+    <div>
       {cloneElement(
         artist == null ? (
           <span />
@@ -33,7 +33,7 @@ export const ArtistCard = memo(function ArtistCard({
           children: (
             <>
               <CoverArt
-                className="aspect-square w-full bg-muted/75"
+                className="w-full"
                 coverArt={artist?.coverArt}
                 lazy={loadCoverArtLazily}
                 sizes={coverArtSizes}
@@ -46,6 +46,6 @@ export const ArtistCard = memo(function ArtistCard({
           ),
         },
       )}
-    </article>
+    </div>
   );
 });

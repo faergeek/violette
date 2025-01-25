@@ -8,9 +8,10 @@ export const toggleMuted = Fx.sync(function* f() {
   store.setState(prevState => ({
     player: {
       ...prevState.player,
-      muted: !prevState.player.muted,
+      muted: !(prevState.player.muted || prevState.player.volume === 0),
       volume:
-        prevState.player.muted && prevState.player.volume === 0
+        (prevState.player.muted && prevState.player.volume === 0) ||
+        prevState.player.volume === 0
           ? 0.5
           : prevState.player.volume,
     },

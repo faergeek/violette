@@ -26,10 +26,19 @@ function useTabsContext() {
   return value;
 }
 
-export function TabsList({ children }: { children: React.ReactNode }) {
+export function TabsList({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div
-      className="inline-flex max-w-full items-center space-x-2 overflow-auto p-1 text-sm font-bold text-muted-foreground"
+      className={clsx(
+        'inline-flex max-w-full items-center space-x-2 overflow-auto p-1 text-sm font-bold text-muted-foreground',
+        className,
+      )}
       role="tablist"
       onKeyDown={event => {
         const selectedTab =
@@ -110,7 +119,7 @@ export function TabsTrigger({
   return cloneElement(children, {
     'aria-selected': isSelected,
     className: clsx(
-      'whitespace-nowrap border-b-2 border-transparent p-1 tracking-widest [font-variant-caps:all-small-caps] aria-selected:border-primary aria-selected:text-foreground',
+      'whitespace-nowrap border-b-2 border-transparent px-1 tracking-widest [font-variant-caps:all-small-caps] aria-selected:border-primary aria-selected:text-foreground',
       children.props.className,
     ),
     role: 'tab',

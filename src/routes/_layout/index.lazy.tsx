@@ -7,11 +7,13 @@ import { useAppStore } from '../../store/react';
 export const Route = createLazyFileRoute('/_layout/')({
   pendingComponent: function HomePending() {
     return (
-      <CardGrid>
-        {new Array<null>(30).fill(null).map((_, i) => (
-          <ArtistCard key={i} />
-        ))}
-      </CardGrid>
+      <div className="container mx-auto px-4">
+        <CardGrid>
+          {new Array<null>(30).fill(null).map((_, i) => (
+            <ArtistCard key={i} />
+          ))}
+        </CardGrid>
+      </div>
     );
   },
   component: function HomeRoute() {
@@ -22,16 +24,18 @@ export const Route = createLazyFileRoute('/_layout/')({
     );
 
     return (
-      <CardGrid>
-        {listIds.map(id => (
-          <ArtistCard
-            key={id}
-            coverArtSizes={CARD_GRID_COVER_ART_SIZES}
-            id={id}
-            loadCoverArtLazily
-          />
-        ))}
-      </CardGrid>
+      <div className="container mx-auto px-4">
+        <CardGrid>
+          {listIds.map(id => (
+            <ArtistCard
+              key={id}
+              coverArtSizes={CARD_GRID_COVER_ART_SIZES}
+              id={id}
+              loadCoverArtLazily
+            />
+          ))}
+        </CardGrid>
+      </div>
     );
   },
 });

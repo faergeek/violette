@@ -4,21 +4,11 @@ import { useActionState } from 'react';
 import * as v from 'valibot';
 
 import { Button } from '../_core/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../_core/card';
-import { Container } from '../_core/container';
 import { Footer } from '../_core/footer';
 import { Fx } from '../_core/fx';
 import { Input } from '../_core/input';
 import { Label } from '../_core/label';
 import { Logo } from '../_core/logo';
-import { SubsonicApiError } from '../_core/subsonicApiError';
 import type { SubsonicError } from '../api/subsonic/makeRequest';
 import { subsonicPing } from '../api/subsonic/methods/ping';
 import type { SubsonicCredentials } from '../api/subsonic/types/credentials';
@@ -76,22 +66,30 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-lvh flex-col">
-      <Container className="max-w-96 flex-1">
-        <header className="flex items-center justify-center gap-2 py-4">
-          <Logo className="size-8" />
-          <strong aria-hidden>Violette</strong>
-        </header>
+      <header className="flex items-center justify-center gap-2 py-4">
+        <Logo className="size-8" />
+        <strong aria-hidden>Violette</strong>
+      </header>
 
-        <Card
+      <main className="mx-auto w-full max-w-96 flex-1">
+        <form
           action={loginAction}
           aria-describedby="login-form-description"
           aria-labelledby="login-form-heading"
-          as="form"
+          className="space-y-4 px-4"
         >
-          <CardHeader>
-            <CardTitle id="login-form-heading">Login</CardTitle>
+          <div className="flex flex-col space-y-1.5">
+            <h1
+              className="text-2xl font-bold leading-none tracking-tight"
+              id="login-form-heading"
+            >
+              Login
+            </h1>
 
-            <CardDescription id="login-form-description">
+            <div
+              className="text-sm text-muted-foreground"
+              id="login-form-description"
+            >
               Enter your server details or{' '}
               <button
                 className="text-foreground hover:text-primary"
@@ -114,12 +112,12 @@ export function LoginPage() {
               >
                 try a demo
               </button>
-            </CardDescription>
-          </CardHeader>
+            </div>
+          </div>
 
-          <CardContent className="space-y-4">
+          <div className="space-y-3">
             <div>
-              <Label className="pb-2" htmlFor="login-server-base-url">
+              <Label className="pb-1" htmlFor="login-server-base-url">
                 URL:
               </Label>
 
@@ -135,7 +133,7 @@ export function LoginPage() {
             </div>
 
             <div>
-              <Label className="pb-2" htmlFor="login-username">
+              <Label className="pb-1" htmlFor="login-username">
                 Username:
               </Label>
 
@@ -150,7 +148,7 @@ export function LoginPage() {
             </div>
 
             <div>
-              <Label className="pb-2" htmlFor="login-password">
+              <Label className="pb-1" htmlFor="login-password">
                 Password:
               </Label>
 
@@ -163,9 +161,9 @@ export function LoginPage() {
                 type="password"
               />
             </div>
-          </CardContent>
+          </div>
 
-          <CardFooter>
+          <div className="space-y-2">
             <Button
               className="w-full"
               disabled={isLoginSubmitting}
@@ -176,10 +174,20 @@ export function LoginPage() {
               Login
             </Button>
 
-            {error && <SubsonicApiError className="mt-4" error={error} />}
-          </CardFooter>
-        </Card>
-      </Container>
+            {error && (
+              <p className="text-destructive" role="alert">
+                {error.type === 'api-error'
+                  ? error.message
+                  : error.type === 'request-failed'
+                    ? `${error.status}: ${error.statusText}`
+                    : error.type === 'network-error'
+                      ? 'Network error occurred. Please check your network connection'
+                      : 'Unexpected API response'}
+              </p>
+            )}
+          </div>
+        </form>
+      </main>
 
       <Footer />
     </div>

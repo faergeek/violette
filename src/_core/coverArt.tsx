@@ -10,13 +10,12 @@ export function CoverArt({
   coverArt,
   lazy,
   sizes,
-  ...otherProps
-}: Omit<
-  React.ComponentProps<'img'>,
-  'decoding' | 'loading' | 'src' | 'srcset' | 'onError'
-> & {
+}: {
+  alt?: string;
+  className?: string;
   coverArt?: string;
   lazy?: boolean;
+  sizes?: string;
 }) {
   const credentials = useAppStore(state => state.auth.credentials);
 
@@ -28,8 +27,12 @@ export function CoverArt({
     [coverArt, credentials],
   );
 
-  const [lastLoadedSrc, setLastLoadedSrc] = useState<string>();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [lastLoadedSrc, setLastLoadedSrc] = useState<string>();
+  useEffect(() => {
+    setIsLoaded(false);
+    setLastLoadedSrc(undefined);
+  }, [srcSet]);
 
   const imgRef = useRef<HTMLImageElement | null>(null);
   useEffect(() => {
@@ -41,9 +44,8 @@ export function CoverArt({
   }, []);
 
   return (
-    <div className={clsx('overflow-clip rounded-md', className)}>
+    <div className={clsx('aspect-square bg-muted/75', className)}>
       <img
-        {...otherProps}
         ref={imgRef}
         alt={alt}
         className={clsx('size-full overflow-clip object-contain', {

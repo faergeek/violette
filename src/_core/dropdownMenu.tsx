@@ -72,7 +72,7 @@ export function DropdownMenuContent({
   const { menuId, triggerId } = useDropdownMenuContext();
 
   return (
-    <PopoverContent mainAxisOffset={4} padding={16} placement={placement}>
+    <PopoverContent placement={placement}>
       <div
         {...otherProps}
         aria-labelledby={triggerId}
@@ -84,13 +84,7 @@ export function DropdownMenuContent({
         popover="auto"
         role="menu"
         onBlur={event => {
-          const trigger = document.getElementById(triggerId);
-
-          if (
-            !event.currentTarget.contains(event.relatedTarget) &&
-            trigger !== event.relatedTarget &&
-            !trigger?.contains(event.relatedTarget)
-          ) {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
             event.currentTarget.hidePopover();
           }
         }}

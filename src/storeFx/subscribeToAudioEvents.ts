@@ -74,15 +74,24 @@ export const subscribeToAudioEvents = Fx.sync(function* f() {
     { signal },
   );
 
+  let updateCurrentTimeRaf: number | undefined;
   audio.addEventListener(
     'timeupdate',
     () => {
-      store.setState(prevState => ({
-        player: {
-          ...prevState.player,
-          currentTime: audio.currentTime,
-        },
-      }));
+      if (updateCurrentTimeRaf != null) {
+        cancelAnimationFrame(updateCurrentTimeRaf);
+      }
+
+      updateCurrentTimeRaf = requestAnimationFrame(() => {
+        updateCurrentTimeRaf = undefined;
+
+        store.setState(prevState => ({
+          player: {
+            ...prevState.player,
+            currentTime: audio.currentTime,
+          },
+        }));
+      });
 
       saveCurrentTime(store);
     },

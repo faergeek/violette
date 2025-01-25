@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { memo } from 'react';
 
 import { SongRow } from './songRow';
@@ -22,7 +23,15 @@ export const SongList = memo(function SongList({
   songIdsToPlay = songIds,
 }: Props) {
   return (
-    <div>
+    <div
+      className={clsx(
+        'grid text-sm [grid-template-columns:auto_1fr_auto_minmax(32px,auto)_auto]',
+        {
+          'gap-x-1': isAlbumView,
+          'gap-x-2': !isAlbumView,
+        },
+      )}
+    >
       {(songIds == null
         ? new Array<undefined>(5).fill(undefined)
         : songIds

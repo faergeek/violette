@@ -21,7 +21,7 @@ export const AlbumCard = memo(function AlbumCard({
   );
 
   return (
-    <article>
+    <div>
       {cloneElement(
         album ? (
           <Link
@@ -35,7 +35,7 @@ export const AlbumCard = memo(function AlbumCard({
         {},
         <>
           <CoverArt
-            className="aspect-square w-full bg-muted/75"
+            className="w-full"
             coverArt={album?.coverArt}
             lazy={loadCoverArtLazily}
             sizes={coverArtSizes}
@@ -64,6 +64,6 @@ export const AlbumCard = memo(function AlbumCard({
           </>
         )}
       </div>
-    </article>
+    </div>
   );
 });
