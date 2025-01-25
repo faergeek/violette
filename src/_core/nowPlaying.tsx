@@ -11,7 +11,7 @@ export function NowPlaying() {
 
   return (
     <QueueContextProvider>
-      <div className="sticky bottom-0 isolate h-[var(--now-playing-height)]">
+      <div className="sticky bottom-0 isolate mx-auto h-[var(--now-playing-height)] w-full max-w-screen-2xl">
         <Queue id={queueId} triggerRef={queueTriggerRef} />
         <PlaybackPosition />
         <PlayerToolbar queueId={queueId} queueTriggerRef={queueTriggerRef} />
