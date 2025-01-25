@@ -33,7 +33,7 @@ export const ArtistCard = memo(function ArtistCard({
           children: (
             <>
               <CoverArt
-                className="aspect-square w-full bg-muted/75"
+                className="w-full"
                 coverArt={artist?.coverArt}
                 lazy={loadCoverArtLazily}
                 sizes={coverArtSizes}
