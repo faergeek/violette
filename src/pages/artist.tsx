@@ -129,7 +129,7 @@ export function ArtistPage({
   );
 
   return (
-    <>
+    <div className="container mx-auto sm:px-4">
       <MediaHeader
         coverArt={artist?.coverArt}
         links={renderArtistInfo(
@@ -198,7 +198,7 @@ export function ArtistPage({
       </MediaHeader>
 
       <Tabs value={tabValue}>
-        <TabsList>
+        <TabsList className="px-4">
           <TabsTrigger value="main">
             <Link
               hash="main"
@@ -248,7 +248,7 @@ export function ArtistPage({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent className="space-y-4" id="main" value="main">
+        <TabsContent className="space-y-10 px-4" id="main" value="main">
           {renderTopSongs(
             data =>
               data.topSongIds.length !== 0 && (
@@ -267,7 +267,7 @@ export function ArtistPage({
           )}
 
           <section>
-            <H2 className="mb-2">
+            <H2 className="mb-1">
               {cloneElement(
                 artist ? (
                   <Link
@@ -326,7 +326,7 @@ export function ArtistPage({
           )}
         </TabsContent>
 
-        <TabsContent id="top-songs" value={ArtistTab.TopSongs}>
+        <TabsContent className="px-4" id="top-songs" value={ArtistTab.TopSongs}>
           {renderTopSongs(
             data =>
               data.topSongIds.length === 0 ? (
@@ -424,7 +424,7 @@ export function ArtistPage({
           )}
         </TabsContent>
       </Tabs>
-    </>
+    </div>
   );
 }
 
@@ -439,7 +439,7 @@ function TopSongsSection({
 }) {
   return (
     <section>
-      <H2 className="mb-2">
+      <H2 className="mb-1">
         <Link
           hash="top-songs"
           hashScrollIntoView={{
@@ -468,7 +468,7 @@ function SimilarArtistsSection({
 }) {
   return (
     <section>
-      <H2 className="mb-2">
+      <H2 className="mb-1">
         <Link
           hash="similar-artists"
           hashScrollIntoView={{

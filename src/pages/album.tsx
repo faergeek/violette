@@ -80,7 +80,7 @@ export function AlbumPage({
   }
 
   return (
-    <>
+    <div className="container mx-auto sm:px-4">
       <MediaHeader
         coverArt={base?.coverArt}
         links={renderAlbumInfo(
@@ -153,7 +153,7 @@ export function AlbumPage({
         <div className="space-y-4">
           {discs.map(disc => (
             <div key={disc.number}>
-              <H2 className="text-md mb-2 font-semibold text-muted-foreground">
+              <H2 className="text-md mb-1 font-semibold text-muted-foreground">
                 Disc {disc.number}
                 {disc.title && <> - {disc.title}</>}
               </H2>
@@ -178,6 +178,6 @@ export function AlbumPage({
           songIds={songIds}
         />
       )}
-    </>
+    </div>
   );
 }

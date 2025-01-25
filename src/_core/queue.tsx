@@ -52,7 +52,7 @@ export function Queue({
     <div
       ref={rootRef}
       className={clsx(
-        'fixed inset-0 bottom-[var(--now-playing-height)] m-0 w-full flex-col overflow-auto border border-b-0 bg-background p-0',
+        'fixed inset-0 bottom-[var(--now-playing-height)] isolate m-0 w-full flex-col overflow-auto border border-b-0 bg-background p-0',
         {
           hidden: !isOpen,
           'flex animate-in fade-in-0 slide-in-from-bottom-20': isOpen,
@@ -69,12 +69,12 @@ export function Queue({
         }
       }}
     >
-      <div className="flex p-2">
+      <div className="container mx-auto flex items-center px-4">
         <H2>Now playing</H2>
 
         <Button
           aria-label="Close"
-          className="ms-auto"
+          className="ms-auto p-3"
           variant="icon"
           onClick={() => {
             setIsOpen(false);
@@ -84,12 +84,14 @@ export function Queue({
         </Button>
       </div>
 
-      <div className="overflow-auto overscroll-contain">
-        <SongList
-          getSongElementId={songId => `now-playing-queue-${songId}`}
-          isQueueView
-          songIds={queuedSongIds}
-        />
+      <div className="overflow-auto border-t">
+        <div className="container mx-auto px-4">
+          <SongList
+            getSongElementId={songId => `now-playing-queue-${songId}`}
+            isQueueView
+            songIds={queuedSongIds}
+          />
+        </div>
       </div>
     </div>
   );

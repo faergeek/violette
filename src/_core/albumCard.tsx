@@ -21,7 +21,7 @@ export const AlbumCard = memo(function AlbumCard({
   );
 
   return (
-    <article>
+    <div>
       {cloneElement(
         album ? (
           <Link
@@ -64,6 +64,6 @@ export const AlbumCard = memo(function AlbumCard({
           </>
         )}
       </div>
-    </article>
+    </div>
   );
 });

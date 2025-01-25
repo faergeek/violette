@@ -4,8 +4,6 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
-    --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
     --primary: 262.1 83.3% 57.8%;
     --primary-foreground: 210 20% 98%;
     --secondary: 220 14.3% 95.9%;
@@ -18,15 +16,13 @@
     --destructive-foreground: 210 20% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --now-playing-height: 84px;
+    --now-playing-height: 64px;
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
       --background: 224 71.4% 4.1%;
       --foreground: 210 20% 98%;
-      --card: 224 71.4% 4.1%;
-      --card-foreground: 210 20% 98%;
       --primary: 263.4 70% 50.4%;
       --primary-foreground: 210 20% 98%;
       --secondary: 215 27.9% 16.9%;
@@ -44,7 +40,7 @@
   }
 
   * {
-    @apply break-words border-border;
+    @apply break-words border-border outline-primary;
   }
 
   :any-link:hover {

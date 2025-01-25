@@ -44,12 +44,7 @@ export function CoverArt({
   }, []);
 
   return (
-    <div
-      className={clsx(
-        'aspect-square overflow-clip rounded-md bg-muted/75',
-        className,
-      )}
-    >
+    <div className={clsx('aspect-square bg-muted/75', className)}>
       <img
         ref={imgRef}
         alt={alt}

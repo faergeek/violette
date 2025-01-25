@@ -10,7 +10,7 @@ const variants = cva(
       variant: {
         primary:
           'rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground [&_svg]:size-5 [:where(:enabled,:any-link)&]:hover:bg-primary/90',
-        icon: 'rounded-sm text-muted-foreground outline-offset-4 [:where(:enabled,:any-link)&]:hover:text-secondary-foreground',
+        icon: 'rounded-sm text-muted-foreground [:where(:enabled,:any-link)&]:hover:text-secondary-foreground',
         link: 'rounded-lg px-3 py-2 text-base text-foreground [&_svg]:size-5 [:where(:enabled,:any-link)&]:hover:text-primary',
       },
     },

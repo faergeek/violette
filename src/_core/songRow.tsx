@@ -59,17 +59,17 @@ export const SongRow = memo(function SongRow({
     <div
       aria-label="Song"
       className={clsx(
-        'group/song-row -mt-[1px] grid grid-flow-col items-center gap-2 overflow-clip border-2 px-2 py-1 text-sm first:mt-0 even:bg-muted/50',
+        'group/song-row col-span-full grid grid-cols-subgrid items-center border-2 even:bg-muted/50',
         {
-          '[grid-template-columns:24px_1fr_auto_40px]': isAlbumView,
-          '[grid-template-columns:48px_1fr_auto_40px]': !isAlbumView,
+          'px-1': isAlbumView,
+          'py-1': !isAlbumView,
           'border-transparent': !isSelected,
           'rounded-md border-primary': isSelected,
         },
       )}
       id={elementId}
     >
-      <div className="group/song-row-play-controls relative flex justify-end text-right">
+      <div className="relative grid h-full grid-cols-subgrid items-center justify-items-end overflow-clip">
         <StoreConsumer
           selector={state =>
             songId == null ? null : state.songs.byId.get(songId)
@@ -83,55 +83,47 @@ export const SongRow = memo(function SongRow({
                 {isCurrentInPlayer => (
                   <span
                     aria-hidden
-                    className={clsx('slashed-zero tabular-nums', {
-                      'text-muted-foreground focus-visible:text-transparent group-hover/song-row:text-transparent group-has-[:focus-visible]/song-row-play-controls:text-transparent':
-                        !isCurrentInPlayer,
-                      'text-transparent': isCurrentInPlayer,
-                    })}
+                    className={clsx(
+                      'min-w-6 px-1 text-right slashed-zero tabular-nums',
+                      {
+                        'text-muted-foreground focus-visible:text-transparent group-hover/song-row:text-transparent group-has-[:focus-visible]/song-row:text-transparent':
+                          !isCurrentInPlayer,
+                        'text-transparent': isCurrentInPlayer,
+                      },
+                    )}
                   >
                     {song?.track ?? '\u00a0'}
                   </span>
                 )}
               </StoreConsumer>
-            ) : song ? (
+            ) : (
               <StoreConsumer
                 selector={state => state.player.currentSongId === songId}
               >
                 {isCurrentInPlayer => (
                   <CoverArt
                     className={clsx(
-                      'size-12 focus-visible:opacity-25 group-hover/song-row:opacity-25 group-has-[:focus-visible]/song-row-play-controls:opacity-25',
+                      'size-12 focus-visible:opacity-25 group-hover/song-row:opacity-25 group-has-[:focus-visible]/song-row:opacity-25',
                       { 'opacity-25': isCurrentInPlayer },
                     )}
-                    coverArt={song.coverArt}
+                    coverArt={song?.coverArt}
                     lazy
                     sizes="3em"
                   />
                 )}
               </StoreConsumer>
-            ) : (
-              <CoverArt />
             )
           }
         </StoreConsumer>
 
         <StoreConsumer selector={state => state.player.paused}>
           {paused => (
-            <>
-              <StoreConsumer
-                selector={state => state.player.currentSongId === songId}
-              >
-                {isCurrentInPlayer =>
-                  isCurrentInPlayer &&
-                  !paused && (
-                    <span className="absolute inset-0 m-auto flex h-6 w-6 items-center justify-center overflow-clip group-hover/song-row:opacity-0 group-has-[:focus-visible]/song-row-play-controls:opacity-0">
-                      <span className="relative inline-flex h-3 w-3 rounded-full bg-primary" />
-                      <span className="absolute inline-flex h-3 w-3 animate-ping rounded-full bg-primary opacity-75" />
-                    </span>
-                  )
-                }
-              </StoreConsumer>
-
+            <div
+              className={clsx('absolute', {
+                'right-0': isAlbumView,
+                'inset-0 m-auto flex items-center justify-center': !isAlbumView,
+              })}
+            >
               {songId && (
                 <StoreConsumer
                   selector={state => state.player.currentSongId === songId}
@@ -140,16 +132,14 @@ export const SongRow = memo(function SongRow({
                     <button
                       aria-label="Play"
                       aria-pressed={isCurrentInPlayer && !paused}
-                      className={clsx(
-                        'absolute inset-0 m-auto flex items-center justify-center rounded-full',
-                        {
-                          'opacity-0 group-hover/song-row:opacity-100 group-has-[:focus-visible]/song-row-play-controls:opacity-100':
-                            !isCurrentInPlayer || !paused,
-                          'opacity-100': isCurrentInPlayer && paused,
-                          'size-6': isAlbumView,
-                          'size-8': !isAlbumView,
-                        },
-                      )}
+                      className={clsx('flex rounded-full outline-offset-2', {
+                        'opacity-0 group-hover/song-row:inset-0 group-hover/song-row:opacity-100 group-has-[:focus-visible]/song-row:inset-0 group-has-[:focus-visible]/song-row:opacity-100':
+                          !isCurrentInPlayer || !paused,
+                        'inset-0 opacity-100': isCurrentInPlayer && paused,
+                        'right-0 size-6':
+                          isAlbumView && isCurrentInPlayer && !paused,
+                        'size-8': !isAlbumView,
+                      })}
                       type="button"
                       onClick={async () => {
                         const result = await runAsyncStoreFx(
@@ -178,7 +168,29 @@ export const SongRow = memo(function SongRow({
                   )}
                 </StoreConsumer>
               )}
-            </>
+
+              <StoreConsumer
+                selector={state => state.player.currentSongId === songId}
+              >
+                {isCurrentInPlayer =>
+                  isCurrentInPlayer &&
+                  !paused && (
+                    <div
+                      className={clsx(
+                        'absolute flex h-3 w-3 items-center justify-center group-hover/song-row:invisible group-has-[:focus-visible]/song-row:invisible',
+                        {
+                          'inset-y-0 right-1 my-auto': isAlbumView,
+                          'inset-0 m-auto': !isAlbumView,
+                        },
+                      )}
+                    >
+                      <div className="relative inline-flex h-3 w-3 rounded-full bg-primary" />
+                      <div className="absolute inline-flex h-3 w-3 animate-ping rounded-full bg-primary opacity-75" />
+                    </div>
+                  )
+                }
+              </StoreConsumer>
+            </div>
           )}
         </StoreConsumer>
       </div>
@@ -268,41 +280,54 @@ export const SongRow = memo(function SongRow({
           songId == null ? null : state.songs.byId.get(songId)
         }
       >
-        {song =>
-          song ? (
-            <StarButton id={song.id} starred={song.starred} />
-          ) : (
-            <StarButton disabled />
-          )
-        }
+        {song => (
+          <StarButton
+            className={clsx({
+              'p-2': isAlbumView,
+              'p-3': !isAlbumView,
+            })}
+            disabled={!song}
+            id={song?.id}
+            starred={song?.starred}
+          />
+        )}
       </StoreConsumer>
 
-      <div className="group/song-row-menu relative flex justify-end">
+      <div className="group/song-row-menu relative grid h-full grid-cols-subgrid items-center justify-items-end">
         <StoreConsumer
           selector={state =>
             songId == null ? null : state.songs.byId.get(songId)
           }
         >
           {song => (
-            <div
+            <span
               aria-label="Duration"
-              className="slashed-zero tabular-nums group-focus-within/song-row-menu:opacity-0 group-hover/song-row:opacity-0"
+              className={clsx(
+                'whitespace-nowrap slashed-zero tabular-nums group-hover/song-row:opacity-0 group-has-[:focus-visible]/song-row:opacity-0',
+                {
+                  'pe-2': isAlbumView,
+                  'pe-3': !isAlbumView,
+                },
+              )}
             >
               {song ? (
                 formatDuration(song.duration)
               ) : (
                 <Skeleton className="inline-block w-full" />
               )}
-            </div>
+            </span>
           )}
         </StoreConsumer>
 
-        <div className="opacity-0 group-focus-within/song-row-menu:opacity-100 group-hover/song-row:opacity-100">
+        <div className="absolute inset-y-0 right-0 m-auto flex justify-end opacity-0 group-hover/song-row:opacity-100 group-has-[:focus-visible]/song-row:opacity-100">
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Button
                 aria-label="Song menu"
-                className="absolute inset-0 left-auto"
+                className={clsx({
+                  'p-2': isAlbumView,
+                  'p-3': !isAlbumView,
+                })}
                 variant="icon"
               >
                 <Ellipsis role="none" />
@@ -459,6 +484,10 @@ export const SongRow = memo(function SongRow({
       {isQueueView && (
         <Button
           aria-label="Remove from queue"
+          className={clsx({
+            'p-2': isAlbumView,
+            'p-3': !isAlbumView,
+          })}
           variant="icon"
           onClick={async () => {
             const result = await runAsyncStoreFx(

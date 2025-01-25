@@ -21,7 +21,7 @@ export const ArtistCard = memo(function ArtistCard({
   );
 
   return (
-    <article>
+    <div>
       {cloneElement(
         artist == null ? (
           <span />
@@ -46,6 +46,6 @@ export const ArtistCard = memo(function ArtistCard({
           ),
         },
       )}
-    </article>
+    </div>
   );
 });
