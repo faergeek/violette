@@ -28,8 +28,12 @@ export function CoverArt({
     [coverArt, credentials],
   );
 
-  const [lastLoadedSrc, setLastLoadedSrc] = useState<string>();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [lastLoadedSrc, setLastLoadedSrc] = useState<string>();
+  useEffect(() => {
+    setIsLoaded(false);
+    setLastLoadedSrc(undefined);
+  }, [srcSet]);
 
   const imgRef = useRef<HTMLImageElement | null>(null);
   useEffect(() => {
