@@ -100,7 +100,7 @@ export function NowPlaying() {
           </Button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent placement="bottom-end">
+        <DropdownMenuContent placement="bottom-end" strategy="fixed">
           <DropdownMenuItem
             onClick={() => {
               navigate({ to: '/' });

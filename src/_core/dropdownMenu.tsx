@@ -1,4 +1,4 @@
-import type { Placement } from '@floating-ui/dom';
+import type { Placement, Strategy } from '@floating-ui/dom';
 import { invariant } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { cloneElement, createContext, useContext, useId, useMemo } from 'react';
@@ -62,17 +62,19 @@ export function DropdownMenuTrigger({
 export function DropdownMenuContent({
   className,
   placement,
+  strategy,
   ...otherProps
 }: Omit<
   React.ComponentProps<'div'>,
   'aria-labelledby' | 'id' | 'popover' | 'role'
 > & {
   placement?: Placement | undefined;
+  strategy?: Strategy | undefined;
 }) {
   const { menuId, triggerId } = useDropdownMenuContext();
 
   return (
-    <PopoverContent placement={placement}>
+    <PopoverContent placement={placement} strategy={strategy}>
       <div
         {...otherProps}
         aria-labelledby={triggerId}
