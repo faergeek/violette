@@ -198,11 +198,11 @@ export function ArtistPage({
       </MediaHeader>
 
       <Tabs value={tabValue}>
-        <TabsList className="px-4 sm:px-0">
+        <TabsList className="sticky top-[var(--player-toolbar-height)] z-20 bg-background px-4 sm:px-0">
           <TabsTrigger value="main">
             <Link
               hash="main"
-              hashScrollIntoView={false}
+              hashScrollIntoView={{ block: 'nearest', behavior: 'instant' }}
               params={params}
               resetScroll={false}
               to="/artist/$artistId"
@@ -214,7 +214,7 @@ export function ArtistPage({
           <TabsTrigger value={ArtistTab.TopSongs}>
             <Link
               hash="top-songs"
-              hashScrollIntoView={false}
+              hashScrollIntoView={{ block: 'nearest', behavior: 'instant' }}
               params={params}
               resetScroll={false}
               to="/artist/$artistId"
@@ -226,7 +226,7 @@ export function ArtistPage({
           <TabsTrigger value={ArtistTab.Albums}>
             <Link
               hash="albums"
-              hashScrollIntoView={false}
+              hashScrollIntoView={{ block: 'nearest', behavior: 'instant' }}
               params={params}
               resetScroll={false}
               to="/artist/$artistId"
@@ -238,7 +238,7 @@ export function ArtistPage({
           <TabsTrigger value={ArtistTab.SimilarArtists}>
             <Link
               hash="similar-artists"
-              hashScrollIntoView={false}
+              hashScrollIntoView={{ block: 'nearest', behavior: 'instant' }}
               params={params}
               resetScroll={false}
               to="/artist/$artistId"
@@ -248,7 +248,7 @@ export function ArtistPage({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent className="space-y-10 px-4 sm:px-0" id="main" value="main">
+        <TabsContent className="px-4 sm:px-0" id="main" value="main">
           {renderTopSongs(
             data =>
               data.topSongIds.length !== 0 && (
@@ -267,7 +267,7 @@ export function ArtistPage({
           )}
 
           <section>
-            <H2 className="mb-1">
+            <H2 className="sticky top-[calc(var(--player-toolbar-height)+30px)] z-10 mb-1 bg-background">
               {cloneElement(
                 artist ? (
                   <Link
@@ -451,7 +451,7 @@ function TopSongsSection({
 }) {
   return (
     <section>
-      <H2 className="mb-1">
+      <H2 className="sticky top-[calc(var(--player-toolbar-height)+30px)] z-10 mb-1 bg-background">
         <Link
           hash="top-songs"
           hashScrollIntoView={{
@@ -480,7 +480,7 @@ function SimilarArtistsSection({
 }) {
   return (
     <section>
-      <H2 className="mb-1">
+      <H2 className="sticky top-[calc(var(--player-toolbar-height)+30px)] z-10 mb-1 bg-background">
         <Link
           hash="similar-artists"
           hashScrollIntoView={{
