@@ -49,7 +49,7 @@
   }
 
   html {
-    scroll-padding-top: var(--now-playing-height);
+    scroll-padding-top: calc(var(--now-playing-height) + 40px);
     scroll-padding-bottom: var(--player-toolbar-height);
   }
 
