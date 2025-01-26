@@ -80,7 +80,7 @@ export function AlbumPage({
   }
 
   return (
-    <div className="container mx-auto sm:px-4">
+    <div className="container mx-auto sm:px-4 sm:pt-4">
       <MediaHeader
         coverArt={base?.coverArt}
         links={renderAlbumInfo(

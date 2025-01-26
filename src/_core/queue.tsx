@@ -37,7 +37,7 @@ export function Queue({
         );
 
         currentSongElement?.querySelector('button')?.focus();
-        currentSongElement?.scrollIntoView({ block: 'center' });
+        currentSongElement?.scrollIntoView({ block: 'end' });
       }
     } else {
       if (rootRef.current?.contains(document.activeElement)) {
@@ -51,13 +51,9 @@ export function Queue({
   return (
     <div
       ref={rootRef}
-      className={clsx(
-        'fixed inset-0 bottom-[var(--now-playing-height)] isolate m-0 w-full flex-col overflow-auto border border-b-0 bg-background p-0',
-        {
-          hidden: !isOpen,
-          'flex animate-in fade-in-0 slide-in-from-bottom-20': isOpen,
-        },
-      )}
+      className={clsx('flex h-full flex-col overflow-hidden', {
+        'animate-in fade-in-0 slide-in-from-bottom-20': isOpen,
+      })}
       id={id}
       onKeyDown={event => {
         switch (event.code) {
@@ -69,23 +65,25 @@ export function Queue({
         }
       }}
     >
-      <div className="container mx-auto flex items-center px-4">
-        <H2>Now playing</H2>
+      <div className="me-[var(--scrollbar-inline-size)]">
+        <div className="container mx-auto flex items-center ps-4 sm:pe-4">
+          <H2>Now playing</H2>
 
-        <Button
-          aria-label="Close"
-          className="ms-auto p-3"
-          variant="icon"
-          onClick={() => {
-            setIsOpen(false);
-          }}
-        >
-          <X role="none" />
-        </Button>
+          <Button
+            aria-label="Close"
+            className="ms-auto p-3"
+            variant="icon"
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
+            <X role="none" />
+          </Button>
+        </div>
       </div>
 
       <div className="overflow-auto border-t">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto sm:px-4">
           <SongList
             getSongElementId={songId => `now-playing-queue-${songId}`}
             isQueueView
