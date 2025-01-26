@@ -59,12 +59,12 @@ export const SongRow = memo(function SongRow({
     <div
       aria-label="Song"
       className={clsx(
-        'group/song-row col-span-full grid grid-cols-subgrid items-center border-2 even:bg-muted/50',
+        'group/song-row col-span-full grid grid-cols-subgrid items-center border-y-2 even:bg-muted/50',
         {
           'px-1': isAlbumView,
           'py-1': !isAlbumView,
           'border-transparent': !isSelected,
-          'rounded-md border-primary': isSelected,
+          'border-primary': isSelected,
         },
       )}
       id={elementId}
@@ -195,7 +195,7 @@ export const SongRow = memo(function SongRow({
         </StoreConsumer>
       </div>
 
-      <div>
+      <div className="min-w-0">
         <StoreConsumer
           selector={state =>
             songId == null ? null : state.songs.byId.get(songId)

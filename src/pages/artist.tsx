@@ -129,7 +129,7 @@ export function ArtistPage({
   );
 
   return (
-    <div className="container mx-auto sm:px-4">
+    <div className="container mx-auto sm:px-4 sm:pt-4">
       <MediaHeader
         coverArt={artist?.coverArt}
         links={renderArtistInfo(
@@ -198,7 +198,7 @@ export function ArtistPage({
       </MediaHeader>
 
       <Tabs value={tabValue}>
-        <TabsList className="px-4">
+        <TabsList className="px-4 sm:px-0">
           <TabsTrigger value="main">
             <Link
               hash="main"
@@ -248,7 +248,7 @@ export function ArtistPage({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent className="space-y-10 px-4" id="main" value="main">
+        <TabsContent className="space-y-10 px-4 sm:px-0" id="main" value="main">
           {renderTopSongs(
             data =>
               data.topSongIds.length !== 0 && (
@@ -326,7 +326,11 @@ export function ArtistPage({
           )}
         </TabsContent>
 
-        <TabsContent className="px-4" id="top-songs" value={ArtistTab.TopSongs}>
+        <TabsContent
+          className="px-4 sm:px-0"
+          id="top-songs"
+          value={ArtistTab.TopSongs}
+        >
           {renderTopSongs(
             data =>
               data.topSongIds.length === 0 ? (
@@ -342,7 +346,11 @@ export function ArtistPage({
           )}
         </TabsContent>
 
-        <TabsContent id="albums" value={ArtistTab.Albums}>
+        <TabsContent
+          className="px-4 sm:px-0"
+          id="albums"
+          value={ArtistTab.Albums}
+        >
           <CardGrid>
             {albumIds
               ? albumIds
@@ -361,7 +369,11 @@ export function ArtistPage({
           </CardGrid>
         </TabsContent>
 
-        <TabsContent id="similar-artists" value={ArtistTab.SimilarArtists}>
+        <TabsContent
+          className="px-4 sm:px-0"
+          id="similar-artists"
+          value={ArtistTab.SimilarArtists}
+        >
           {renderSimilarArtists(
             similarArtists => {
               if (similarArtists.length === 0) {

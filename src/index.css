@@ -16,7 +16,8 @@
     --destructive-foreground: 210 20% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --now-playing-height: 64px;
+    --now-playing-height: 48px;
+    --player-toolbar-height: 48px;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -48,8 +49,8 @@
   }
 
   html {
-    @apply scroll-pt-4;
-    scroll-padding-bottom: var(--now-playing-height);
+    scroll-padding-top: var(--now-playing-height);
+    scroll-padding-bottom: var(--player-toolbar-height);
   }
 
   body {

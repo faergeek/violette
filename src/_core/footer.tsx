@@ -1,22 +1,41 @@
 import { SiGithub } from '@icons-pack/react-simple-icons';
+import { Link } from '@tanstack/react-router';
+
+import { Logo } from './logo';
 
 export function Footer() {
   return (
-    <footer className="mt-auto">
-      <div className="container mx-auto mt-10 flex flex-wrap items-center justify-center gap-2 whitespace-nowrap border-t p-4 px-4 text-center text-muted-foreground">
-        <a
-          href="https://github.com/faergeek/violette/blob/master/LICENSE"
-          rel="noopener"
-          target="_blank"
-        >
-          Copyright &copy; 2025
-        </a>
+    <footer className="container mx-auto mt-auto">
+      <hr className="mx-4 mt-10 border-t" />
 
-        <address className="not-italic">
-          <a href="https://github.com/faergeek" rel="noopener" target="_blank">
-            Sergei Slipchenko
+      <div className="flex flex-wrap items-center justify-between gap-2 whitespace-nowrap px-4 py-6 text-center text-muted-foreground">
+        <Link className="flex items-center gap-2" to="/">
+          <Logo className="size-5" />
+          Violette
+        </Link>
+
+        <span>
+          <a
+            href="https://github.com/faergeek/violette/blob/master/LICENSE"
+            rel="noopener"
+            target="_blank"
+          >
+            Copyright &copy; 2025
           </a>
-        </address>
+          <span aria-hidden className="text-primary">
+            {' '}
+            &bull;{' '}
+          </span>
+          <address className="inline not-italic">
+            <a
+              href="https://github.com/faergeek"
+              rel="noopener"
+              target="_blank"
+            >
+              Sergei Slipchenko
+            </a>
+          </address>
+        </span>
 
         <a
           className="flex items-center gap-2"
@@ -24,7 +43,7 @@ export function Footer() {
           rel="noopener"
           target="_blank"
         >
-          <SiGithub className="size-5" /> GitHub
+          GitHub <SiGithub className="size-5" />
         </a>
       </div>
     </footer>

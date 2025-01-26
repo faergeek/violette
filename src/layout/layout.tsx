@@ -1,45 +1,49 @@
-import { Link, Outlet } from '@tanstack/react-router';
-import { LogOut } from 'lucide-react';
+import { Outlet } from '@tanstack/react-router';
+import { useId, useRef } from 'react';
 
-import { Button } from '../_core/button';
 import { Footer } from '../_core/footer';
-import { Logo } from '../_core/logo';
 import { NowPlaying } from '../_core/nowPlaying';
-import { useAppStore } from '../store/react';
+import { PlaybackPosition } from '../_core/playbackPosition';
+import { PlayerToolbar } from '../_core/playerToolbar';
+import { Queue } from '../_core/queue';
+import {
+  QueueContextConsumer,
+  QueueContextProvider,
+} from '../_core/queueContext';
 
 export function Layout() {
-  const clearSubsonicCredentials = useAppStore(
-    state => state.auth.clearSubsonicCredentials,
-  );
+  const queueTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const queueId = useId();
 
   return (
     <div className="relative flex min-h-lvh flex-col">
-      <header className="container mx-auto flex items-center gap-4 px-4 py-4">
-        <Link className="flex items-center gap-2" to="/">
-          <Logo className="size-8" />
-          <strong aria-hidden>Violette</strong>
-        </Link>
+      <QueueContextProvider>
+        <header className="sticky top-0 z-30 bg-background">
+          <NowPlaying />
+        </header>
 
-        <form
-          className="ms-auto"
-          onSubmit={event => {
-            event.preventDefault();
-            clearSubsonicCredentials();
-          }}
-        >
-          <Button variant="link" type="submit">
-            Logout
-            <LogOut role="none" />
-          </Button>
-        </form>
-      </header>
+        <main>
+          <Outlet />
+        </main>
 
-      <main>
-        <Outlet />
-      </main>
+        <Footer />
 
-      <Footer />
-      <NowPlaying />
+        <div className="container sticky bottom-0 z-50 mx-auto sm:px-4">
+          <PlaybackPosition />
+          <PlayerToolbar queueId={queueId} queueTriggerRef={queueTriggerRef} />
+        </div>
+
+        <QueueContextConsumer>
+          {({ isOpen }) => (
+            <div
+              className="fixed inset-0 bottom-[var(--player-toolbar-height)] isolate z-40 bg-background"
+              hidden={!isOpen}
+            >
+              <Queue id={queueId} triggerRef={queueTriggerRef} />
+            </div>
+          )}
+        </QueueContextConsumer>
+      </QueueContextProvider>
     </div>
   );
 }

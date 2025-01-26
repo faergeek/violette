@@ -66,12 +66,7 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-lvh flex-col">
-      <header className="flex items-center justify-center gap-2 py-4">
-        <Logo className="size-8" />
-        <strong aria-hidden>Violette</strong>
-      </header>
-
-      <main className="mx-auto w-full max-w-96 flex-1">
+      <main className="mx-auto w-full max-w-96 flex-1 pt-4">
         <form
           action={loginAction}
           aria-describedby="login-form-description"
@@ -79,12 +74,10 @@ export function LoginPage() {
           className="space-y-4 px-4"
         >
           <div className="flex flex-col space-y-1.5">
-            <h1
-              className="text-2xl font-bold leading-none tracking-tight"
-              id="login-form-heading"
-            >
-              Login
-            </h1>
+            <div className="mb-3 flex items-center justify-center gap-2">
+              <Logo className="size-5" />
+              <strong aria-hidden>Violette</strong>
+            </div>
 
             <div
               className="text-sm text-muted-foreground"
