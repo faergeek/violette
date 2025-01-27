@@ -1,12 +1,21 @@
 import type { Placement, Strategy } from '@floating-ui/dom';
 import { invariant } from '@tanstack/react-router';
 import clsx from 'clsx';
-import { cloneElement, createContext, useContext, useId, useMemo } from 'react';
+import {
+  cloneElement,
+  createContext,
+  useContext,
+  useId,
+  useMemo,
+  useRef,
+} from 'react';
 
 import { Popover, PopoverContent, PopoverReference } from './popover';
 
 interface DropdownMenuContentContextValue {
+  isOpenRef: React.RefObject<boolean>;
   menuId: string;
+  preventNextToggleRef: React.RefObject<boolean>;
   triggerId: string;
 }
 
@@ -20,10 +29,18 @@ const useDropdownMenuContext = () => {
 };
 
 export function DropdownMenu(props: React.ComponentProps<typeof Popover>) {
+  const isOpenRef = useRef(false);
   const menuId = useId();
+  const preventNextToggleRef = useRef(false);
   const triggerId = useId();
+
   const contextValue = useMemo(
-    (): DropdownMenuContentContextValue => ({ menuId, triggerId }),
+    (): DropdownMenuContentContextValue => ({
+      isOpenRef,
+      menuId,
+      preventNextToggleRef,
+      triggerId,
+    }),
     [menuId, triggerId],
   );
 
@@ -43,9 +60,11 @@ export function DropdownMenuTrigger({
     'aria-haspopup'?: React.AriaRole;
     id?: string;
     popoverTarget?: string;
+    onPointerDown?: () => void;
   }>;
 }) {
-  const { menuId, triggerId } = useDropdownMenuContext();
+  const { isOpenRef, menuId, preventNextToggleRef, triggerId } =
+    useDropdownMenuContext();
 
   return (
     <PopoverReference {...otherProps}>
@@ -54,6 +73,11 @@ export function DropdownMenuTrigger({
         'aria-haspopup': 'menu',
         id: triggerId,
         popoverTarget: menuId,
+        onPointerDown: () => {
+          if (isOpenRef.current) {
+            preventNextToggleRef.current = true;
+          }
+        },
       })}
     </PopoverReference>
   );
@@ -71,7 +95,8 @@ export function DropdownMenuContent({
   placement?: Placement | undefined;
   strategy?: Strategy | undefined;
 }) {
-  const { menuId, triggerId } = useDropdownMenuContext();
+  const { isOpenRef, menuId, preventNextToggleRef, triggerId } =
+    useDropdownMenuContext();
 
   return (
     <PopoverContent placement={placement} strategy={strategy}>
@@ -197,15 +222,25 @@ export function DropdownMenuContent({
               break;
           }
         }}
+        onBeforeToggle={event => {
+          if (event.newState === 'open' && preventNextToggleRef.current) {
+            preventNextToggleRef.current = false;
+            event.preventDefault();
+          }
+        }}
         onToggle={event => {
-          const menu = event.currentTarget;
-          const firstMenuItem = menu.querySelector(
-            '[role=menuitem]:first-child',
-          );
-          invariant(firstMenuItem instanceof HTMLElement);
-          setTimeout(() => {
-            firstMenuItem.focus();
-          }, 0);
+          isOpenRef.current = event.newState === 'open';
+
+          if (event.newState === 'open') {
+            const menu = event.currentTarget;
+            const firstMenuItem = menu.querySelector(
+              '[role=menuitem]:first-child',
+            );
+            invariant(firstMenuItem instanceof HTMLElement);
+            setTimeout(() => {
+              firstMenuItem.focus();
+            }, 0);
+          }
         }}
       />
     </PopoverContent>
