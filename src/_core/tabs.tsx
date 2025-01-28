@@ -36,7 +36,7 @@ export function TabsList({
   return (
     <div
       className={clsx(
-        'flex max-w-full items-center space-x-2 overflow-auto p-1 text-sm font-bold text-muted-foreground',
+        'flex max-w-full items-center space-x-2 overflow-auto text-sm font-bold text-muted-foreground',
         className,
       )}
       role="tablist"
@@ -119,7 +119,7 @@ export function TabsTrigger({
   return cloneElement(children, {
     'aria-selected': isSelected,
     className: clsx(
-      'whitespace-nowrap border-b-2 border-transparent tracking-widest [font-variant-caps:all-small-caps] aria-selected:border-primary aria-selected:text-foreground',
+      'whitespace-nowrap border-b-2 border-transparent px-2 tracking-widest [font-variant-caps:all-small-caps] aria-selected:border-primary aria-selected:text-foreground',
       children.props.className,
     ),
     role: 'tab',

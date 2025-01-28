@@ -21,10 +21,10 @@ export function MediaHeader({
           sizes={MEDIA_HEADER_COVER_ART_SIZES}
         />
 
-        <div className="px-4 sm:px-0">{links}</div>
+        <div className="px-2 sm:px-0">{links}</div>
       </div>
 
-      <div className="px-4 sm:col-span-2 sm:px-0 lg:col-span-3 xl:col-span-4 2xl:col-span-5">
+      <div className="px-2 sm:col-span-2 sm:px-0 lg:col-span-3 xl:col-span-4 2xl:col-span-5">
         {children}
       </div>
     </div>

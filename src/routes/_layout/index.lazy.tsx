@@ -7,7 +7,7 @@ import { useAppStore } from '../../store/react';
 export const Route = createLazyFileRoute('/_layout/')({
   pendingComponent: function HomePending() {
     return (
-      <div className="container mx-auto px-4 sm:pt-4">
+      <div className="container mx-auto">
         <CardGrid>
           {new Array<null>(30).fill(null).map((_, i) => (
             <ArtistCard key={i} />
@@ -24,7 +24,7 @@ export const Route = createLazyFileRoute('/_layout/')({
     );
 
     return (
-      <div className="container mx-auto px-4 sm:pt-4">
+      <div className="container mx-auto">
         <CardGrid>
           {listIds.map(id => (
             <ArtistCard

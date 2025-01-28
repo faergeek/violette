@@ -21,7 +21,7 @@ export const AlbumCard = memo(function AlbumCard({
   );
 
   return (
-    <div>
+    <div className="group/album-card">
       {cloneElement(
         album ? (
           <Link
@@ -41,13 +41,13 @@ export const AlbumCard = memo(function AlbumCard({
             sizes={coverArtSizes}
           />
 
-          <h2 className="font-bold leading-tight">
+          <h2 className="font-bold leading-tight group-odd/album-card:ps-2 group-even/album-card:pe-2 sm:group-odd/album-card:ps-0 sm:group-even/album-card:pe-0">
             {album == null ? <Skeleton className="w-24" /> : album.name}
           </h2>
         </>,
       )}
 
-      <div className="text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground group-odd/album-card:ps-2 group-even/album-card:pe-2 sm:group-odd/album-card:ps-0 sm:group-even/album-card:pe-0">
         {album == null ? (
           <Skeleton className="w-16" />
         ) : (
