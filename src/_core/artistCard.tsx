@@ -20,32 +20,28 @@ export const ArtistCard = memo(function ArtistCard({
     id == null ? undefined : state.artists.byId.get(id),
   );
 
-  return (
-    <div>
-      {cloneElement(
-        artist == null ? (
-          <span />
-        ) : (
-          <Link params={{ artistId: artist.id }} to="/artist/$artistId" />
-        ),
-        {
-          className: 'block space-y-1',
-          children: (
-            <>
-              <CoverArt
-                className="w-full"
-                coverArt={artist?.coverArt}
-                lazy={loadCoverArtLazily}
-                sizes={coverArtSizes}
-              />
+  return cloneElement(
+    artist == null ? (
+      <span />
+    ) : (
+      <Link params={{ artistId: artist.id }} to="/artist/$artistId" />
+    ),
+    {
+      className: 'block space-y-1 group/artist-card',
+      children: (
+        <>
+          <CoverArt
+            className="w-full"
+            coverArt={artist?.coverArt}
+            lazy={loadCoverArtLazily}
+            sizes={coverArtSizes}
+          />
 
-              <h2 className="font-bold leading-tight">
-                {artist == null ? <Skeleton className="w-24" /> : artist.name}
-              </h2>
-            </>
-          ),
-        },
-      )}
-    </div>
+          <h2 className="font-bold leading-tight group-odd/artist-card:ps-2 group-even/artist-card:pe-2 sm:group-odd/artist-card:ps-0 sm:group-even/artist-card:pe-0">
+            {artist == null ? <Skeleton className="w-24" /> : artist.name}
+          </h2>
+        </>
+      ),
+    },
   );
 });

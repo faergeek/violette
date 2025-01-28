@@ -1,4 +1,5 @@
 import { Await, Link, useRouterState } from '@tanstack/react-router';
+import clsx from 'clsx';
 import { cloneElement } from 'react';
 
 import { AlbumCard } from '../_core/albumCard';
@@ -198,7 +199,14 @@ export function ArtistPage({
       </MediaHeader>
 
       <Tabs value={tabValue}>
-        <TabsList className="sticky top-[var(--player-toolbar-height)] z-20 bg-background px-4 sm:px-0">
+        <TabsList
+          className={clsx(
+            'top-[var(--player-toolbar-height)] z-20 bg-background sm:px-0',
+            {
+              sticky: tabValue !== 'main',
+            },
+          )}
+        >
           <TabsTrigger value="main">
             <Link
               hash="main"
@@ -248,7 +256,7 @@ export function ArtistPage({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent className="px-4 sm:px-0" id="main" value="main">
+        <TabsContent id="main" value="main">
           {renderTopSongs(
             data =>
               data.topSongIds.length !== 0 && (
@@ -267,7 +275,7 @@ export function ArtistPage({
           )}
 
           <section>
-            <H2 className="sticky top-[calc(var(--player-toolbar-height)+30px)] z-10 mb-1 bg-background">
+            <H2 className="sticky top-[var(--player-toolbar-height)] z-10 mb-1 bg-background px-2 sm:px-0">
               {cloneElement(
                 artist ? (
                   <Link
@@ -305,6 +313,8 @@ export function ArtistPage({
                     .fill(null)
                     .map((_, i) => <AlbumCard key={i} />)}
             </CardGrid>
+
+            <div className="pb-12" />
           </section>
 
           {renderSimilarArtists(
@@ -326,11 +336,7 @@ export function ArtistPage({
           )}
         </TabsContent>
 
-        <TabsContent
-          className="px-4 sm:px-0"
-          id="top-songs"
-          value={ArtistTab.TopSongs}
-        >
+        <TabsContent id="top-songs" value={ArtistTab.TopSongs}>
           {renderTopSongs(
             data =>
               data.topSongIds.length === 0 ? (
@@ -346,11 +352,7 @@ export function ArtistPage({
           )}
         </TabsContent>
 
-        <TabsContent
-          className="px-4 sm:px-0"
-          id="albums"
-          value={ArtistTab.Albums}
-        >
+        <TabsContent id="albums" value={ArtistTab.Albums}>
           <CardGrid>
             {albumIds
               ? albumIds
@@ -369,11 +371,7 @@ export function ArtistPage({
           </CardGrid>
         </TabsContent>
 
-        <TabsContent
-          className="px-4 sm:px-0"
-          id="similar-artists"
-          value={ArtistTab.SimilarArtists}
-        >
+        <TabsContent id="similar-artists" value={ArtistTab.SimilarArtists}>
           {renderSimilarArtists(
             similarArtists => {
               if (similarArtists.length === 0) {
@@ -404,7 +402,7 @@ export function ArtistPage({
                   )}
 
                   {notPresentArtists.length !== 0 && (
-                    <div className="text-center text-sm text-muted-foreground">
+                    <div className="px-2 text-center text-sm text-muted-foreground">
                       <H2 className="font-bold">Not found in a library:</H2>
 
                       <ul className="space-y-2 text-balance">
@@ -451,7 +449,7 @@ function TopSongsSection({
 }) {
   return (
     <section>
-      <H2 className="sticky top-[calc(var(--player-toolbar-height)+30px)] z-10 mb-1 bg-background">
+      <H2 className="sticky top-[var(--player-toolbar-height)] z-10 mb-1 bg-background px-2 sm:px-0">
         <Link
           hash="top-songs"
           hashScrollIntoView={{
@@ -467,6 +465,8 @@ function TopSongsSection({
       </H2>
 
       {children}
+
+      <div className="pb-4" />
     </section>
   );
 }
@@ -480,7 +480,7 @@ function SimilarArtistsSection({
 }) {
   return (
     <section>
-      <H2 className="sticky top-[calc(var(--player-toolbar-height)+30px)] z-10 mb-1 bg-background">
+      <H2 className="sticky top-[var(--player-toolbar-height)] z-10 mb-1 bg-background px-2 sm:px-0">
         <Link
           hash="similar-artists"
           hashScrollIntoView={{
