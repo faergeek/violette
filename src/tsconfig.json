@@ -7,10 +7,6 @@
     "module": "preserve",
     "moduleResolution": "bundler",
     "outDir": "../node_modules/.cache/tsc-out/src",
-    // enabled for now to make CI pass
-    // lucide-react issue:
-    // https://github.com/lucide-icons/lucide/issues/2667
-    "skipLibCheck": true,
     "types": ["vite/client", "vitest/importMeta"]
   }
 }

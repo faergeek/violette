@@ -6,7 +6,6 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "noEmit": true,
-    "outDir": "./node_modules/.cache/tsc-out/root",
-    "skipLibCheck": true
+    "outDir": "./node_modules/.cache/tsc-out/root"
   }
 }
