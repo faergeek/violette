@@ -15,7 +15,7 @@
   },
   "packageManager": "pnpm@9.15.4",
   "devDependencies": {
-    "@faergeek/eslint-config": "^6.1.14",
+    "@faergeek/eslint-config": "^7.0.0",
     "@faergeek/monads": "^1.1.0",
     "@floating-ui/dom": "^1.6.13",
     "@icons-pack/react-simple-icons": "^11.0.0",
