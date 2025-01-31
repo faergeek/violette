@@ -24,6 +24,7 @@ const router = createRouter({
   context: { store },
   defaultPreload: 'intent',
   routeTree,
+  scrollRestoration: true,
 });
 
 store.subscribe((state, prevState) => {
