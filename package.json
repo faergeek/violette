@@ -14,6 +14,12 @@
     "start": "vite preview"
   },
   "packageManager": "pnpm@10.2.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "esbuild"
+    ]
+  },
   "devDependencies": {
     "@faergeek/eslint-config": "^7.0.0",
     "@faergeek/monads": "^1.1.0",
