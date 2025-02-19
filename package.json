@@ -24,7 +24,7 @@
     "@faergeek/eslint-config": "^7.0.0",
     "@faergeek/monads": "^1.1.0",
     "@floating-ui/dom": "^1.6.13",
-    "@icons-pack/react-simple-icons": "^11.0.0",
+    "@icons-pack/react-simple-icons": "^12.0.0",
     "@size-limit/file": "^11.1.4",
     "@tanstack/react-router": "^1.85.5",
     "@tanstack/router-plugin": "^1.85.3",
