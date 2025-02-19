@@ -22,7 +22,7 @@ importers:
         version: 12.0.0(react@19.0.0)
       '@size-limit/file':
         specifier: ^11.1.4
-        version: 11.1.6(size-limit@11.2.0)
+        version: 11.2.0(size-limit@11.2.0)
       '@tanstack/react-router':
         specifier: ^1.85.5
         version: 1.106.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -715,11 +715,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@size-limit/file@11.1.6':
-    resolution: {integrity: sha512-ojzzJMrTfcSECRnaTjGy0wNIolTCRdyqZTSWG9sG5XEoXG6PNgHXDDS6gf6YNxnqb+rWfCfVe93u6aKi3wEocQ==}
+  '@size-limit/file@11.2.0':
+    resolution: {integrity: sha512-OZHE3putEkQ/fgzz3Tp/0hSmfVo3wyTpOJSRNm6AmcwX4Nm9YtTfbQQ/hZRwbBFR23S7x2Sd9EbqYzngKwbRoA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
-      size-limit: 11.1.6
+      size-limit: 11.2.0
 
   '@swc/core-darwin-arm64@1.10.16':
     resolution: {integrity: sha512-iikIxwqCQ4Bvz79vJ4ELh26efPf1u5D9TFdmXSJUBs7C3mmMHvk5zyWD9A9cTowXiW6WHs2gE58U1R9HOTTIcg==}
@@ -3063,7 +3063,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.34.6':
     optional: true
 
-  '@size-limit/file@11.1.6(size-limit@11.2.0)':
+  '@size-limit/file@11.2.0(size-limit@11.2.0)':
     dependencies:
       size-limit: 11.2.0
 
