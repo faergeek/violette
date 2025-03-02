@@ -1,9 +1,9 @@
-import { Fx } from '../_core/fx';
 import { subsonicUnstar } from '../api/subsonic/methods/unstar';
+import { Fx } from '../shared/fx';
 import type { AppStore } from '../store/create';
 import { fetchOneAlbum } from './fetchOneAlbum';
-import { fetchOneArtist } from './fetchOneArtist';
 import { fetchOneSong } from './fetchOneSong';
+import { fetchOneArtist } from './StoreFx';
 
 export const unstar = Fx.async(async function* f(params: {
   albumId?: string;

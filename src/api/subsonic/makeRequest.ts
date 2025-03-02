@@ -1,6 +1,6 @@
 import * as v from 'valibot';
 
-import { Fx } from '../../_core/fx';
+import { Fx } from '../../shared/fx';
 import type { SubsonicRequest } from './buildSubsonicApiUrl';
 import { buildSubsonicApiUrl } from './buildSubsonicApiUrl';
 import type { SubsonicCredentials } from './types/credentials';

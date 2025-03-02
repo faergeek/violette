@@ -1,6 +1,6 @@
 {
   "extends": ["./tsconfig.base.json"],
-  "include": ["./*"],
+  "include": ["./*.ts"],
   "references": [{ "path": "./src" }],
   "compilerOptions": {
     "module": "nodenext",
