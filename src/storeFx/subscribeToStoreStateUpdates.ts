@@ -1,9 +1,9 @@
-import { Fx } from '../_core/fx';
 import { subsonicGetCoverArtUrl } from '../api/subsonic/methods/getCoverArtUrl';
 import { subsonicGetStreamUrl } from '../api/subsonic/methods/getStreamUrl';
 import { subsonicScrobble } from '../api/subsonic/methods/scrobble';
-import { PreferredGain } from '../slices/player';
+import { Fx } from '../shared/fx';
 import type { AppStore } from '../store/create';
+import { PreferredGain } from '../store/Player';
 import { initializePlayQueue } from './initializePlayQueue';
 import {
   audio,

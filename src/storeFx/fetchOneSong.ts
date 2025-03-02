@@ -1,6 +1,6 @@
-import { Fx } from '../_core/fx';
-import { mergeIntoMap } from '../_core/mergeIntoMap';
 import { subsonicGetSong } from '../api/subsonic/methods/getSong';
+import { Fx } from '../shared/fx';
+import { mergeIntoMap } from '../shared/mergeIntoMap';
 import type { AppStore } from '../store/create';
 
 export const fetchOneSong = Fx.async(async function* f(id: string) {

@@ -1,9 +1,9 @@
-import { Fx } from '../_core/fx';
-import {
-  REPLAY_GAIN_LOCAL_STORAGE_KEY,
-  type ReplayGainOptions,
-} from '../slices/player';
+import { Fx } from '../shared/fx';
 import type { AppStore } from '../store/create';
+import {
+  replay_gain_local_storage_key,
+  type ReplayGainOptions,
+} from '../store/Player';
 
 export const setReplayGainOptions = Fx.sync(function* f(
   newReplayGainOptions:
@@ -31,7 +31,7 @@ export const setReplayGainOptions = Fx.sync(function* f(
   }));
 
   localStorage.setItem(
-    REPLAY_GAIN_LOCAL_STORAGE_KEY,
+    replay_gain_local_storage_key,
     JSON.stringify(newReplayGainOptions),
   );
 

@@ -1,6 +1,6 @@
-import { Fx } from '../_core/fx';
-import { mergeIntoMap } from '../_core/mergeIntoMap';
 import { subsonicGetAlbum } from '../api/subsonic/methods/getAlbum';
+import { Fx } from '../shared/fx';
+import { mergeIntoMap } from '../shared/mergeIntoMap';
 import type { AppStore } from '../store/create';
 
 export const fetchOneAlbum = Fx.async(async function* f(albumId: string) {

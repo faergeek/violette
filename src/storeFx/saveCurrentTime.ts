@@ -1,5 +1,5 @@
-import { Fx } from '../_core/fx';
-import { throttle } from '../_core/throttle';
+import { Fx } from '../shared/fx';
+import { throttle } from '../shared/throttle';
 import type { AppStore } from '../store/create';
 import { audio } from './playerContext';
 import { updatePlayQueue } from './updatePlayQueue';
