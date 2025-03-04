@@ -1,6 +1,6 @@
 import { deepEqual } from '@tanstack/react-router';
 
-import { Fx } from '../_core/fx';
+import { Fx } from '../shared/fx';
 import type { AppStore } from '../store/create';
 import { goToNextSong } from './goToNextSong';
 import type { TimeRange } from './playerContext';

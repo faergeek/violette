@@ -1,0 +1,6 @@
+(library
+ (name mergeIntoMap)
+ (libraries router)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))

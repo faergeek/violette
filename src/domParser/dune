@@ -1,0 +1,6 @@
+(library
+ (name domParser)
+ (libraries melange-webapi)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))

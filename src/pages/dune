@@ -1,0 +1,18 @@
+(library
+ (name pages)
+ (modes melange)
+ (libraries
+  crypto
+  form
+  lucideReact
+  melange-webapi
+  melange.belt
+  promise
+  reactExtra
+  reason-react
+  shared
+  sparkMd5
+  store
+  subsonic)
+ (preprocess
+  (pps melange.ppx reason-react-ppx)))

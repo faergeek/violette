@@ -1,0 +1,6 @@
+(library
+ (libraries melange.dom)
+ (name bro)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))
