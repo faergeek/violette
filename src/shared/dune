@@ -1,0 +1,23 @@
+(library
+ (name shared)
+ (libraries
+  bro
+  clsx
+  cva
+  domExtra
+  domParser
+  floatingUI
+  lucideReact
+  mediaSession
+  melange.belt
+  promise
+  reactExtra
+  reason-react
+  router
+  simpleIcons
+  store
+  storeFx
+  window)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx reason-react-ppx)))

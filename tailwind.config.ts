@@ -2,7 +2,13 @@ import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
 
 export default {
-  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  content: [
+    './index.html',
+    './index.ml',
+    './src/**/*.ml',
+    './src/**/*.{ts,tsx}',
+  ],
+  plugins: [animate],
   theme: {
     extend: {
       colors: {
@@ -33,5 +39,4 @@ export default {
       },
     },
   },
-  plugins: [animate],
 } satisfies Config;
