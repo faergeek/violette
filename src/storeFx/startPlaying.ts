@@ -1,4 +1,4 @@
-import { Fx } from '../_core/fx';
+import { Fx } from '../shared/fx';
 import type { AppStore } from '../store/create';
 import { play } from './play';
 import { updatePlayQueue } from './updatePlayQueue';

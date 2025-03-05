@@ -1,4 +1,4 @@
-import { Fx } from '../_core/fx';
+import { Fx } from '../shared/fx';
 import { goToNextSong } from './goToNextSong';
 import { goToPrevSong } from './goToPrevSong';
 import { pause } from './pause';
