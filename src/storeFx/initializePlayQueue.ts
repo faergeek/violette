@@ -1,6 +1,6 @@
-import { Fx } from '../_core/fx';
-import { mergeIntoMap } from '../_core/mergeIntoMap';
 import { subsonicGetPlayQueue } from '../api/subsonic/methods/getPlayQueue';
+import { Fx } from '../shared/fx';
+import { mergeIntoMap } from '../shared/mergeIntoMap';
 import type { AppStore } from '../store/create';
 import { setCurrentTime } from './setCurrentTime';
 

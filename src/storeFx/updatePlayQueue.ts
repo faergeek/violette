@@ -1,7 +1,7 @@
 import { deepEqual } from '@tanstack/react-router';
 
-import { Fx } from '../_core/fx';
 import { subsonicSavePlayQueue } from '../api/subsonic/methods/savePlayQueue';
+import { Fx } from '../shared/fx';
 import type { AppStore } from '../store/create';
 
 interface PlayQueueState {
