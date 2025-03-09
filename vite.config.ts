@@ -1,7 +1,17 @@
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react-swc';
 import { visualizer } from 'rollup-plugin-visualizer';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+function relative(name: string) {
+  return path.resolve(__dirname, name);
+}
 
 export default defineConfig({
   build: {
@@ -11,5 +21,13 @@ export default defineConfig({
   css: {
     devSourcemap: true,
   },
-  plugins: [TanStackRouterVite(), react(), visualizer({ emitFile: true })],
+  plugins: [react(), nodeResolve(), visualizer({ emitFile: true })],
+  server: {
+    watch: {
+      ignored: [relative('_opam'), relative('src')],
+    },
+  },
+  test: {
+    include: ['_build/default/tests/compiled/tests/**/*.spec.jsx'],
+  },
 });

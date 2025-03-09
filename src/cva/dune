@@ -1,0 +1,5 @@
+(library
+ (name cva)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))
