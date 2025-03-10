@@ -38,7 +38,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "eslint": "^9.19.0",
-    "fast-check": "^3.23.2",
+    "fast-check": "^4.0.0",
     "lucide-react": "^0.479.0",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
