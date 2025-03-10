@@ -1,0 +1,6 @@
+(library
+ (libraries reason-react)
+ (name reactExtra)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))
