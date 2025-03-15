@@ -1,0 +1,6 @@
+(library
+ (name fx)
+ (libraries jsExtra monads)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))

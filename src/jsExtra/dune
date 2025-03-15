@@ -1,0 +1,5 @@
+(library
+ (name jsExtra)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))

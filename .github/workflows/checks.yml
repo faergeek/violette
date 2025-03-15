@@ -13,10 +13,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: pnpm
+      - uses: actions/cache@v4
+        id: cache-opam
+        with:
+          path: |
+            ~/.opam
+            _opam
+          key: opam-${{ runner.os }}-${{ runner.arch }}-${{ github.head_ref }}-${{ github.sha }}
+          restore-keys: |
+            opam-${{ runner.os }}-${{ runner.arch }}-${{ github.head_ref }}-${{ github.sha }}
+            opam-${{ runner.os }}-${{ runner.arch }}-${{ github.head_ref }}-
+            opam-${{ runner.os }}-${{ runner.arch }}-${{ github.base_ref }}-
+            opam-${{ runner.os }}-${{ runner.arch }}-
+      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --yes --deps-only --with-dev-setup --with-test .
+        if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
+      - run: opam install --yes --deps-only --with-dev-setup --with-test .
+        if: ${{ steps.cache-opam.outputs.cache-hit != '' }}
+      - run: opam exec -- opam-dune-lint
+      - run: opam exec -- dune build @fmt
+      - run: opam exec -- dune build
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run format:check
-      - run: pnpm run lint
       - run: pnpm test
       - run: pnpm run build
-      - run: pnpm run typecheck
       - run: pnpm run check-size-limits

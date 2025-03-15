@@ -1,0 +1,13 @@
+(dirs :standard \ dist js node_modules)
+
+(melange.emit
+ (libraries fx_spec melange-webapi reason-react router routes store storeFx)
+ (module_systems
+  (es6 jsx))
+ (preprocess
+  (pps melange.ppx reason-react-ppx))
+ (promote (until-clean))
+ (runtime_deps
+  index.css
+  (glob_files_rec src/*.{css,ts,tsx}))
+ (target js))
