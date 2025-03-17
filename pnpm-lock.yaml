@@ -19,7 +19,7 @@ importers:
         version: 1.6.13
       '@icons-pack/react-simple-icons':
         specifier: ^12.0.0
-        version: 12.2.0(react@19.0.0)
+        version: 12.3.0(react@19.0.0)
       '@size-limit/file':
         specifier: ^11.1.4
         version: 11.2.0(size-limit@11.2.0)
@@ -440,8 +440,8 @@ packages:
     resolution: {integrity: sha512-xeO57FpIu4p1Ri3Jq/EXq4ClRm86dVF2z/+kvFnyqVYRavTZmaFaUBbWCOuuTh0o/g7DSsk6kc2vrS4Vl5oPOQ==}
     engines: {node: '>=18.18'}
 
-  '@icons-pack/react-simple-icons@12.2.0':
-    resolution: {integrity: sha512-fhTX7hlMJzAmolYvqmE28qf+LEkzc79aqiM8GI251eLAdLmSPnN8v25wYxCHXoQGBJmlLvm34GA+SkX1I64VqQ==}
+  '@icons-pack/react-simple-icons@12.3.0':
+    resolution: {integrity: sha512-71KKdd2tg36Pctg5pQTAmPRIdFrtxsLccoSexkZLztn46eV6Ek6ov69o0Ph4t4ZPs6n4+Fw4sBnIzEsKssnXxg==}
     peerDependencies:
       react: ^16.13 || ^17 || ^18 || ^19
 
@@ -2759,7 +2759,7 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.2': {}
 
-  '@icons-pack/react-simple-icons@12.2.0(react@19.0.0)':
+  '@icons-pack/react-simple-icons@12.3.0(react@19.0.0)':
     dependencies:
       react: 19.0.0
 
