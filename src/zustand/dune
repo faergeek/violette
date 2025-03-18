@@ -1,0 +1,5 @@
+(library
+ (name zustand)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))

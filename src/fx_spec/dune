@@ -1,0 +1,6 @@
+(library
+ (name fx_spec)
+ (libraries fastCheck fx promise vitest)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))
