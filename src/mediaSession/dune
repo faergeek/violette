@@ -1,6 +1,0 @@
-(library
- (libraries melange-webapi)
- (name mediaSession)
- (modes melange)
- (preprocess
-  (pps melange.ppx)))

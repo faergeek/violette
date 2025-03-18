@@ -1,5 +1,0 @@
-(library
- (name vitest)
- (modes melange)
- (preprocess
-  (pps melange.ppx)))

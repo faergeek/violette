@@ -1,6 +1,0 @@
-(library
- (libraries fx melange-fetch melange-json melange-webapi)
- (name subsonic)
- (modes melange)
- (preprocess
-  (pps melange.ppx melange-json.ppx)))
