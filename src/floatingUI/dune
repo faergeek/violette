@@ -1,0 +1,6 @@
+(library
+ (libraries melange.dom)
+ (name floatingUI)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))

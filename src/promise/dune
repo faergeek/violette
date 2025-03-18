@@ -1,0 +1,5 @@
+(library
+ (name promise)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))

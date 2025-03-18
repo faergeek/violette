@@ -1,7 +1,4 @@
 {
   "arrowParens": "avoid",
-  "plugins": ["prettier-plugin-tailwindcss"],
-  "singleQuote": true,
-  "tailwindFunctions": ["clsx", "cva"],
-  "tailwindStylesheet": "./src/index.css"
+  "singleQuote": true
 }

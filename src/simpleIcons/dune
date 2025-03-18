@@ -1,0 +1,6 @@
+(library
+ (libraries reason-react)
+ (name simpleIcons)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx reason-react-ppx)))

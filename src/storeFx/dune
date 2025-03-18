@@ -1,0 +1,14 @@
+(library
+ (name storeFx)
+ (modes melange)
+ (libraries
+  domExtra
+  mediaSession
+  melange.belt
+  mergeIntoMap
+  reason-react
+  store
+  throttle
+  webAudio)
+ (preprocess
+  (pps melange.ppx reason-react-ppx)))

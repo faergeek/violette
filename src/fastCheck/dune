@@ -1,0 +1,5 @@
+(library
+ (name fastCheck)
+ (modes melange)
+ (preprocess
+  (pps melange.ppx)))
