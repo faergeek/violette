@@ -1,5 +1,0 @@
-(library
- (name clsx)
- (modes melange)
- (preprocess
-  (pps melange.ppx)))

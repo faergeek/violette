@@ -1,6 +1,0 @@
-(library
- (libraries melange.dom)
- (name webAudio)
- (modes melange)
- (preprocess
-  (pps melange.ppx)))
