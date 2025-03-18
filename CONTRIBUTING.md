@@ -2,41 +2,59 @@
 
 ### Requirements
 
-- [Node.js](https://nodejs.org/en).
-  Particular version being used is in [.nvmrc](./.nvmrc).
-  You can install it using nvm or any other version manager.
-  Most likely any version greater than the one specified will just work.
+- Either [asdf](https://asdf-vm.com) or [proper versions of node and opam](./.tool-versions)
 - [pnpm](https://pnpm.io)
 
 ### Setup
+
+If you don't have a switch, to create it and install packages:
+
+```sh
+opam switch create . --deps-only --with-dev-setup
+```
+
+If you do have a switch, just install packages:
+
+```sh
+opam install . --deps-only --with-dev-setup
+```
+
+Install node packages:
 
 ```sh
 pnpm i
 ```
 
-### Starting a development server
+### Developing
+
+Compile OCaml to JS in watch mode:
+
+```sh
+dune build --watch
+```
+
+In another terminal start a vite development server:
 
 ```sh
 pnpm run dev
 ```
 
-### Linting and formatting
-
-To fix auto-fixable linting issues:
+Run tests:
 
 ```sh
-pnpm run lint --fix
+pnpm test
 ```
 
-To format everything:
+Format everything:
 
 ```sh
-pnpm run format
+dune fmt
 ```
 
 ### Links
 
-- [Styles](https://tailwindcss.com)
+- [Melange](https://melange.re)
+- [Styles](https://v3.tailwindcss.com/)
 - [Icons](https://lucide.dev/icons)
 - [Brand icons](https://simpleicons.org/)
   - [package for React](https://github.com/icons-pack/react-simple-icons)
