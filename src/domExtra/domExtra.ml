@@ -101,3 +101,20 @@ external [@mel.send] addEventListener :
   unit = "addEventListener"
 
 external [@mel.get] role : Dom.htmlElement -> string = "role"
+
+module ResizeObserverSize = struct
+  type t
+
+  external [@mel.get] inlineSize : t -> float = "inlineSize"
+  external [@mel.get] blockSize : t -> float = "blockSize"
+end
+
+module ResizeObserverEntry = struct
+  external [@mel.get] borderBoxSize :
+    Webapi.ResizeObserver.ResizeObserverEntry.t -> ResizeObserverSize.t array
+    = "borderBoxSize"
+
+  external [@mel.get] contentBoxSize :
+    Webapi.ResizeObserver.ResizeObserverEntry.t -> ResizeObserverSize.t array
+    = "contentBoxSize"
+end
