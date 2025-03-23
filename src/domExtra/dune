@@ -1,5 +1,5 @@
 (library
- (libraries melange-fetch melange.dom)
+ (libraries melange-fetch melange-webapi melange.dom)
  (name domExtra)
  (modes melange)
  (preprocess

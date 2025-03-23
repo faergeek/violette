@@ -6,50 +6,51 @@ open ReactDOM
 let () =
   let open Webapi in
   let open Dom in
-  let scrollbarContainer =
+  let setStyle style name value =
+    CssStyleDeclaration.setProperty name value "" style
+  in
+  let container =
     document |> Document.unsafeAsHtmlDocument
     |> HtmlDocument.createElement "div"
   in
-  let setStyle name value =
-    scrollbarContainer |> Element.unsafeAsHtmlElement |> HtmlElement.style
-    |> CssStyleDeclaration.setProperty name value ""
+  let setContainerStyle =
+    container |> Element.unsafeAsHtmlElement |> HtmlElement.style |> setStyle
   in
-  setStyle "width" "100%";
-  setStyle "height" "100%";
-  setStyle "overflow" "scroll";
-  setStyle "position" "absolute";
-  setStyle "inset" "0";
-  setStyle "z-index" "-9999";
-  setStyle "visibility" "hidden";
+  setContainerStyle "width" "100%";
+  setContainerStyle "height" "100%";
+  setContainerStyle "overflow" "scroll";
+  setContainerStyle "position" "absolute";
+  setContainerStyle "inset" "0";
+  setContainerStyle "z-index" "-9999";
+  setContainerStyle "visibility" "hidden";
 
-  document |> Document.unsafeAsHtmlDocument |> HtmlDocument.body |> Option.get
-  |> Element.unsafeAsHtmlElement
-  |> HtmlElement.appendChild (scrollbarContainer |> Element.unsafeAsHtmlElement);
+  let document = document |> Document.unsafeAsHtmlDocument in
+  document |> HtmlDocument.body |> Option.get |> Element.unsafeAsHtmlElement
+  |> HtmlElement.appendChild (container |> Element.unsafeAsHtmlElement);
   let open ResizeObserver in
-  scrollbarContainer
-  |> observe
-       (make
-          [%mel.raw
-            {js|
-              entries => {
-                const [
-                  {
-                    borderBoxSize: [borderBoxSize],
-                    contentBoxSize: [contentBoxSize],
-                  },
-                ] = entries;
-
-                document.documentElement.style.setProperty(
-                  '--scrollbar-inline-size',
-                  `${borderBoxSize.inlineSize - contentBoxSize.inlineSize}px`,
-                );
-
-                document.documentElement.style.setProperty(
-                  '--scrollbar-block-size',
-                  `${borderBoxSize.blockSize - contentBoxSize.blockSize}px`,
-                );
-              }
-            |js}])
+  make (fun entries ->
+      let entry = entries |. Js.Array.unsafe_get 0
+      and documentElement =
+        document |> HtmlDocument.documentElement |> Element.unsafeAsHtmlElement
+      in
+      let borderBoxSize =
+        entry |. DomExtra.ResizeObserverEntry.borderBoxSize
+        |. Js.Array.unsafe_get 0
+      and contentBoxSize =
+        entry |. DomExtra.ResizeObserverEntry.contentBoxSize
+        |. Js.Array.unsafe_get 0
+      in
+      let setHtmlStyle = documentElement |> HtmlElement.style |> setStyle in
+      let open DomExtra.ResizeObserverSize in
+      setHtmlStyle "--scrollbar-inline-size"
+        (Js.Float.toString
+           ((borderBoxSize |. inlineSize) -. (contentBoxSize |. inlineSize))
+        ^ "px");
+      setHtmlStyle "--scrollbar-block-size"
+        (Js.Float.toString
+           ((borderBoxSize |. blockSize) -. (contentBoxSize |. blockSize))
+        ^ "px"))
+  |. observe container
 
 let () =
   let store = Store.make () in
