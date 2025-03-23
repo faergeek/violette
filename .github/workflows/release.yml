@@ -34,9 +34,9 @@ jobs:
             opam-${{ runner.os }}-${{ runner.arch }}-${{ github.ref_name }}-${{ github.sha }}
             opam-${{ runner.os }}-${{ runner.arch }}-${{ github.ref_name }}-
             opam-${{ runner.os }}-${{ runner.arch }}-
-      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --yes --deps-only .
+      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --yes --deps-only --with-dev-setup --with-test .
         if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
-      - run: opam install --yes --deps-only .
+      - run: opam install --yes --deps-only --with-dev-setup --with-test .
         if: ${{ steps.cache-opam.outputs.cache-hit != '' }}
       - run: opam exec -- dune build
       - run: pnpm install --frozen-lockfile
