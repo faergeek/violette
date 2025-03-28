@@ -37,7 +37,7 @@ importers:
         version: 2.1.1
       fast-check:
         specifier: ^4.0.0
-        version: 4.0.0
+        version: 4.0.1
       lucide-react:
         specifier: ^0.484.0
         version: 0.484.0(react@18.3.1)
@@ -725,8 +725,8 @@ packages:
     resolution: {integrity: sha512-80F22aiJ3GLyVnS/B3HzgR6RelZVumzj9jkL0Rhz4h0xYbNW9PjlQz5h3J/SShErbXBc295vseR4/MIbVmUbeA==}
     engines: {node: '>=12.0.0'}
 
-  fast-check@4.0.0:
-    resolution: {integrity: sha512-aXLyLemZ7qhLNn2oq+YpjT2Xed21+i29WGAYuyrGbU4r8oinB3i4XR4e62O3NY6qmm5qHEDoc/7d+gMsri3AfA==}
+  fast-check@4.0.1:
+    resolution: {integrity: sha512-Z91jcH02ySQBQlKrCIs3tKTEHdkzOqQhHW5Mg4aZRo4lbI39a28jrFlik6FaRUNzm823VDDTtAi5AEV6lZZprQ==}
     engines: {node: '>=12.17.0'}
 
   fast-glob@3.3.3:
@@ -1865,7 +1865,7 @@ snapshots:
 
   expect-type@1.2.0: {}
 
-  fast-check@4.0.0:
+  fast-check@4.0.1:
     dependencies:
       pure-rand: 7.0.1
 
