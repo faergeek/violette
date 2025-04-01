@@ -22,11 +22,11 @@ let make artistId =
         userRating = response.userRating;
       }
   and state = getState store in
-  let albumBaseById =
-    mergeIntoMap state.albums.baseById response.album (fun x -> x.id)
+  let albums = response.album |> Option.value ~default:[||] in
+  let albumBaseById = mergeIntoMap state.albums.baseById albums (fun x -> x.id)
   and albumIdsByArtistId =
     mergeIntoMap state.artists.albumIdsByArtistId
-      [| Js.Array.map response.album ~f:Subsonic.BaseAlbum.(fun x -> x.id) |]
+      [| Js.Array.map albums ~f:Subsonic.BaseAlbum.(fun x -> x.id) |]
       (fun _ -> response.id)
   and byId = mergeIntoMap state.artists.byId [| artist |] (fun x -> x.id) in
   if
