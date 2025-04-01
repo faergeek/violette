@@ -1,7 +1,7 @@
 open Ppx_deriving_json_runtime.Primitives
 
 type[@deriving json] artist = {
-  album : BaseAlbum.t array;
+  album : BaseAlbum.t array option; [@json.option]
   albumCount : int;
   coverArt : string;
   id : string;
