@@ -9,5 +9,5 @@
  (promote (until-clean))
  (runtime_deps
   index.css
-  (glob_files_rec src/*.{css,ts,tsx}))
+  (glob_files_rec src/*.css))
  (target js))
