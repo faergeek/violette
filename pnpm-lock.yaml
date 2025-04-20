@@ -13,7 +13,7 @@ importers:
         version: 1.6.13
       '@icons-pack/react-simple-icons':
         specifier: ^12.0.0
-        version: 12.6.0(react@18.3.1)
+        version: 12.7.0(react@18.3.1)
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.0
         version: 16.0.1(rollup@4.40.0)
@@ -240,8 +240,8 @@ packages:
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
 
-  '@icons-pack/react-simple-icons@12.6.0':
-    resolution: {integrity: sha512-CQJbCvJHn1GpnyJQrkXNVXSS5ct/MPzcmr2m8HUe7gCHUVG7Hl2PwrIIAvCcJ5hZ+3CAYi4WoWERoFj8DzGl/A==}
+  '@icons-pack/react-simple-icons@12.7.0':
+    resolution: {integrity: sha512-XpG7e8buAco8AbvCar+4LX5do0L98d/NaeHoTuW4awyUH33id7HQiiMomK+cS1MRxfLNMmhW2W0223/fMC0unw==}
     peerDependencies:
       react: ^16.13 || ^17 || ^18 || ^19
 
@@ -1433,7 +1433,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
-  '@icons-pack/react-simple-icons@12.6.0(react@18.3.1)':
+  '@icons-pack/react-simple-icons@12.7.0(react@18.3.1)':
     dependencies:
       react: 18.3.1
 
