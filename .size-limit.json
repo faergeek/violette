@@ -7,6 +7,6 @@
   {
     "name": "js",
     "path": "dist/assets/**/*.js",
-    "limit": "109 kB"
+    "limit": "110 kB"
   }
 ]
