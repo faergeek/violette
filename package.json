@@ -3,7 +3,7 @@
   "type": "module",
   "sideEffects": false,
   "scripts": {
-    "cleanup": "rimraf dist",
+    "cleanup": "rimraf dist js && dune clean",
     "test": "vitest",
     "dev": "vite",
     "build": "vite build",
