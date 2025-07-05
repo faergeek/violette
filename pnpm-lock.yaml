@@ -22,7 +22,7 @@ importers:
         version: 11.2.0(size-limit@11.2.0)
       '@tanstack/react-router':
         specifier: ^1.85.5
-        version: 1.124.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 1.124.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@vitejs/plugin-react-swc':
         specifier: ^3.7.0
         version: 3.10.2(vite@7.0.2(jiti@2.4.2)(yaml@2.8.0))
@@ -492,8 +492,8 @@ packages:
     resolution: {integrity: sha512-YL8dGi5ZU+xvtav2boRlw4zrRghkY6hvdcmHhA0RGSJ/CBgzv+cbADW9eYJLx74XMZvIQ1pp6VMbrpXnnM5gHA==}
     engines: {node: '>=12'}
 
-  '@tanstack/react-router@1.124.0':
-    resolution: {integrity: sha512-jJxuLbPP/Cxirnft3CoiGWyH0aj94VTmLNcYauvjTGRNbUitK4udvGaHXVEP8bcifYvpko7ptsqqBlisaosugA==}
+  '@tanstack/react-router@1.124.2':
+    resolution: {integrity: sha512-iDgcmtx8Ca8dFZWapp5i+pRRX3+Wp1zk9RCIvAXS+GmDYJFbBNZbYv5+lc9E/z50ScfR+lfovACMveSNnQA/JA==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=18.0.0 || >=19.0.0'
@@ -505,8 +505,8 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@tanstack/router-core@1.124.0':
-    resolution: {integrity: sha512-mU2KA2v+ZFWC3NIjY2y+pPCx1sZDXPsUkzPjPPZxRgonE11nIu9MB89WuukqYuPbxoSWeodKNXsLe4KksGFCKA==}
+  '@tanstack/router-core@1.124.2':
+    resolution: {integrity: sha512-WpxgG5qbaCNZpmobobB9AWfH18jBD5g1lyFKyHUuPnbUZ19QhmKdEUIto2IDeS/vrSpx2BX7zZnZ/5C2Eg7bkw==}
     engines: {node: '>=12'}
 
   '@tanstack/store@0.7.1':
@@ -1644,11 +1644,11 @@ snapshots:
 
   '@tanstack/history@1.121.34': {}
 
-  '@tanstack/react-router@1.124.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@tanstack/react-router@1.124.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/history': 1.121.34
       '@tanstack/react-store': 0.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tanstack/router-core': 1.124.0
+      '@tanstack/router-core': 1.124.2
       isbot: 5.1.28
       jsesc: 3.1.0
       react: 18.3.1
@@ -1663,7 +1663,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       use-sync-external-store: 1.5.0(react@18.3.1)
 
-  '@tanstack/router-core@1.124.0':
+  '@tanstack/router-core@1.124.2':
     dependencies:
       '@tanstack/history': 1.121.34
       '@tanstack/store': 0.7.1
