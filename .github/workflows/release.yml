@@ -23,23 +23,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: pnpm
-      - uses: actions/cache@v4
-        id: cache-opam
+      - uses: ocaml/setup-ocaml@v3
         with:
-          path: |
-            ~/.opam
-            _opam
-          key: opam-${{ runner.os }}-${{ runner.arch }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            opam-${{ runner.os }}-${{ runner.arch }}-${{ github.ref_name }}-${{ github.sha }}
-            opam-${{ runner.os }}-${{ runner.arch }}-${{ github.ref_name }}-
-            opam-${{ runner.os }}-${{ runner.arch }}-
-      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --yes --deps-only --with-test .
-        if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
-      - run: opam install --yes --deps-only --with-test .
-        if: ${{ steps.cache-opam.outputs.cache-hit != '' }}
-      - run: opam exec -- dune build
+          dune-cache: true
+          ocaml-compiler: 5
+          opam-disable-sandboxing: true
+      - run: opam install . --deps-only
       - run: pnpm install --frozen-lockfile
+      - run: opam exec -- dune build
       - run: pnpm run build
       - run: rm dist/stats.html && cp dist/{index,404}.html
       - uses: actions/configure-pages@v5
