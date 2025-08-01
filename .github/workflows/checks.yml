@@ -29,6 +29,7 @@ jobs:
         if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
       - run: opam install --yes --deps-only --with-test .
         if: ${{ steps.cache-opam.outputs.cache-hit != '' }}
+      - run: opam check-npm-deps
       - run: opam exec -- opam-dune-lint
       - run: opam exec -- dune build @fmt
       - run: opam exec -- dune build
