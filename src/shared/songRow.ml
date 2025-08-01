@@ -645,7 +645,6 @@ let[@react.component] make =
                                           ~onClick:(fun _ ->
                                             let open Fx in
                                             let songId = songId |> Option.get in
-                                            Js.log songId;
                                             ask ()
                                             |. bind (fun Deps.{ store } ->
                                                    let state =
