@@ -23,7 +23,7 @@
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@size-limit/file": "^11.1.4",
     "@tanstack/react-router": "^1.85.5",
-    "@vitejs/plugin-react-swc": "^3.7.0",
+    "@vitejs/plugin-react-swc": "^4.0.0",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
