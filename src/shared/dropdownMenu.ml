@@ -249,5 +249,5 @@ module Item = struct
             focus-visible:text-accent-foreground [&_svg]:size-4 \
             [&_svg]:shrink-0"
          ~role:"menuitem" ~type_ ?onClick () [@JSX])
-      [%mel.obj { popovertarget = menuId; popovertargetaction = "hide" }]
+      [%mel.obj { popoverTarget = menuId; popoverTargetAction = "hide" }]
 end

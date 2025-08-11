@@ -143,8 +143,10 @@ module Content = struct
         {
           ref =
             (fun node ->
-              setFloating node;
-              childrenProps##ref |> Option.iter (fun ref -> ref node));
+              setFloating (fun _ -> node);
+              childrenProps##ref
+              |> Option.iter (fun (ref : Dom.element option React.ref) ->
+                     ref.current <- node));
           style =
             Js.Obj.assign
               (Js.Obj.assign [%mel.obj { visibility = None }]
