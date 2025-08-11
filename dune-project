@@ -39,6 +39,6 @@
   (ocamlformat :with-test)
   (ocaml-lsp-server :with-dev-setup)
   (reason-react
-   (>= 0.14.0))
+   (>= 0.16.0))
   (reason-react-ppx
-   (>= 0.14.0))))
+   (>= 0.16.0))))

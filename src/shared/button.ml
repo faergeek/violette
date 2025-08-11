@@ -76,4 +76,4 @@ let[@react.component] make =
                   ?children () [@JSX]);
              ]
            () [@JSX])
-        [%mel.obj { popovertarget = popoverTarget }])
+        [%mel.obj { popoverTarget }])
