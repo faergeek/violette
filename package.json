@@ -10,7 +10,7 @@
     "check-size-limits": "size-limit --highlight-less",
     "start": "vite preview"
   },
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@swc/core",
