@@ -23,7 +23,7 @@ let[@react.component] make () =
                     [
                       (a
                          ~href:
-                           "https://github.com/faergeek/violette/blob/master/LICENSE"
+                           "https://github.com/faergeek/violette/blob/main/LICENSE"
                          ~rel:"noopener" ~target:"_blank"
                          ~children:(React.string {js|Copyright © 2025|js})
                          () [@JSX]);
