@@ -1,7 +1,7 @@
 compatibility_date = "2025-09-15"
 name = "violette"
 preview_urls = true
-workers_dev = true
+workers_dev = false
 
 [assets]
 directory = "dist"
