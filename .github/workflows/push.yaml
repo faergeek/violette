@@ -41,7 +41,7 @@ jobs:
   deploy:
     environment:
       name: cloudflare
-      url: ${{ steps.wrangler.outputs.deployment-url || steps.wrangler-preview.outputs.deployment-url }}
+      url: ${{ steps.wrangler-preview.outputs.deployment-url || 'https://violette.app' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
