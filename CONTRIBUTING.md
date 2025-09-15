@@ -10,13 +10,13 @@
 If you don't have a switch, to create it and install packages:
 
 ```sh
-opam switch create . --deps-only --with-dev-setup
+opam switch create --deps-only --with-dev-setup .
 ```
 
 If you do have a switch, just install packages:
 
 ```sh
-opam install . --deps-only --with-dev-setup
+opam install --deps-only --with-dev-setup .
 ```
 
 Install node packages:

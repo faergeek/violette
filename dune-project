@@ -34,9 +34,9 @@
     (< 2.0.0)))
   (ocaml
    (>= 5.3.0))
-  (opam-dune-lint :with-test)
-  (opam-check-npm-deps :with-test)
-  (ocamlformat :with-test)
+  (opam-dune-lint :with-dev-setup)
+  (opam-check-npm-deps :with-dev-setup)
+  (ocamlformat :with-dev-setup)
   (ocaml-lsp-server :with-dev-setup)
   (reason-react
    (>= 0.16.0))

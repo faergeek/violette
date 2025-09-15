@@ -3,7 +3,6 @@ import { fileURLToPath } from 'node:url';
 
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react-swc';
-import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vitest/config';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,7 +20,7 @@ export default defineConfig({
   css: {
     devSourcemap: true,
   },
-  plugins: [react(), nodeResolve(), visualizer({ emitFile: true })],
+  plugins: [react(), nodeResolve()],
   server: {
     watch: {
       ignored: [relative('_opam'), relative('src')],
