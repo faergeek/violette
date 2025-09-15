@@ -11,12 +11,6 @@
     "start": "vite preview"
   },
   "packageManager": "pnpm@10.16.1",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@swc/core",
-      "esbuild"
-    ]
-  },
   "devDependencies": {
     "@floating-ui/dom": "^1.6.13",
     "@icons-pack/react-simple-icons": "^13.0.0",
