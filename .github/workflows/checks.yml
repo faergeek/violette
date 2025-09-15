@@ -21,6 +21,7 @@ jobs:
       - run: opam install . --deps-only --with-test
       - run: opam exec -- opam-dune-lint
       - run: pnpm install --frozen-lockfile
+      - run: pnpm run format:check
       - run: opam check-npm-deps
       - run: opam exec -- dune build @fmt
       - run: opam exec -- dune build
