@@ -16,12 +16,20 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           cache: pnpm
-      - uses: ocaml/setup-ocaml@v3
+      - uses: actions/cache@v4
+        id: cache-opam
         with:
-          dune-cache: true
-          ocaml-compiler: 5
-          opam-disable-sandboxing: true
+          key: |
+            opam-cache-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('violette.opam') }}
+          restore-keys: |
+            opam-cache-v1-${{ runner.os }}-${{ runner.arch }}-
+          path: |
+            ~/.opam
+            _opam
+      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --yes --deps-only --with-dev-setup .
+        if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
       - run: opam install --deps-only --with-dev-setup .
+        if: ${{ steps.cache-opam.outputs.cache-hit != '' }}
       - run: opam exec -- opam-dune-lint
       - run: pnpm install --frozen-lockfile
       - run: pnpm run format:check
