@@ -28,7 +28,7 @@ jobs:
           dune-cache: true
           ocaml-compiler: 5
           opam-disable-sandboxing: true
-      - run: opam install . --deps-only
+      - run: opam install --deps-only --with-dev-setup .
       - run: pnpm install --frozen-lockfile
       - run: opam exec -- dune build
       - run: pnpm run build
