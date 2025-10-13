@@ -39,10 +39,11 @@ jobs:
       - run: pnpm run build
       - run: pnpm run check-size-limits
   deploy:
+    if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     environment:
-      name: cloudflare
-      url: ${{ steps.wrangler-preview.outputs.deployment-url || 'https://violette.app' }}
+      name: ${{ github.ref_name }}
+      url: https://violette.app
     steps:
       - uses: actions/checkout@v5
       - uses: asdf-vm/actions/install@v4
@@ -66,12 +67,38 @@ jobs:
       - run: opam exec -- dune build
       - run: pnpm run build
       - uses: cloudflare/wrangler-action@v3
-        if: github.ref_name == github.event.repository.default_branch
         with:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  deploy-preview:
+    if: github.ref_name != github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name }}
+      url: ${{ steps.preview.outputs.deployment-url }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: asdf-vm/actions/install@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+      - uses: actions/cache@v4
+        id: cache-opam
+        with:
+          key: |
+            opam-cache-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('violette.opam') }}
+          restore-keys: |
+            opam-cache-v1-${{ runner.os }}-${{ runner.arch }}-
+          path: |
+            ~/.opam
+            _opam
+      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --yes --deps-only --with-dev-setup .
+        if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
+      - run: opam install --deps-only --with-dev-setup .
+        if: ${{ steps.cache-opam.outputs.cache-hit != '' }}
+      - run: pnpm install --frozen-lockfile
+      - run: opam exec -- dune build
+      - run: pnpm run build
       - uses: cloudflare/wrangler-action@v3
-        if: github.ref_name != github.event.repository.default_branch
         id: preview
         with:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
