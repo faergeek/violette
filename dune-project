@@ -1,4 +1,4 @@
-(lang dune 3.17)
+(lang dune 3.20)
 
 (using melange 0.1)
 
@@ -23,22 +23,45 @@
  (allow_empty)
  (depends
   (melange
-   (>= 5.0.0))
+   (and
+    (>= 4)
+    (< 6)))
   (melange-fetch
-   (>= 0.1.0))
+   (and
+    (>= 0.1)
+    (< 0.2)))
   (melange-webapi
-   (>= 0.21.0))
+   (and
+    (>= 0.21)
+    (< 0.22)))
   (melange-json
    (and
-    (>= 1.0.0)
-    (< 2.0.0)))
-  (ocaml
-   (>= 5.3.0))
-  (opam-dune-lint :with-dev-setup)
-  (opam-check-npm-deps :with-dev-setup)
-  (ocamlformat :with-dev-setup)
-  (ocaml-lsp-server :with-dev-setup)
+    (>= 1)
+    (< 2)))
+  (opam-dune-lint
+   (and
+    :with-dev-setup
+    (>= 0.6)
+    (< 0.7)))
+  (opam-check-npm-deps
+   (and
+    :with-dev-setup
+    (>= 4)
+    (< 5)))
+  (ocamlformat
+   (and
+    :with-dev-setup
+    (>= 0.27)
+    (< 0.28)))
+  (ocaml-lsp-server
+   (and
+    :with-dev-setup
+    (>= 1.21)))
   (reason-react
-   (>= 0.16.0))
+   (and
+    (>= 0.15)
+    (< 0.17)))
   (reason-react-ppx
-   (>= 0.16.0))))
+   (and
+    (>= 0.15)
+    (< 0.17)))))

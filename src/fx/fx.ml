@@ -2,7 +2,7 @@ type ('a, 'b, 'c) t =
   | Ok of 'a
   | Error of 'b
   | Sync of ('c -> ('a, 'b, 'c) t)
-  | Async of ('c -> ('a, 'b, 'c) t Js.promise)
+  | Async of ('c -> ('a, 'b, 'c) t Js.Promise.t)
 
 let ask () = Sync (fun value -> Ok value)
 

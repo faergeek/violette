@@ -1,5 +1,5 @@
 type test = unit -> unit
-type testAsync = unit -> unit Js.promise
+type testAsync = unit -> unit Js.Promise.t
 type 'a expect
 
 external [@mel.module "vitest"] describe : string -> test -> unit = "describe"

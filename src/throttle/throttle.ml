@@ -3,7 +3,7 @@ module Make (Input : sig
   type output
 
   val ms : int
-  val run : input -> output Js.promise
+  val run : input -> output Js.Promise.t
 end) =
 struct
   open Input
