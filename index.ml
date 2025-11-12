@@ -75,14 +75,14 @@ let () =
 
   store
   |. Zustand.subscribe (fun state prevState ->
-         if state.auth.credentials != prevState.auth.credentials then
-           router |. Router.invalidate
-         else ());
+      if state.auth.credentials != prevState.auth.credentials then
+        router |. Router.invalidate
+      else ());
 
   StoreFx.SubscribeToStoreStateUpdates.make ()
   |. Fx.runAsync ~deps:{ store }
   |> Js.Promise.then_ (fun result ->
-         result |> Result.get_ok |> Js.Promise.resolve)
+      result |> Result.get_ok |> Js.Promise.resolve)
   |> ignore;
 
   querySelector "#app" |. Option.get |. Client.createRoot

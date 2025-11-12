@@ -27,9 +27,9 @@ let make artistName =
   then
     store
     |. Zustand.setState (fun prevState ->
-           {
-             prevState with
-             artists = { prevState.artists with topSongIdsByArtistName };
-             songs = { byId = songsById };
-           });
+        {
+          prevState with
+          artists = { prevState.artists with topSongIdsByArtistName };
+          songs = { byId = songsById };
+        });
   Ok ()

@@ -26,9 +26,9 @@ let loader { context = { store }; params = { albumId }; _ } =
   let basePromise =
     albumPromise
     |> then_ (fun () ->
-           let state = Zustand.getState store in
-           state.albums.baseById |. Js.Map.get ~key:albumId |> Option.get
-           |> resolve)
+        let state = Zustand.getState store in
+        state.albums.baseById |. Js.Map.get ~key:albumId |> Option.get
+        |> resolve)
   in
   let* base =
     let state = Zustand.getState store in
@@ -42,9 +42,9 @@ let loader { context = { store }; params = { albumId }; _ } =
     |. runAsync ~deps:{ store }
     |> then_ (fun result -> result |. Result.get_ok |> resolve)
     |> then_ (fun () ->
-           let state = Zustand.getState store in
-           state.albums.infoById |. Js.Map.get ~key:albumId |> Option.get
-           |> resolve)
+        let state = Zustand.getState store in
+        state.albums.infoById |. Js.Map.get ~key:albumId |> Option.get
+        |> resolve)
   in
   resolve { deferredAlbumInfo }
 

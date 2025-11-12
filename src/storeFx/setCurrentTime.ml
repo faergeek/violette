@@ -19,7 +19,7 @@ let make currentTime =
         PlayerContext.audio |. HtmlAudioElement.setCurrentTime currentTime;
         store
         |. Zustand.setState (fun prevState ->
-               { prevState with player = { prevState.player with currentTime } });
+            { prevState with player = { prevState.player with currentTime } });
         store |> SaveCurrentTime.now
         |> Js.Promise.then_ (fun () -> Ok () |> Js.Promise.resolve)
         |> Js.Promise.catch (fun _ -> Error () |> Js.Promise.resolve))

@@ -18,10 +18,10 @@ let buildSubsonicApiUrl { salt; serverBaseUrl; token; username } request =
   in
   Js.Dict.entries request.params
   |. Js.Array.forEach ~f:(fun (k, v) ->
-         let open Url.URLSearchParams in
-         v |> function
-         | Array a -> Js.Array.forEach a ~f:(fun v -> append k v searchParams)
-         | Value v -> set k v searchParams);
+      let open Url.URLSearchParams in
+      v |> function
+      | Array a -> Js.Array.forEach a ~f:(fun v -> append k v searchParams)
+      | Value v -> set k v searchParams);
   url
 
 external fetchWithUrl : Webapi.Url.t -> Fetch.response Js.Promise.t = "fetch"
@@ -42,18 +42,18 @@ let validateResponseJson of_json response =
       let open Js.Promise in
       response |> Fetch.Response.json
       |> then_ (fun json ->
-             (try
-                json
-                |> Json.Decode.oneOf
-                     [
-                       (fun json -> Ok (json |> of_json));
-                       (fun json ->
-                         let Response.{ response } = json |> Failed.of_json in
-                         let ApiError.{ code; message } = response.error in
-                         Error (Error.ApiError { code; message }));
-                     ]
-              with issues -> Error (Error.ValidationFailed { issues }))
-             |> resolve))
+          (try
+             json
+             |> Json.Decode.oneOf
+                  [
+                    (fun json -> Ok (json |> of_json));
+                    (fun json ->
+                      let Response.{ response } = json |> Failed.of_json in
+                      let ApiError.{ code; message } = response.error in
+                      Error (Error.ApiError { code; message }));
+                  ]
+           with issues -> Error (Error.ValidationFailed { issues }))
+          |> resolve))
 
 let getContentType response =
   let open Fetch in

@@ -36,9 +36,9 @@ let make artistId =
   then
     store
     |. setState (fun prevState ->
-           {
-             prevState with
-             albums = { prevState.albums with baseById = albumBaseById };
-             artists = { prevState.artists with albumIdsByArtistId; byId };
-           });
+        {
+          prevState with
+          albums = { prevState.albums with baseById = albumBaseById };
+          artists = { prevState.artists with albumIdsByArtistId; byId };
+        });
   Ok ()

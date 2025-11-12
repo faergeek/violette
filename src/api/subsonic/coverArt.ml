@@ -6,6 +6,6 @@ let makeUrl ~credentials ~coverArt ?size () =
   Js.Dict.set params "id" (Value coverArt);
   size
   |> Option.iter (fun size ->
-         Js.Dict.set params "size" (Value (Int.to_string size)));
+      Js.Dict.set params "size" (Value (Int.to_string size)));
   buildSubsonicApiUrl credentials { _method = "rest/getCoverArt"; params }
   |> Url.href

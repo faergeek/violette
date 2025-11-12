@@ -45,7 +45,7 @@ module Trigger = struct
                 ariaControls = menuId [@mel.as "aria-controls"];
                 ariaHaspopup = ("menu" [@mel.as "aria-haspopup"]);
                 id = triggerId;
-                popoverTarget = menuId;
+                popovertarget = menuId;
                 onPointerDown =
                   (fun _ ->
                     if isOpenRef.current then
@@ -103,116 +103,115 @@ module Content = struct
                   fun event ->
                     event |> relatedTarget
                     |> Option.iter (fun relatedTarget ->
-                           let currentTarget = event |. currentTarget in
-                           if not (currentTarget##contains relatedTarget) then
-                             currentTarget##hidePopover ()))
+                        let currentTarget = event |. currentTarget in
+                        if not (currentTarget##contains relatedTarget) then
+                          currentTarget##hidePopover ()))
               ~onKeyDown:(fun event ->
                 let open React.Event.Keyboard in
                 let open ReactExtra.Event.Keyboard in
                 let open Webapi.Dom in
                 event |> target |> Element.asHtmlElement
                 |. Option.bind (fun target ->
-                       let role = target |> DomExtra.role in
-                       if role == "menuitem" then Some target
-                       else
-                         target
-                         |> HtmlElement.closest "[role=menuitem]"
-                         |. Option.bind Element.asHtmlElement)
+                    let role = target |> DomExtra.role in
+                    if role == "menuitem" then Some target
+                    else
+                      target
+                      |> HtmlElement.closest "[role=menuitem]"
+                      |. Option.bind Element.asHtmlElement)
                 |> Option.iter (fun selectedMenuItem ->
-                       let menu = event |. currentTarget in
-                       match event |. code with
-                       | "Home" ->
-                           event |. preventDefault;
-                           event |. stopPropagation;
+                    let menu = event |. currentTarget in
+                    match event |. code with
+                    | "Home" ->
+                        event |. preventDefault;
+                        event |. stopPropagation;
 
-                           menu
-                           |> Element.querySelector
-                                "[role=menuitem]:first-child"
-                           |. Option.bind Element.asHtmlElement
-                           |> Option.get |. HtmlElement.focus
-                       | "ArrowLeft" | "ArrowUp" ->
-                           event |. preventDefault;
-                           event |. stopPropagation;
+                        menu
+                        |> Element.querySelector "[role=menuitem]:first-child"
+                        |. Option.bind Element.asHtmlElement
+                        |> Option.get |. HtmlElement.focus
+                    | "ArrowLeft" | "ArrowUp" ->
+                        event |. preventDefault;
+                        event |. stopPropagation;
 
-                           let menuItems =
-                             menu
-                             |> Element.querySelectorAll "[role=menuitem]"
-                             |> NodeList.toArray
-                           in
-                           let currentIndex =
-                             menuItems
-                             |> Js.Array.indexOf
-                                  ~value:(selectedMenuItem |> HtmlElement.asNode)
-                           and len = menuItems |. Js.Array.length in
-                           menuItems
-                           |. Belt.Array.get ((currentIndex + len - 1) mod len)
-                           |. Option.bind Element.ofNode
-                           |. Option.bind Element.asHtmlElement
-                           |> Option.get |. HtmlElement.focus
-                       | "ArrowRight" | "ArrowDown" ->
-                           event |. preventDefault;
-                           event |. stopPropagation;
+                        let menuItems =
+                          menu
+                          |> Element.querySelectorAll "[role=menuitem]"
+                          |> NodeList.toArray
+                        in
+                        let currentIndex =
+                          menuItems
+                          |> Js.Array.indexOf
+                               ~value:(selectedMenuItem |> HtmlElement.asNode)
+                        and len = menuItems |. Js.Array.length in
+                        menuItems
+                        |. Belt.Array.get ((currentIndex + len - 1) mod len)
+                        |. Option.bind Element.ofNode
+                        |. Option.bind Element.asHtmlElement
+                        |> Option.get |. HtmlElement.focus
+                    | "ArrowRight" | "ArrowDown" ->
+                        event |. preventDefault;
+                        event |. stopPropagation;
 
-                           let menuItems =
-                             menu
-                             |> Element.querySelectorAll "[role=menuitem]"
-                             |> NodeList.toArray
-                           in
-                           let currentIndex =
-                             menuItems
-                             |> Js.Array.indexOf
-                                  ~value:(selectedMenuItem |> HtmlElement.asNode)
-                           and len = menuItems |. Js.Array.length in
-                           menuItems
-                           |. Belt.Array.get ((currentIndex + 1) mod len)
-                           |. Option.bind Element.ofNode
-                           |. Option.bind Element.asHtmlElement
-                           |> Option.get |. HtmlElement.focus
-                       | "End" ->
-                           event |. preventDefault;
-                           event |. stopPropagation;
+                        let menuItems =
+                          menu
+                          |> Element.querySelectorAll "[role=menuitem]"
+                          |> NodeList.toArray
+                        in
+                        let currentIndex =
+                          menuItems
+                          |> Js.Array.indexOf
+                               ~value:(selectedMenuItem |> HtmlElement.asNode)
+                        and len = menuItems |. Js.Array.length in
+                        menuItems
+                        |. Belt.Array.get ((currentIndex + 1) mod len)
+                        |. Option.bind Element.ofNode
+                        |. Option.bind Element.asHtmlElement
+                        |> Option.get |. HtmlElement.focus
+                    | "End" ->
+                        event |. preventDefault;
+                        event |. stopPropagation;
 
-                           menu
-                           |> Element.querySelector "[role=menuitem]:last-child"
-                           |. Option.bind Element.asHtmlElement
-                           |> Option.get |. HtmlElement.focus
-                       | "Escape" ->
-                           event |. preventDefault;
-                           event |. stopPropagation;
+                        menu
+                        |> Element.querySelector "[role=menuitem]:last-child"
+                        |. Option.bind Element.asHtmlElement
+                        |> Option.get |. HtmlElement.focus
+                    | "Escape" ->
+                        event |. preventDefault;
+                        event |. stopPropagation;
 
-                           document
-                           |> Document.getElementById triggerId
-                           |. Option.bind Element.asHtmlElement
-                           |> Option.get |. HtmlElement.focus
-                       | _
-                         when event |> key |> Js.String.unsafeToArrayLike
-                              |> Js.Array.from |> Js.Array.length == 1 ->
-                           event |. preventDefault;
-                           event |. stopPropagation;
+                        document
+                        |> Document.getElementById triggerId
+                        |. Option.bind Element.asHtmlElement
+                        |> Option.get |. HtmlElement.focus
+                    | _
+                      when event |> key |> Js.String.unsafeToArrayLike
+                           |> Js.Array.from |> Js.Array.length == 1 ->
+                        event |. preventDefault;
+                        event |. stopPropagation;
 
-                           let menuItems =
-                             menu
-                             |> Element.querySelectorAll "[role=menuitem]"
-                             |> NodeList.toArray
-                           in
-                           let currentIndex =
-                             menuItems
-                             |> Js.Array.indexOf
-                                  ~value:(selectedMenuItem |> HtmlElement.asNode)
-                           and pressedCharacter =
-                             event |> key |> Js.String.toLowerCase
-                           in
-                           let open Js.Array in
-                           menuItems
-                           |> slice ~start:(currentIndex + 1)
-                           |> concat ~other:(slice menuItems ~end_:currentIndex)
-                           |> find ~f:(fun node ->
-                                  let open Js.String in
-                                  node |> Node.textContent |> toLowerCase
-                                  |> startsWith ~prefix:pressedCharacter)
-                           |. Option.bind HtmlElement.ofNode
-                           |> Option.iter HtmlElement.focus
-                       | _ -> ()))
+                        let menuItems =
+                          menu
+                          |> Element.querySelectorAll "[role=menuitem]"
+                          |> NodeList.toArray
+                        in
+                        let currentIndex =
+                          menuItems
+                          |> Js.Array.indexOf
+                               ~value:(selectedMenuItem |> HtmlElement.asNode)
+                        and pressedCharacter =
+                          event |> key |> Js.String.toLowerCase
+                        in
+                        let open Js.Array in
+                        menuItems
+                        |> slice ~start:(currentIndex + 1)
+                        |> concat ~other:(slice menuItems ~end_:currentIndex)
+                        |> find ~f:(fun node ->
+                            let open Js.String in
+                            node |> Node.textContent |> toLowerCase
+                            |> startsWith ~prefix:pressedCharacter)
+                        |. Option.bind HtmlElement.ofNode
+                        |> Option.iter HtmlElement.focus
+                    | _ -> ()))
               () [@JSX])
            [%mel.obj
              {
@@ -249,5 +248,5 @@ module Item = struct
             focus-visible:text-accent-foreground [&_svg]:size-4 \
             [&_svg]:shrink-0"
          ~role:"menuitem" ~type_ ?onClick () [@JSX])
-      [%mel.obj { popoverTarget = menuId; popoverTargetAction = "hide" }]
+      [%mel.obj { popovertarget = menuId; popovertargetaction = "hide" }]
 end

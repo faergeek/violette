@@ -17,8 +17,8 @@ let[@react.component] make ?albumId ?artistId ?className ?disabled ?id ?starred
              |> FormData.get "starred"
              |> Option.map FormData.EntryValue.classify
              |. Option.bind (function
-                  | `String value when value != "" -> Some ()
-                  | `String _ | `File _ -> None)
+               | `String value when value != "" -> Some ()
+               | `String _ | `File _ -> None)
              |> Option.map (fun () -> Js.Date.make () |> Js.Date.toISOString)
            in
            setStarredOptimisic (Fun.const newStarred);
@@ -29,9 +29,9 @@ let[@react.component] make ?albumId ?artistId ?className ?disabled ?id ?starred
            in
            fx |> runAsyncStoreFx
            |> Js.Promise.then_ (fun result ->
-                  result |. Result.get_ok;
-                  setStarredOptimisic (Fun.const None);
-                  Js.Promise.resolve ())
+               result |. Result.get_ok;
+               setStarredOptimisic (Fun.const None);
+               Js.Promise.resolve ())
            |> ignore)
      ~children:
        [
@@ -52,12 +52,11 @@ let[@react.component] make ?albumId ?artistId ?className ?disabled ?id ?starred
             () [@JSX]);
          starred
          |> Option.map (fun starred ->
-                (time ~ariaLabel:"Starred" ~className:"sr-only"
-                   ~dateTime:starred
-                   ~children:
-                     (starred |> Js.Date.fromString |> Js.Date.toLocaleString
-                    |> React.string)
-                   () [@JSX]))
+             (time ~ariaLabel:"Starred" ~className:"sr-only" ~dateTime:starred
+                ~children:
+                  (starred |> Js.Date.fromString |> Js.Date.toLocaleString
+                 |> React.string)
+                () [@JSX]))
          |> Option.value ~default:React.null;
        ]
      () [@JSX])

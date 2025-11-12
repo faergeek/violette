@@ -76,10 +76,9 @@ let make albumId =
   then
     store
     |. Zustand.setState (fun prevState ->
-           {
-             prevState with
-             albums =
-               { prevState.albums with baseById; detailsById; songIdsById };
-             songs = { byId = songsById };
-           });
+        {
+          prevState with
+          albums = { prevState.albums with baseById; detailsById; songIdsById };
+          songs = { byId = songsById };
+        });
   Ok ()

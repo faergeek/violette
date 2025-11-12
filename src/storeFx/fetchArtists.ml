@@ -13,10 +13,10 @@ let make () =
   let artists =
     index
     |. Js.Array.reduce ~init:[||] ~f:(fun acc entry ->
-           acc
-           |> Js.Array.pushMany ~values:Subsonic.Artists.(entry.artist)
-           |> ignore;
-           acc)
+        acc
+        |> Js.Array.pushMany ~values:Subsonic.Artists.(entry.artist)
+        |> ignore;
+        acc)
   in
   let state = getState store in
   let byId = mergeIntoMap state.artists.byId artists (fun x -> x.id) in
@@ -31,5 +31,5 @@ let make () =
   then
     store
     |. setState (fun prevState ->
-           { prevState with artists = { prevState.artists with byId; listIds } });
+        { prevState with artists = { prevState.artists with byId; listIds } });
   Ok ()

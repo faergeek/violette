@@ -7,5 +7,5 @@ let use () =
       |> Option.map Element.unsafeAsHtmlElement
       |> Option.map HtmlElement.dataset
       |> Option.iter (fun dataset ->
-             if lock then dataset |> DomStringMap.set "scrollLock" ""
-             else dataset |> DomStringMap.unsafeDeleteKey "scrollLock"))
+          if lock then dataset |> DomStringMap.set "scrollLock" ""
+          else dataset |> DomStringMap.unsafeDeleteKey "scrollLock"))

@@ -32,19 +32,19 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                    StoreFx.TogglePaused.make ()
                    |> runAsyncStoreFx
                    |> Js.Promise.then_ (fun result ->
-                          result |> Result.get_ok |> Js.Promise.resolve)
+                       result |> Result.get_ok |> Js.Promise.resolve)
                    |> ignore
                | "KeyJ" | "ArrowLeft" ->
                    StoreFx.SetCurrentTime.make (Fun.flip ( -. ) 10.0)
                    |> runAsyncStoreFx
                    |> Js.Promise.then_ (fun result ->
-                          result |> Result.get_ok |> Js.Promise.resolve)
+                       result |> Result.get_ok |> Js.Promise.resolve)
                    |> ignore
                | "KeyL" | "ArrowRight" ->
                    StoreFx.SetCurrentTime.make (Fun.flip ( +. ) 10.0)
                    |> runAsyncStoreFx
                    |> Js.Promise.then_ (fun result ->
-                          result |> Result.get_ok |> Js.Promise.resolve)
+                       result |> Result.get_ok |> Js.Promise.resolve)
                    |> ignore
                | "ArrowUp" ->
                    event |. Dom.KeyboardEvent.preventDefault;
@@ -88,7 +88,7 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                        event |> StoreFx.HandleMediaSessionAction.make
                        |> runAsyncStoreFx
                        |> Js.Promise.then_ (fun result ->
-                              result |> Result.get_ok |> Js.Promise.resolve)
+                           result |> Result.get_ok |> Js.Promise.resolve)
                        |> ignore)));
       Some
         (fun () ->
@@ -110,7 +110,7 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                              ~className:
                                "w-full p-3 \
                                 group-has-[#volume-settings:popover-open]/volume-settings:[&:not(:hover)]:text-primary"
-                             ~popoverTarget:"volume-settings" ~variant:"icon"
+                             ~popovertarget:"volume-settings" ~variant:"icon"
                              ~children:
                                (LucideReact.SlidersVertical.make ~role:"none" ()
                                 [@JSX])
@@ -380,7 +380,7 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                    StoreFx.GoToPrevSong.make ()
                    |> runAsyncStoreFx
                    |> Js.Promise.then_ (fun result ->
-                          result |> Result.get_ok |> Js.Promise.resolve)
+                       result |> Result.get_ok |> Js.Promise.resolve)
                    |> ignore)
                  ~children:(LucideReact.SkipBack.make ~role:"none" () [@JSX])
                  () [@JSX]))
@@ -403,7 +403,7 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                         StoreFx.TogglePaused.make ()
                         |> runAsyncStoreFx
                         |> Js.Promise.then_ (fun result ->
-                               result |> Result.get_ok |> Js.Promise.resolve)
+                            result |> Result.get_ok |> Js.Promise.resolve)
                         |> ignore)
                       ~children:
                         (if paused then
@@ -423,7 +423,7 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                    StoreFx.GoToNextSong.make ()
                    |> runAsyncStoreFx
                    |> Js.Promise.then_ (fun result ->
-                          result |> Result.get_ok |> Js.Promise.resolve)
+                       result |> Result.get_ok |> Js.Promise.resolve)
                    |> ignore)
                  ~children:(LucideReact.SkipForward.make ~role:"none" () [@JSX])
                  () [@JSX]))

@@ -44,27 +44,26 @@ let[@react.component] make ?coverArtSizes ?id ?loadCoverArtLazily =
             ~children:
               (album
               |> Option.map (fun album ->
-                     (React.Fragment.make
-                        ~children:
-                          [
-                            album.year
-                            |> Option.map (fun year ->
-                                   (React.Fragment.make
-                                      ~children:
-                                        [
-                                          (time ~children:(React.int year) ()
-                                           [@JSX]);
-                                          React.string {js| – |js};
-                                        ]
-                                      () [@JSX]))
-                            |> Option.value ~default:React.null;
-                            (Link.make
-                               ~params:[%mel.obj { artistId = album.artistId }]
-                               ~_to:"/artist/$artistId"
-                               ~children:(React.string album.artist)
-                               () [@JSX]);
-                          ]
-                        () [@JSX]))
+                  (React.Fragment.make
+                     ~children:
+                       [
+                         album.year
+                         |> Option.map (fun year ->
+                             (React.Fragment.make
+                                ~children:
+                                  [
+                                    (time ~children:(React.int year) () [@JSX]);
+                                    React.string {js| – |js};
+                                  ]
+                                () [@JSX]))
+                         |> Option.value ~default:React.null;
+                         (Link.make
+                            ~params:[%mel.obj { artistId = album.artistId }]
+                            ~_to:"/artist/$artistId"
+                            ~children:(React.string album.artist)
+                            () [@JSX]);
+                       ]
+                     () [@JSX]))
               |> Option.value
                    ~default:(Skeleton.make ~className:"w-16" () [@JSX]))
             () [@JSX]);

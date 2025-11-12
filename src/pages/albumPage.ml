@@ -19,11 +19,11 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
       Zustand.useShallow (fun state ->
           songIds
           |> Option.map (fun songIds ->
-                 songIds |> Array.to_list
-                 |> List.filter_map (fun id ->
-                        let open Store.State in
-                        state.songs.byId |. Js.Map.get ~key:id)
-                 |> Array.of_list))
+              songIds |> Array.to_list
+              |> List.filter_map (fun id ->
+                  let open Store.State in
+                  state.songs.byId |. Js.Map.get ~key:id)
+              |> Array.of_list))
     in
     Store.Context.useAppStore selector
   in
@@ -36,34 +36,33 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
             let result : disc array = [||] in
             songs
             |> Js.Array.forEach ~f:(fun song ->
-                   let discNumber =
-                     let open Subsonic.Song in
-                     song.discNumber |> Option.value ~default:1
-                   in
-                   let open Subsonic.DiscTitle in
-                   let discTitle =
-                     details.discTitles
-                     |. Option.bind (fun discTitles ->
-                            discTitles
-                            |> Js.Array.find ~f:(fun x -> x.disc == discNumber))
-                   in
-                   result
-                   |. Belt.Array.get (discNumber - 1)
-                   |> Option.value
-                        ~default:
-                          {
-                            number = discNumber;
-                            songIds = [||];
-                            title =
-                              discTitle
-                              |. Option.bind (fun x ->
-                                     if x.title |. Js.String.length == 0 then
-                                       None
-                                     else Some x.title);
-                          }
-                   |> Belt.Array.setUnsafe result (discNumber - 1);
-                   let disc = result |. Belt.Array.getUnsafe (discNumber - 1) in
-                   disc.songIds |. Js.Array.push ~value:song.id |> ignore);
+                let discNumber =
+                  let open Subsonic.Song in
+                  song.discNumber |> Option.value ~default:1
+                in
+                let open Subsonic.DiscTitle in
+                let discTitle =
+                  details.discTitles
+                  |. Option.bind (fun discTitles ->
+                      discTitles
+                      |> Js.Array.find ~f:(fun x -> x.disc == discNumber))
+                in
+                result
+                |. Belt.Array.get (discNumber - 1)
+                |> Option.value
+                     ~default:
+                       {
+                         number = discNumber;
+                         songIds = [||];
+                         title =
+                           discTitle
+                           |. Option.bind (fun x ->
+                               if x.title |. Js.String.length == 0 then None
+                               else Some x.title);
+                       }
+                |> Belt.Array.setUnsafe result (discNumber - 1);
+                let disc = result |. Belt.Array.getUnsafe (discNumber - 1) in
+                disc.songIds |. Js.Array.push ~value:song.id |> ignore);
             Some result)
       (details, songs)
   in
@@ -98,7 +97,7 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
                       ?musicBrainzUrl:
                         (albumInfo.musicBrainzId
                         |> Option.map (fun id ->
-                               "https://musicbrainz.org/release/" ^ id))
+                            "https://musicbrainz.org/release/" ^ id))
                       () [@JSX])))
             ~children:
               (div ~className:"space-y-2"
@@ -143,14 +142,13 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
                                          [
                                            base.year
                                            |> Option.map (fun year ->
-                                                  (React.Fragment.make
-                                                     ~children:
-                                                       [
-                                                         React.int year;
-                                                         React.string
-                                                           {js| – |js};
-                                                       ]
-                                                     () [@JSX]))
+                                               (React.Fragment.make
+                                                  ~children:
+                                                    [
+                                                      React.int year;
+                                                      React.string {js| – |js};
+                                                    ]
+                                                  () [@JSX]))
                                            |> Option.value ~default:React.null;
                                            (Link.make
                                               ~params:
@@ -177,7 +175,7 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
                        (fun albumInfo ->
                          albumInfo.notes
                          |> Option.map (fun html ->
-                                (Prose.make ~html () [@JSX]))
+                             (Prose.make ~html () [@JSX]))
                          |> Option.value ~default:React.null);
                    ]
                  () [@JSX])
@@ -190,39 +188,39 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
                  ~children:
                    (discs
                    |> Js.Array.map ~f:(fun disc ->
-                          (div
-                             ~key:(Int.to_string disc.number)
-                             ~children:
-                               [
-                                 (H2.make
-                                    ~className:
-                                      "text-md mb-1 px-2 font-semibold \
-                                       text-muted-foreground sm:px-0"
-                                    ~children:
-                                      [
-                                        React.string "Disc ";
-                                        React.int disc.number;
-                                        (match disc.title with
-                                        | None -> React.null
-                                        | Some title ->
-                                            React.Fragment.make
-                                              ~children:
-                                                [
-                                                  React.string {js| – |js};
-                                                  React.string title;
-                                                ]
-                                              () [@JSX]);
-                                      ]
-                                    () [@JSX]);
-                                 (SongList.make
-                                    ~getSongElementId:Album.getSongElementId
-                                    ~isAlbumView:true
-                                    ?isCompilation:details.isCompilation
-                                    ~primaryArtist:base.artist
-                                    ~songIds:disc.songIds ~songIdsToPlay:songIds
-                                    () [@JSX]);
-                               ]
-                             () [@JSX]))
+                       (div
+                          ~key:(Int.to_string disc.number)
+                          ~children:
+                            [
+                              (H2.make
+                                 ~className:
+                                   "text-md mb-1 px-2 font-semibold \
+                                    text-muted-foreground sm:px-0"
+                                 ~children:
+                                   [
+                                     React.string "Disc ";
+                                     React.int disc.number;
+                                     (match disc.title with
+                                     | None -> React.null
+                                     | Some title ->
+                                         React.Fragment.make
+                                           ~children:
+                                             [
+                                               React.string {js| – |js};
+                                               React.string title;
+                                             ]
+                                           () [@JSX]);
+                                   ]
+                                 () [@JSX]);
+                              (SongList.make
+                                 ~getSongElementId:Album.getSongElementId
+                                 ~isAlbumView:true
+                                 ?isCompilation:details.isCompilation
+                                 ~primaryArtist:base.artist
+                                 ~songIds:disc.songIds ~songIdsToPlay:songIds ()
+                               [@JSX]);
+                            ]
+                          () [@JSX]))
                    |> React.array)
                  () [@JSX]
              else

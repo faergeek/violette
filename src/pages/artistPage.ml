@@ -49,14 +49,14 @@ module SimilarArtistsSection = struct
                    presentArtists
                    |> Js.Array.slice ~start:0 ~end_:6
                    |> Js.Array.map ~f:(fun id ->
-                          (ArtistCard.make ~key:(Js.String.make id)
-                             ~coverArtSizes:CardGrid.card_grid_cover_art_sizes
-                             ~id ~loadCoverArtLazily:true () [@JSX]))
+                       (ArtistCard.make ~key:(Js.String.make id)
+                          ~coverArtSizes:CardGrid.card_grid_cover_art_sizes ~id
+                          ~loadCoverArtLazily:true () [@JSX]))
                    |> React.array
                | None ->
                    Belt.Array.make 6 None
                    |. Belt.Array.mapWithIndex (fun i _ ->
-                          (ArtistCard.make ~key:(Js.String.make i) () [@JSX]))
+                       (ArtistCard.make ~key:(Js.String.make i) () [@JSX]))
                    |> React.array)
              () [@JSX]);
         ]
@@ -122,8 +122,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
          let open Store.State in
          artist
          |. Option.bind (fun artist ->
-                state.artists.topSongIdsByArtistName
-                |. Js.Map.get ~key:artist.name))
+             state.artists.topSongIdsByArtistName |. Js.Map.get ~key:artist.name))
        ~children:(fun topSongIds ->
          match (artist, topSongIds) with
          | Some artist, Some topSongIds -> children ~artist ~topSongIds
@@ -156,7 +155,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                       ?musicBrainzUrl:
                         (artistInfo.musicBrainzId
                         |> Option.map (fun musicBrainzId ->
-                               {j|https://musicbrainz.org/artist/$musicBrainzId|j})
+                            {j|https://musicbrainz.org/artist/$musicBrainzId|j})
                         )
                       () [@JSX]))
                  ~fallback:(MediaLinks.make ~skeleton:true () [@JSX]))
@@ -221,7 +220,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                        (fun details ->
                          details.biography
                          |> Option.map (fun html ->
-                                (Prose.make ~html () [@JSX]))
+                             (Prose.make ~html () [@JSX]))
                          |> Option.value ~default:React.null);
                    ]
                  () [@JSX])
@@ -326,18 +325,18 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                                           albumIds |> Belt.Array.reverse
                                           |> Js.Array.slice ~start:0 ~end_:6
                                           |> Js.Array.map ~f:(fun id ->
-                                                 (AlbumCard.make ~key:id
-                                                    ~coverArtSizes:
-                                                      CardGrid
-                                                      .card_grid_cover_art_sizes
-                                                    ~id ~loadCoverArtLazily:true
-                                                    () [@JSX]))
+                                              (AlbumCard.make ~key:id
+                                                 ~coverArtSizes:
+                                                   CardGrid
+                                                   .card_grid_cover_art_sizes
+                                                 ~id ~loadCoverArtLazily:true ()
+                                               [@JSX]))
                                       | None ->
                                           Belt.Array.make 6 None
                                           |. Belt.Array.mapWithIndex (fun i _ ->
-                                                 (AlbumCard.make
-                                                    ~key:(Int.to_string i) ()
-                                                  [@JSX]))
+                                              (AlbumCard.make
+                                                 ~key:(Int.to_string i) ()
+                                               [@JSX]))
                                     in
                                     React.array cards)
                                  () [@JSX]);
@@ -351,9 +350,9 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                            let presentArtists =
                              similarArtists |> Array.to_list
                              |> List.filter_map (function
-                                  | Subsonic.SimilarArtist.Artist artist ->
-                                      Some artist.id
-                                  | BasicInfo _ -> None)
+                               | Subsonic.SimilarArtist.Artist artist ->
+                                   Some artist.id
+                               | BasicInfo _ -> None)
                              |> Array.of_list
                            in
                            if Js.Array.length presentArtists != 0 then
@@ -384,16 +383,15 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                              | Some albumIds ->
                                  albumIds |> Belt.Array.reverse
                                  |> Js.Array.map ~f:(fun id ->
-                                        (AlbumCard.make ~key:id
-                                           ~coverArtSizes:
-                                             CardGrid.card_grid_cover_art_sizes
-                                           ~id ~loadCoverArtLazily:true ()
-                                         [@JSX]))
+                                     (AlbumCard.make ~key:id
+                                        ~coverArtSizes:
+                                          CardGrid.card_grid_cover_art_sizes ~id
+                                        ~loadCoverArtLazily:true () [@JSX]))
                              | None ->
                                  Belt.Array.make 12 None
                                  |. Belt.Array.mapWithIndex (fun i _ ->
-                                        (AlbumCard.make ~key:(Int.to_string i)
-                                           () [@JSX]))
+                                     (AlbumCard.make ~key:(Int.to_string i) ()
+                                      [@JSX]))
                            in
                            React.array cards)
                         () [@JSX])
@@ -407,8 +405,8 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                              ~children:
                                (Belt.Array.make 12 None
                                |. Belt.Array.mapWithIndex (fun i _ ->
-                                      (ArtistCard.make ~key:(Int.to_string i) ()
-                                       [@JSX]))
+                                   (ArtistCard.make ~key:(Int.to_string i) ()
+                                    [@JSX]))
                                |> React.array)
                              () [@JSX])
                         (fun similarArtists ->
@@ -422,10 +420,9 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                                   (let presentArtists =
                                      similarArtists |> Array.to_list
                                      |> List.filter_map (function
-                                          | Subsonic.SimilarArtist.BasicInfo _
-                                            ->
-                                              None
-                                          | Artist artist -> Some artist.id)
+                                       | Subsonic.SimilarArtist.BasicInfo _ ->
+                                           None
+                                       | Artist artist -> Some artist.id)
                                      |> Array.of_list
                                    in
                                    if Js.Array.length presentArtists == 0 then
@@ -435,21 +432,21 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                                        ~children:
                                          (presentArtists
                                          |> Js.Array.map ~f:(fun id ->
-                                                (ArtistCard.make ~key:id
-                                                   ~coverArtSizes:
-                                                     CardGrid
-                                                     .card_grid_cover_art_sizes
-                                                   ~id ~loadCoverArtLazily:true
-                                                   () [@JSX]))
+                                             (ArtistCard.make ~key:id
+                                                ~coverArtSizes:
+                                                  CardGrid
+                                                  .card_grid_cover_art_sizes ~id
+                                                ~loadCoverArtLazily:true ()
+                                              [@JSX]))
                                          |> React.array)
                                        () [@JSX]);
                                   (let notPresentArtists =
                                      similarArtists |> Array.to_list
                                      |> List.filter_map (function
-                                          | Subsonic.SimilarArtist.BasicInfo
-                                              info ->
-                                              Some info.name
-                                          | Artist _ -> None)
+                                       | Subsonic.SimilarArtist.BasicInfo info
+                                         ->
+                                           Some info.name
+                                       | Artist _ -> None)
                                      |> Array.of_list
                                    in
                                    if Js.Array.length notPresentArtists == 0

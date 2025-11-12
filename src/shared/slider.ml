@@ -30,17 +30,16 @@ let[@react.component] make ?ariaLabelledby ?className ?id ?markers ?max ?min
             () [@JSX]);
          markers
          |. Option.bind (fun markers ->
-                if markers |. Js.Array.length == 0 then None else Some markers)
+             if markers |. Js.Array.length == 0 then None else Some markers)
          |> Option.map (fun markers ->
-                (datalist ~id:markersId
-                   ~children:
-                     (markers
-                     |> Js.Array.map ~f:(fun marker ->
-                            let v = Js.String.make marker.value in
-                            (option ~key:v ~label:marker.label ~value:v ()
-                             [@JSX]))
-                     |> React.array)
-                   () [@JSX]))
+             (datalist ~id:markersId
+                ~children:
+                  (markers
+                  |> Js.Array.map ~f:(fun marker ->
+                      let v = Js.String.make marker.value in
+                      (option ~key:v ~label:marker.label ~value:v () [@JSX]))
+                  |> React.array)
+                () [@JSX]))
          |> Option.value ~default:React.null;
        ]
      () [@JSX])

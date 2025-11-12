@@ -20,21 +20,20 @@ let[@react.component] make ~id ~(triggerRef : 'a React.ref) =
          lockScroll true;
          currentSongIdRef.current
          |> Option.iter (fun currentSongId ->
-                let open Webapi.Dom in
-                let currentSongElement =
-                  document
-                  |> Document.getElementById
-                       ("now-playing-queue-" ^ currentSongId)
-                in
-                currentSongElement
-                |. Option.bind (Element.querySelector "button")
-                |. Option.bind Element.asHtmlElement
-                |> Option.iter HtmlElement.focus;
-                currentSongElement
-                |. Option.bind Element.asHtmlElement
-                |> Option.iter
-                     (HtmlElement.scrollIntoViewWithOptions
-                        [%mel.obj { behavior = "instant"; block = "end" }])))
+             let open Webapi.Dom in
+             let currentSongElement =
+               document
+               |> Document.getElementById ("now-playing-queue-" ^ currentSongId)
+             in
+             currentSongElement
+             |. Option.bind (Element.querySelector "button")
+             |. Option.bind Element.asHtmlElement
+             |> Option.iter HtmlElement.focus;
+             currentSongElement
+             |. Option.bind Element.asHtmlElement
+             |> Option.iter
+                  (HtmlElement.scrollIntoViewWithOptions
+                     [%mel.obj { behavior = "instant"; block = "end" }])))
        else
          let activeElement =
            let open Webapi.Dom in

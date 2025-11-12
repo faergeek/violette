@@ -49,7 +49,7 @@ let[@react.component] make =
                         ~selector:(fun state ->
                           songId
                           |. Option.bind (fun songId ->
-                                 state.songs.byId |. Js.Map.get ~key:songId))
+                              state.songs.byId |. Js.Map.get ~key:songId))
                         ~children:(fun song ->
                           (Store.Context.Consumer.make
                              ~selector:(fun state ->
@@ -136,94 +136,90 @@ let[@react.component] make =
                               [
                                 songId
                                 |> Option.map (fun songId ->
-                                       (Store.Context.Consumer.make
-                                          ~selector:
-                                            (let open Store.State in
-                                             fun state ->
-                                               state.player.currentSongId
-                                               == Some songId)
-                                          ~children:(fun isCurrentInPlayer ->
-                                            (button ~ariaLabel:"Play"
-                                               ~ariaPressed:
+                                    (Store.Context.Consumer.make
+                                       ~selector:
+                                         (let open Store.State in
+                                          fun state ->
+                                            state.player.currentSongId
+                                            == Some songId)
+                                       ~children:(fun isCurrentInPlayer ->
+                                         (button ~ariaLabel:"Play"
+                                            ~ariaPressed:
+                                              (if
+                                                 isCurrentInPlayer && not paused
+                                               then "true"
+                                               else "false")
+                                            ~className:
+                                              (Clsx.make
+                                                 [|
+                                                   Item
+                                                     "flex rounded-full \
+                                                      outline-offset-2";
+                                                   Item
+                                                     [%mel.obj
+                                                       {
+                                                         sdfasdfasf =
+                                                           ((not
+                                                               isCurrentInPlayer)
+                                                          || not paused)
+                                                           [@mel.as
+                                                             "opacity-0 \
+                                                              group-hover/song-row:inset-0 \
+                                                              group-hover/song-row:opacity-100 \
+                                                              group-has-[:focus-visible]/song-row:inset-0 \
+                                                              group-has-[:focus-visible]/song-row:opacity-100"];
+                                                         inset0_opacity100 =
+                                                           (isCurrentInPlayer
+                                                          && paused)
+                                                           [@mel.as
+                                                             "inset-0 \
+                                                              opacity-100"];
+                                                         right0_size6 =
+                                                           (isAlbumView
+                                                          && isCurrentInPlayer
+                                                          && not paused)
+                                                           [@mel.as
+                                                             "right-0 size-6"];
+                                                         size8 =
+                                                           not isAlbumView
+                                                           [@mel.as "size-8"];
+                                                       }];
+                                                 |])
+                                            ~type_:"button"
+                                            ~onClick:(fun _ ->
+                                              let fx =
+                                                if isCurrentInPlayer then
+                                                  TogglePaused.make ()
+                                                else
+                                                  StartPlaying.make
+                                                    ~current:songId
+                                                    ?queued:songIdsToPlay ()
+                                              in
+                                              runAsyncStoreFx fx
+                                              |> Js.Promise.then_ (fun result ->
+                                                  result |> Result.get_ok
+                                                  |> Js.Promise.resolve)
+                                              |> ignore)
+                                            ~children:
+                                              (React.cloneElement
                                                  (if
                                                     isCurrentInPlayer
                                                     && not paused
-                                                  then "true"
-                                                  else "false")
-                                               ~className:
-                                                 (Clsx.make
-                                                    [|
-                                                      Item
-                                                        "flex rounded-full \
-                                                         outline-offset-2";
-                                                      Item
-                                                        [%mel.obj
-                                                          {
-                                                            sdfasdfasf =
-                                                              ((not
-                                                                  isCurrentInPlayer)
-                                                             || not paused)
-                                                              [@mel.as
-                                                                "opacity-0 \
-                                                                 group-hover/song-row:inset-0 \
-                                                                 group-hover/song-row:opacity-100 \
-                                                                 group-has-[:focus-visible]/song-row:inset-0 \
-                                                                 group-has-[:focus-visible]/song-row:opacity-100"];
-                                                            inset0_opacity100 =
-                                                              (isCurrentInPlayer
-                                                             && paused)
-                                                              [@mel.as
-                                                                "inset-0 \
-                                                                 opacity-100"];
-                                                            right0_size6 =
-                                                              (isAlbumView
-                                                             && isCurrentInPlayer
-                                                             && not paused)
-                                                              [@mel.as
-                                                                "right-0 size-6"];
-                                                            size8 =
-                                                              not isAlbumView
-                                                              [@mel.as "size-8"];
-                                                          }];
-                                                    |])
-                                               ~type_:"button"
-                                               ~onClick:(fun _ ->
-                                                 let fx =
-                                                   if isCurrentInPlayer then
-                                                     TogglePaused.make ()
-                                                   else
-                                                     StartPlaying.make
-                                                       ~current:songId
-                                                       ?queued:songIdsToPlay ()
-                                                 in
-                                                 runAsyncStoreFx fx
-                                                 |> Js.Promise.then_
-                                                      (fun result ->
-                                                        result |> Result.get_ok
-                                                        |> Js.Promise.resolve)
-                                                 |> ignore)
-                                               ~children:
-                                                 (React.cloneElement
-                                                    (if
-                                                       isCurrentInPlayer
-                                                       && not paused
-                                                     then
-                                                       LucideReact.CirclePause
-                                                       .make ~role:"none" ()
-                                                       [@JSX]
-                                                     else
-                                                       LucideReact.CirclePlay
-                                                       .make ~role:"none" ()
-                                                       [@JSX])
-                                                    [%mel.obj
-                                                      {
-                                                        className =
-                                                          "stroke-primary \
-                                                           size-full max-w-8 \
-                                                           max-h-8";
-                                                      }])
-                                               () [@JSX]))
-                                          () [@JSX]))
+                                                  then
+                                                    LucideReact.CirclePause.make
+                                                      ~role:"none" () [@JSX]
+                                                  else
+                                                    LucideReact.CirclePlay.make
+                                                      ~role:"none" () [@JSX])
+                                                 [%mel.obj
+                                                   {
+                                                     className =
+                                                       "stroke-primary \
+                                                        size-full max-w-8 \
+                                                        max-h-8";
+                                                   }])
+                                            () [@JSX]))
+                                       () [@JSX]))
                                 |> Option.value ~default:React.null;
                                 (Store.Context.Consumer.make
                                    ~selector:
@@ -285,7 +281,7 @@ let[@react.component] make =
                        let open Store.State in
                        songId
                        |. Option.bind (fun songId ->
-                              state.songs.byId |. Js.Map.get ~key:songId))
+                           state.songs.byId |. Js.Map.get ~key:songId))
                      ~children:(fun song ->
                        (React.Fragment.make
                           ~children:
@@ -412,7 +408,7 @@ let[@react.component] make =
                   let open Store.State in
                   songId
                   |. Option.bind (fun songId ->
-                         state.songs.byId |. Js.Map.get ~key:songId))
+                      state.songs.byId |. Js.Map.get ~key:songId))
                 ~children:(fun song ->
                   let open Subsonic.Song in
                   (StarButton.make
@@ -443,7 +439,7 @@ let[@react.component] make =
                           fun state ->
                             songId
                             |. Option.bind (fun songId ->
-                                   state.songs.byId |. Js.Map.get ~key:songId))
+                                state.songs.byId |. Js.Map.get ~key:songId))
                        ~children:(fun song ->
                          (span ~ariaLabel:"Duration"
                             ~className:
@@ -513,38 +509,37 @@ let[@react.component] make =
                                             let songId = songId |> Option.get in
                                             ask ()
                                             |. bind (fun Deps.{ store } ->
-                                                   let state =
-                                                     store |. Zustand.getState
-                                                   in
-                                                   let newSongIds =
-                                                     state.player.queuedSongIds
-                                                     |> Js.Array.filter
-                                                          ~f:(fun id ->
-                                                            id != songId)
-                                                   in
-                                                   let index =
-                                                     match
-                                                       state.player
-                                                         .currentSongId
-                                                     with
-                                                     | None -> 0
-                                                     | Some current ->
-                                                         newSongIds
-                                                         |> Js.Array.indexOf
-                                                              ~value:current
-                                                   in
-                                                   newSongIds
-                                                   |> Js.Array.spliceInPlace
-                                                        ~start:index ~remove:0
-                                                        ~add:[| songId |]
-                                                   |> ignore;
-                                                   StartPlaying.make
-                                                     ~current:songId
-                                                     ~queued:newSongIds ())
+                                                let state =
+                                                  store |. Zustand.getState
+                                                in
+                                                let newSongIds =
+                                                  state.player.queuedSongIds
+                                                  |> Js.Array.filter
+                                                       ~f:(fun id ->
+                                                         id != songId)
+                                                in
+                                                let index =
+                                                  match
+                                                    state.player.currentSongId
+                                                  with
+                                                  | None -> 0
+                                                  | Some current ->
+                                                      newSongIds
+                                                      |> Js.Array.indexOf
+                                                           ~value:current
+                                                in
+                                                newSongIds
+                                                |> Js.Array.spliceInPlace
+                                                     ~start:index ~remove:0
+                                                     ~add:[| songId |]
+                                                |> ignore;
+                                                StartPlaying.make
+                                                  ~current:songId
+                                                  ~queued:newSongIds ())
                                             |> runAsyncStoreFx
                                             |> Js.Promise.then_ (fun result ->
-                                                   result |> Result.get_ok
-                                                   |> Js.Promise.resolve)
+                                                result |> Result.get_ok
+                                                |> Js.Promise.resolve)
                                             |> ignore)
                                           ~children:
                                             [
@@ -559,80 +554,79 @@ let[@react.component] make =
                                             let songId = songId |> Option.get in
                                             ask ()
                                             |. bind (fun Deps.{ store } ->
-                                                   let state =
-                                                     store |. Zustand.getState
-                                                   in
-                                                   let current =
-                                                     state.player.currentSongId
-                                                   and queued =
-                                                     state.player.queuedSongIds
-                                                   in
-                                                   let songIdIsSameAsCurrent =
-                                                     match current with
-                                                     | None -> false
-                                                     | Some current ->
-                                                         songId == current
-                                                   in
-                                                   if songIdIsSameAsCurrent then (
-                                                     let currentIndex =
-                                                       match current with
-                                                       | None -> 0
-                                                       | Some current ->
-                                                           queued
-                                                           |> Js.Array.indexOf
-                                                                ~value:current
-                                                     in
-                                                     let newSongIds =
-                                                       queued
-                                                       |> Js.Array.filter
-                                                            ~f:(fun id ->
-                                                              id != songId)
-                                                     in
-                                                     newSongIds
-                                                     |> Js.Array.spliceInPlace
-                                                          ~start:
-                                                            (currentIndex + 1)
-                                                          ~remove:0
-                                                          ~add:[| songId |]
-                                                     |> ignore;
-                                                     StartPlaying.make
-                                                       ~current:
-                                                         (newSongIds
-                                                         |. Js.Array.unsafe_get
-                                                              currentIndex)
-                                                       ~queued:newSongIds ())
-                                                   else
-                                                     let newSongIds =
-                                                       queued
-                                                       |> Js.Array.filter
-                                                            ~f:(fun id ->
-                                                              id != songId)
-                                                     in
-                                                     newSongIds
-                                                     |> Js.Array.spliceInPlace
-                                                          ~start:
-                                                            ((match current with
-                                                             | None -> 0
-                                                             | Some current ->
-                                                                 newSongIds
-                                                                 |> Js.Array
-                                                                    .indexOf
-                                                                      ~value:
-                                                                        current)
-                                                            + 1)
-                                                          ~remove:0
-                                                          ~add:[| songId |]
-                                                     |> ignore;
-                                                     StartPlaying.make
-                                                       ~current:
-                                                         (current
-                                                         |> Option.value
-                                                              ~default:songId)
-                                                       ~queued:newSongIds ())
+                                                let state =
+                                                  store |. Zustand.getState
+                                                in
+                                                let current =
+                                                  state.player.currentSongId
+                                                and queued =
+                                                  state.player.queuedSongIds
+                                                in
+                                                let songIdIsSameAsCurrent =
+                                                  match current with
+                                                  | None -> false
+                                                  | Some current ->
+                                                      songId == current
+                                                in
+                                                if songIdIsSameAsCurrent then (
+                                                  let currentIndex =
+                                                    match current with
+                                                    | None -> 0
+                                                    | Some current ->
+                                                        queued
+                                                        |> Js.Array.indexOf
+                                                             ~value:current
+                                                  in
+                                                  let newSongIds =
+                                                    queued
+                                                    |> Js.Array.filter
+                                                         ~f:(fun id ->
+                                                           id != songId)
+                                                  in
+                                                  newSongIds
+                                                  |> Js.Array.spliceInPlace
+                                                       ~start:(currentIndex + 1)
+                                                       ~remove:0
+                                                       ~add:[| songId |]
+                                                  |> ignore;
+                                                  StartPlaying.make
+                                                    ~current:
+                                                      (newSongIds
+                                                      |. Js.Array.unsafe_get
+                                                           currentIndex)
+                                                    ~queued:newSongIds ())
+                                                else
+                                                  let newSongIds =
+                                                    queued
+                                                    |> Js.Array.filter
+                                                         ~f:(fun id ->
+                                                           id != songId)
+                                                  in
+                                                  newSongIds
+                                                  |> Js.Array.spliceInPlace
+                                                       ~start:
+                                                         ((match current with
+                                                            | None -> 0
+                                                            | Some current ->
+                                                                newSongIds
+                                                                |> Js.Array
+                                                                   .indexOf
+                                                                     ~value:
+                                                                       current)
+                                                         + 1)
+                                                       ~remove:0
+                                                       ~add:[| songId |]
+                                                  |> ignore;
+                                                  StartPlaying.make
+                                                    ~current:
+                                                      (current
+                                                      |> Option.value
+                                                           ~default:songId)
+                                                    ~queued:newSongIds ())
                                             |> runAsyncStoreFx
                                             |> Js.Promise.then_ (fun result ->
-                                                   result |> Result.get_ok
-                                                   |> Js.Promise.resolve)
+                                                result |> Result.get_ok
+                                                |> Js.Promise.resolve)
                                             |> ignore)
                                           ~children:
                                             [
@@ -647,67 +641,63 @@ let[@react.component] make =
                                             let songId = songId |> Option.get in
                                             ask ()
                                             |. bind (fun Deps.{ store } ->
-                                                   let state =
-                                                     store |. Zustand.getState
-                                                   in
-                                                   let songIdIsSameAsCurrent =
-                                                     match
+                                                let state =
+                                                  store |. Zustand.getState
+                                                in
+                                                let songIdIsSameAsCurrent =
+                                                  match
+                                                    state.player.currentSongId
+                                                  with
+                                                  | None -> false
+                                                  | Some current ->
+                                                      songId == current
+                                                in
+                                                let queued =
+                                                  state.player.queuedSongIds
+                                                  |> Js.Array.filter
+                                                       ~f:(fun id ->
+                                                         id != songId)
+                                                  |> Js.Array.concat
+                                                       ~other:[| songId |]
+                                                in
+                                                StartPlaying.make
+                                                  ~current:
+                                                    (if songIdIsSameAsCurrent
+                                                     then
+                                                       let index =
+                                                         let len =
+                                                           state.player
+                                                             .queuedSongIds
+                                                           |> Js.Array.length
+                                                         in
+                                                         ((state.player
+                                                             .queuedSongIds
+                                                          |> Js.Array.indexOf
+                                                               ~value:
+                                                                 (state.player
+                                                                    .currentSongId
+                                                                |> Option.get))
+                                                         + 1)
+                                                         mod len
+                                                       in
+                                                       state.player
+                                                         .queuedSongIds
+                                                       |. Js.Array.unsafe_get
+                                                            index
+                                                     else
                                                        state.player
                                                          .currentSongId
-                                                     with
-                                                     | None -> false
-                                                     | Some current ->
-                                                         songId == current
-                                                   in
-                                                   let queued =
-                                                     state.player.queuedSongIds
-                                                     |> Js.Array.filter
-                                                          ~f:(fun id ->
-                                                            id != songId)
-                                                     |> Js.Array.concat
-                                                          ~other:[| songId |]
-                                                   in
-                                                   StartPlaying.make
-                                                     ~current:
-                                                       (if songIdIsSameAsCurrent
-                                                        then
-                                                          let index =
-                                                            let len =
-                                                              state.player
-                                                                .queuedSongIds
-                                                              |> Js.Array.length
-                                                            in
-                                                            ((state.player
-                                                                .queuedSongIds
-                                                             |> Js.Array.indexOf
-                                                                  ~value:
-                                                                    (state
-                                                                       .player
-                                                                       .currentSongId
-                                                                   |> Option.get
-                                                                    ))
-                                                            + 1)
-                                                            mod len
-                                                          in
-                                                          state.player
-                                                            .queuedSongIds
-                                                          |. Js.Array.unsafe_get
-                                                               index
-                                                        else
-                                                          state.player
-                                                            .currentSongId
-                                                          |> Option.value
-                                                               ~default:
-                                                                 (state.player
-                                                                    .queuedSongIds
-                                                                |. Js.Array
-                                                                   .unsafe_get 0
-                                                                 ))
-                                                     ~queued ())
+                                                       |> Option.value
+                                                            ~default:
+                                                              (state.player
+                                                                 .queuedSongIds
+                                                             |. Js.Array
+                                                                .unsafe_get 0))
+                                                  ~queued ())
                                             |> runAsyncStoreFx
                                             |> Js.Promise.then_ (fun result ->
-                                                   result |> Result.get_ok
-                                                   |> Js.Promise.resolve)
+                                                result |> Result.get_ok
+                                                |> Js.Promise.resolve)
                                             |> ignore)
                                           ~children:
                                             [
@@ -779,7 +769,7 @@ let[@react.component] make =
                              queued =
                                state.queued
                                |> Js.Array.filter ~f:(fun id ->
-                                      Some id != songId);
+                                   Some id != songId);
                            })
                        |> runAsyncStoreFx
                      in

@@ -22,11 +22,11 @@ let make playQueueState =
   then
     store
     |. Zustand.setState (fun prevState ->
-           {
-             prevState with
-             player =
-               { prevState.player with queuedSongIds = playQueueState.queued };
-           });
+        {
+          prevState with
+          player =
+            { prevState.player with queuedSongIds = playQueueState.queued };
+        });
   Subsonic.SavePlayQueue.make playQueueState.queued
     ?current:
       (state.player.currentSongId |> Belt.Option.orElse playQueueState.current)
