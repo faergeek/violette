@@ -34,63 +34,61 @@ module List = struct
         let open Webapi.Dom in
         event |. target |> Element.asHtmlElement
         |. Option.bind (fun target ->
-               let role = target |. DomExtra.role in
-               if role == "tab" then Some target
-               else
-                 target
-                 |> HtmlElement.closest "[role=tab]"
-                 |. Option.bind Element.asHtmlElement)
+            let role = target |. DomExtra.role in
+            if role == "tab" then Some target
+            else
+              target
+              |> HtmlElement.closest "[role=tab]"
+              |. Option.bind Element.asHtmlElement)
         |> Option.iter (fun selectedTab ->
-               let tablist = event |. currentTarget in
-               match event |. code with
-               | "Home" ->
-                   event |. preventDefault;
-                   tablist
-                   |> Element.querySelector "[role=tab]:first-child"
-                   |. Option.bind Element.asHtmlElement
-                   |> Option.iter HtmlElement.focus
-               | "ArrowLeft" ->
-                   event |. preventDefault;
-                   let tabs =
-                     tablist
-                     |> Element.querySelectorAll "[role=tab]"
-                     |> NodeList.toArray
-                   in
-                   let currentIndex =
-                     tabs
-                     |. Js.Array.indexOf
-                          ~value:(selectedTab |> HtmlElement.asNode)
-                   and len = tabs |. Js.Array.length in
-                   tabs
-                   |. Belt.Array.get ((currentIndex + len - 1) mod len)
-                   |. Option.bind HtmlElement.ofNode
-                   |> Option.get |. HtmlElement.focus
-               | "ArrowRight" ->
-                   event |. preventDefault;
-                   let tabs =
-                     tablist
-                     |> Element.querySelectorAll "[role=tab]"
-                     |> NodeList.toArray
-                   in
-                   let currentIndex =
-                     tabs
-                     |. Js.Array.indexOf
-                          ~value:(selectedTab |> HtmlElement.asNode)
-                   and len = tabs |. Js.Array.length in
-                   tabs
-                   |. Belt.Array.get ((currentIndex + 1) mod len)
-                   |. Option.bind HtmlElement.ofNode
-                   |> Option.get |. HtmlElement.focus
-               | "End" ->
-                   event |. preventDefault;
-                   tablist
-                   |> Element.querySelector "[role=tab]:last-child"
-                   |. Option.bind Element.asHtmlElement
-                   |> Option.get |> HtmlElement.focus
-               | "Space" ->
-                   event |. preventDefault;
-                   selectedTab |. HtmlElement.click
-               | _ -> ()))
+            let tablist = event |. currentTarget in
+            match event |. code with
+            | "Home" ->
+                event |. preventDefault;
+                tablist
+                |> Element.querySelector "[role=tab]:first-child"
+                |. Option.bind Element.asHtmlElement
+                |> Option.iter HtmlElement.focus
+            | "ArrowLeft" ->
+                event |. preventDefault;
+                let tabs =
+                  tablist
+                  |> Element.querySelectorAll "[role=tab]"
+                  |> NodeList.toArray
+                in
+                let currentIndex =
+                  tabs
+                  |. Js.Array.indexOf ~value:(selectedTab |> HtmlElement.asNode)
+                and len = tabs |. Js.Array.length in
+                tabs
+                |. Belt.Array.get ((currentIndex + len - 1) mod len)
+                |. Option.bind HtmlElement.ofNode
+                |> Option.get |. HtmlElement.focus
+            | "ArrowRight" ->
+                event |. preventDefault;
+                let tabs =
+                  tablist
+                  |> Element.querySelectorAll "[role=tab]"
+                  |> NodeList.toArray
+                in
+                let currentIndex =
+                  tabs
+                  |. Js.Array.indexOf ~value:(selectedTab |> HtmlElement.asNode)
+                and len = tabs |. Js.Array.length in
+                tabs
+                |. Belt.Array.get ((currentIndex + 1) mod len)
+                |. Option.bind HtmlElement.ofNode
+                |> Option.get |. HtmlElement.focus
+            | "End" ->
+                event |. preventDefault;
+                tablist
+                |> Element.querySelector "[role=tab]:last-child"
+                |. Option.bind Element.asHtmlElement
+                |> Option.get |> HtmlElement.focus
+            | "Space" ->
+                event |. preventDefault;
+                selectedTab |. HtmlElement.click
+            | _ -> ()))
       ~children () [@JSX]
 end
 

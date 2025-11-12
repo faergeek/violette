@@ -33,16 +33,14 @@ let[@react.component] make () =
        let open Webapi.Dom in
        duration
        |> Option.iter (fun duration ->
-              let bcr =
-                event |. currentTarget |. Element.getBoundingClientRect
-              in
-              let x =
-                (event |. clientX |> Float.of_int) -. (bcr |. DomRect.left)
-              in
-              Webapi.requestAnimationFrame (fun _ ->
-                  let width = bcr |. DomRect.width in
-                  let time = clientXToTime { duration; width; x } in
-                  setHoverInfo (Fun.const (Some { time; x })))))
+           let bcr = event |. currentTarget |. Element.getBoundingClientRect in
+           let x =
+             (event |. clientX |> Float.of_int) -. (bcr |. DomRect.left)
+           in
+           Webapi.requestAnimationFrame (fun _ ->
+               let width = bcr |. DomRect.width in
+               let time = clientXToTime { duration; width; x } in
+               setHoverInfo (Fun.const (Some { time; x })))))
      ~onMouseOut:(fun _ ->
        Webapi.requestAnimationFrame (fun _ -> setHoverInfo (Fun.const None)))
      ~onMouseUp:(fun event ->
@@ -51,23 +49,20 @@ let[@react.component] make () =
        let open Webapi.Dom in
        duration
        |. Option.bind (fun duration ->
-              if event |. button == 0 then Some duration else None)
+           if event |. button == 0 then Some duration else None)
        |> Option.iter (fun duration ->
-              Webapi.requestAnimationFrame (fun _ ->
-                  setHoverInfo (fun _ -> None));
-              let bcr =
-                event |. currentTarget |. Element.getBoundingClientRect
-              in
-              let width = bcr |. DomRect.width
-              and x =
-                (event |. clientX |. Float.of_int) -. (bcr |. DomRect.left)
-              in
-              StoreFx.SetCurrentTime.make (fun _ ->
-                  clientXToTime { duration; width; x })
-              |> runAsyncStoreFx
-              |> Js.Promise.then_ (fun result ->
-                     result |. Result.get_ok |> Js.Promise.resolve)
-              |> ignore))
+           Webapi.requestAnimationFrame (fun _ -> setHoverInfo (fun _ -> None));
+           let bcr = event |. currentTarget |. Element.getBoundingClientRect in
+           let width = bcr |. DomRect.width
+           and x =
+             (event |. clientX |. Float.of_int) -. (bcr |. DomRect.left)
+           in
+           StoreFx.SetCurrentTime.make (fun _ ->
+               clientXToTime { duration; width; x })
+           |> runAsyncStoreFx
+           |> Js.Promise.then_ (fun result ->
+               result |. Result.get_ok |> Js.Promise.resolve)
+           |> ignore))
      ~children:
        (div
           ~className:

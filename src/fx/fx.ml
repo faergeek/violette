@@ -27,7 +27,7 @@ let rec bind fx cb =
         (fun deps ->
           f deps
           |> Js.Promise.then_ (fun result ->
-                 bind result cb |> Js.Promise.resolve))
+              bind result cb |> Js.Promise.resolve))
 
 let rec catch fx cb =
   match fx with
@@ -39,7 +39,7 @@ let rec catch fx cb =
         (fun deps ->
           f deps
           |> Js.Promise.then_ (fun result ->
-                 catch result cb |> Js.Promise.resolve))
+              catch result cb |> Js.Promise.resolve))
 
 let map fx f = bind fx (fun value -> Ok (f value))
 

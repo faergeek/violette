@@ -21,11 +21,11 @@ struct
                      timeout := None;
                      run arg
                      |> Js.Promise.then_ (fun value ->
-                            resolve value [@u];
-                            Js.Promise.resolve ())
+                         resolve value [@u];
+                         Js.Promise.resolve ())
                      |> Js.Promise.catch (fun error ->
-                            reject (Js.Exn.anyToExnInternal error) [@u];
-                            Js.Promise.resolve ())
+                         reject (Js.Exn.anyToExnInternal error) [@u];
+                         Js.Promise.resolve ())
                      |> ignore)))
 
   let now arg =

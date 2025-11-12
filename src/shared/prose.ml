@@ -19,24 +19,23 @@ let[@react.component] make ?html =
            |> HtmlDocument.body |> Option.get |> HtmlElement.ofElement
            |> Option.get |> HtmlElement.childNodes |> NodeList.toArray
            |> Js.Array.mapi ~f:(fun node index ->
-                  match Node.nodeType node with
-                  | Text -> node |> Node.textContent |> React.string
-                  | Element -> (
-                      match Node.nodeName node with
-                      | "A" ->
-                          a ~key:(Int.to_string index)
-                            ~className:
-                              "text-muted-foreground underline \
-                               underline-offset-2"
-                            ?href:
-                              (node |> HtmlElement.ofNode
-                              |. Option.bind (HtmlElement.getAttribute "href"))
-                            ~rel:"noopener" ~target:"_blank"
-                            ~children:(node |. Node.textContent |> React.string)
-                            () [@JSX]
-                      | _ ->
-                          node |> HtmlElement.ofNode |> Option.get
-                          |. HtmlElement.outerHTML |> React.string)
-                  | _ -> node |> Js.String.make |> React.string)
+               match Node.nodeType node with
+               | Text -> node |> Node.textContent |> React.string
+               | Element -> (
+                   match Node.nodeName node with
+                   | "A" ->
+                       a ~key:(Int.to_string index)
+                         ~className:
+                           "text-muted-foreground underline underline-offset-2"
+                         ?href:
+                           (node |> HtmlElement.ofNode
+                           |. Option.bind (HtmlElement.getAttribute "href"))
+                         ~rel:"noopener" ~target:"_blank"
+                         ~children:(node |. Node.textContent |> React.string)
+                         () [@JSX]
+                   | _ ->
+                       node |> HtmlElement.ofNode |> Option.get
+                       |. HtmlElement.outerHTML |> React.string)
+               | _ -> node |> Js.String.make |> React.string)
            |> React.array)
         () [@JSX]

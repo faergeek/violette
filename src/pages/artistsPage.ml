@@ -8,9 +8,9 @@ let[@react.component] make ~listIds =
            ~children:
              (listIds
              |> Js.Array.mapi ~f:(fun id i ->
-                    (ArtistCard.make ~key:(Js.String.make i)
-                       ~coverArtSizes:CardGrid.card_grid_cover_art_sizes ?id
-                       ~loadCoverArtLazily:true () [@JSX]))
+                 (ArtistCard.make ~key:(Js.String.make i)
+                    ~coverArtSizes:CardGrid.card_grid_cover_art_sizes ?id
+                    ~loadCoverArtLazily:true () [@JSX]))
              |> React.array)
            () [@JSX]);
       ]

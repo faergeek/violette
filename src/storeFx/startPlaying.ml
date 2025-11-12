@@ -5,10 +5,10 @@ let make ~current ?queued () =
   let* Deps.{ store } = ask () in
   store
   |. Zustand.setState (fun prevState ->
-         {
-           prevState with
-           player = { prevState.player with currentSongId = Some current };
-         });
+      {
+        prevState with
+        player = { prevState.player with currentSongId = Some current };
+      });
   let* () = Play.make () in
   UpdatePlayQueue.make (fun prevState ->
       {

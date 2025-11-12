@@ -20,13 +20,13 @@ let make newReplayGainOptions =
   in
   store
   |. Zustand.setState (fun prevState ->
-         {
-           prevState with
-           player =
-             { prevState.player with replayGainOptions = newReplayGainOptions };
-         });
+      {
+        prevState with
+        player =
+          { prevState.player with replayGainOptions = newReplayGainOptions };
+      });
   Ok
     (newReplayGainOptions |> Js.Json.stringifyAny
     |> Option.iter (fun value ->
-           localStorage
-           |> setItem Store.Player.replay_gain_local_storage_key value))
+        localStorage |> setItem Store.Player.replay_gain_local_storage_key value)
+    )

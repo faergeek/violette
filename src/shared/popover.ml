@@ -125,17 +125,17 @@ module Content = struct
       (fun () ->
         floating
         |> Option.iter (fun x ->
-               x
-               |. DomExtra.(
-                    addEventListener
-                      Toggle.(
-                        `toggle
-                          (fun event ->
-                            let isOpen = event |. newState == "open" in
-                            setIsOpen (Fun.const isOpen);
-                            childrenProps##onToggle
-                            |> Option.iter (fun onToggle -> onToggle event)))
-                      (listenerOptions ())));
+            x
+            |. DomExtra.(
+                 addEventListener
+                   Toggle.(
+                     `toggle
+                       (fun event ->
+                         let isOpen = event |. newState == "open" in
+                         setIsOpen (Fun.const isOpen);
+                         childrenProps##onToggle
+                         |> Option.iter (fun onToggle -> onToggle event)))
+                   (listenerOptions ())));
         None)
       [| floating |];
     React.cloneElement children
@@ -146,7 +146,7 @@ module Content = struct
               setFloating (fun _ -> node);
               childrenProps##ref
               |> Option.iter (fun (ref : Dom.element option React.ref) ->
-                     ref.current <- node));
+                  ref.current <- node));
           style =
             Js.Obj.assign
               (Js.Obj.assign [%mel.obj { visibility = None }]

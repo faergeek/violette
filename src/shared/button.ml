@@ -60,11 +60,11 @@ let[@react.component] make =
                loading
                |. Option.bind (fun loading -> if loading then Some () else None)
                |> Option.map (fun () ->
-                      (LucideReact.Loader2.make
-                         ~className:
-                           "absolute animate-spin self-center \
-                            text-primary-foreground"
-                         () [@JSX]))
+                   (LucideReact.Loader2.make
+                      ~className:
+                        "absolute animate-spin self-center \
+                         text-primary-foreground"
+                      () [@JSX]))
                |> Option.value ~default:React.null;
                (span
                   ~className:

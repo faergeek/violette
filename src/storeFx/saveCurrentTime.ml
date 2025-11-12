@@ -27,5 +27,5 @@ include Throttle.Make (struct
     fx
     |. runAsync ~deps:{ store }
     |> Js.Promise.then_ (fun result ->
-           result |> Result.get_ok |> Js.Promise.resolve)
+        result |> Result.get_ok |> Js.Promise.resolve)
 end)

@@ -57,14 +57,9 @@ let make artistId =
   then
     store
     |. Zustand.setState (fun prevState ->
-           {
-             prevState with
-             artists =
-               {
-                 prevState.artists with
-                 artistInfoById;
-                 byId;
-                 similarArtistsById;
-               };
-           });
+        {
+          prevState with
+          artists =
+            { prevState.artists with artistInfoById; byId; similarArtistsById };
+        });
   Ok ()

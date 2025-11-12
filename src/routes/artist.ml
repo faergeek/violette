@@ -23,9 +23,9 @@ let loader { context = { store }; params = { artistId }; _ } =
     FetchOneArtist.make artistId
     |> runAsync ~deps:StoreFx.Deps.{ store }
     |> then_ (fun result ->
-           let () = result |> Result.get_ok in
-           let state = Zustand.getState store in
-           Js.Map.get state.artists.byId ~key:artistId |> Option.get |> resolve)
+        let () = result |> Result.get_ok in
+        let state = Zustand.getState store in
+        Js.Map.get state.artists.byId ~key:artistId |> Option.get |> resolve)
   and artistInfoPromise =
     FetchArtistInfo.make artistId
     |> runAsync ~deps:StoreFx.Deps.{ store }
@@ -34,15 +34,15 @@ let loader { context = { store }; params = { artistId }; _ } =
   let deferredArtistInfo =
     artistInfoPromise
     |> then_ (fun () ->
-           let state = Zustand.getState store in
-           state.artists.artistInfoById |. Js.Map.get ~key:artistId
-           |> Option.get |> resolve)
+        let state = Zustand.getState store in
+        state.artists.artistInfoById |. Js.Map.get ~key:artistId |> Option.get
+        |> resolve)
   and deferredSimilarArtists =
     artistInfoPromise
     |> then_ (fun () ->
-           let state = Zustand.getState store in
-           state.artists.similarArtistsById |. Js.Map.get ~key:artistId
-           |> Option.get |> resolve)
+        let state = Zustand.getState store in
+        state.artists.similarArtistsById |. Js.Map.get ~key:artistId
+        |> Option.get |> resolve)
   in
   let* initialArtist =
     let state = Zustand.getState store in
@@ -63,11 +63,11 @@ let loader { context = { store }; params = { artistId }; _ } =
     FetchTopSongs.make initialArtist.name
     |. runAsync ~deps:{ store }
     |> then_ (fun result ->
-           let () = result |> Result.get_ok in
-           let state = Zustand.getState store in
-           state.artists.topSongIdsByArtistName
-           |. Js.Map.get ~key:initialArtist.name
-           |> Option.get |> resolve)
+        let () = result |> Result.get_ok in
+        let state = Zustand.getState store in
+        state.artists.topSongIdsByArtistName
+        |. Js.Map.get ~key:initialArtist.name
+        |> Option.get |> resolve)
   in
   resolve
     {

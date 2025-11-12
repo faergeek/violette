@@ -9,7 +9,7 @@ let make StarParams.{ albumId; artistId; id } =
     |> Option.iter (fun albumId -> Js.Dict.set params "albumId" (Value albumId));
     artistId
     |> Option.iter (fun artistId ->
-           Js.Dict.set params "artistId" (Value artistId));
+        Js.Dict.set params "artistId" (Value artistId));
     id |> Option.iter (fun id -> Js.Dict.set params "id" (Value id));
     makeRequest { _method = "rest/star"; params } Empty.of_json
   in

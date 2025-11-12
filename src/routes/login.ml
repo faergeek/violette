@@ -22,10 +22,10 @@ let route =
           let open Redirect in
           Subsonic.Ping.make ()
           |. map (fun () ->
-                 options ~replace:true ~_to:next () |> make |> Option.some)
+              options ~replace:true ~_to:next () |> make |> Option.some)
           |. catch (fun _ -> Ok None)
           |. runAsync ~deps:{ credentials = Some credentials }
           |> Js.Promise.then_ (fun result ->
-                 result |> Result.get_ok |> Js.Promise.resolve))
+              result |> Result.get_ok |> Js.Promise.resolve))
     ()
   |> make

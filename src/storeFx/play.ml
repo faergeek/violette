@@ -22,9 +22,9 @@ let make () =
         volumeNode |. AudioNode.gain |. AudioParam.setValue state.player.volume;
         !PlayerContext.replayGainValue
         |> Option.iter (fun replayGainValue ->
-               replayGainNode |. AudioNode.gain
-               |. AudioParam.setValueAtTime replayGainValue
-                    (audioContext |. AudioContext.currentTime));
+            replayGainNode |. AudioNode.gain
+            |. AudioParam.setValueAtTime replayGainValue
+                 (audioContext |. AudioContext.currentTime));
         PlayerContext.value := Some { audioContext; replayGainNode; volumeNode };
         Ok ()
   in

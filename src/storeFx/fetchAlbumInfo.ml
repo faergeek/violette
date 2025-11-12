@@ -20,5 +20,5 @@ let make albumId =
   then
     store
     |. Zustand.setState (fun prevState ->
-           { prevState with albums = { prevState.albums with infoById } });
+        { prevState with albums = { prevState.albums with infoById } });
   Ok ()

@@ -2,8 +2,8 @@ let createSrcSet ~credentials ~coverArt =
   let open Js in
   [| 50; 100; 200; 300; 400; 500; 750; 1000; 1250; 1500; 2000 |]
   |> Array.map ~f:(fun size ->
-         Subsonic.CoverArt.makeUrl ~credentials ~coverArt ~size ()
-         ^ " " ^ String.make size ^ "w")
+      Subsonic.CoverArt.makeUrl ~credentials ~coverArt ~size ()
+      ^ " " ^ String.make size ^ "w")
   |> Array.join ~sep:","
 
 let preload ~credentials ~coverArt ~sizes =
@@ -36,7 +36,7 @@ let[@react.component] make ?alt ?className ?coverArt ?_lazy ?sizes =
   React.useEffect0 (fun () ->
       let open Js.Nullable in
       let _ =
-        let ( let* ) x f = bind x ~f:(fun [@u] v -> f v) in
+        let ( let* ) x f = bind x ~f:(fun[@u] v -> f v) in
         let* img = imgRef.current in
         setLastLoadedSrc (fun _ ->
             (let* src = img |> Image.currentSrc in

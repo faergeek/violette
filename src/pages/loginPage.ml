@@ -41,10 +41,10 @@ let[@react.component] make () =
     |. map (fun () -> saveSubsonicCredentials credentials)
     |. runAsync ~deps:{ credentials = Some credentials }
     |> Js.Promise.then_ (fun result ->
-           let res = result in
-           setLoginResult (Fun.const res);
-           setIsLoginSubmitting (Fun.const false);
-           () |> Js.Promise.resolve)
+        let res = result in
+        setLoginResult (Fun.const res);
+        setIsLoginSubmitting (Fun.const false);
+        () |> Js.Promise.resolve)
     |> ignore
   in
   let credentials =
@@ -127,8 +127,8 @@ let[@react.component] make () =
                                         ~defaultValue:
                                           (credentials
                                           |> Option.map (fun x ->
-                                                 let open Subsonic.Credentials in
-                                                 x.serverBaseUrl)
+                                              let open Subsonic.Credentials in
+                                              x.serverBaseUrl)
                                           |> Option.value ~default:"")
                                         ~disabled:isLoginSubmitting
                                         ~id:"login-server-base-url"
@@ -147,8 +147,8 @@ let[@react.component] make () =
                                         ~defaultValue:
                                           (credentials
                                           |> Option.map (fun x ->
-                                                 let open Subsonic.Credentials in
-                                                 x.username)
+                                              let open Subsonic.Credentials in
+                                              x.username)
                                           |> Option.value ~default:"")
                                         ~disabled:isLoginSubmitting
                                         ~id:"login-username" ~name:"username"

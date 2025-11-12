@@ -14,7 +14,7 @@ depends: [
   "melange-json" {>= "1" & < "2"}
   "opam-dune-lint" {with-dev-setup & >= "0.6" & < "0.7"}
   "opam-check-npm-deps" {with-dev-setup & >= "4" & < "5"}
-  "ocamlformat" {with-dev-setup & >= "0.27" & < "0.28"}
+  "ocamlformat" {with-dev-setup & = "0.28.1"}
   "ocaml-lsp-server" {with-dev-setup & >= "1.21"}
   "reason-react" {>= "0.15" & < "0.17"}
   "reason-react-ppx" {>= "0.15" & < "0.17"}

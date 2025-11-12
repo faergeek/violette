@@ -9,7 +9,7 @@ let[@react.component] make () =
     Store.Context.useAppStore (fun state ->
         currentSongId
         |. Option.bind (fun currentSongId ->
-               state.songs.byId |. Js.Map.get ~key:currentSongId))
+            state.songs.byId |. Js.Map.get ~key:currentSongId))
   in
   (div ~className:"container mx-auto flex items-center sm:px-4"
      ~children:
