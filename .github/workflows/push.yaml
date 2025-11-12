@@ -28,9 +28,9 @@ jobs:
             ~/.opam
             _opam
       - run: opam update
-      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --yes --deps-only --with-dev-setup .
+      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --deps-only --with-dev-setup . --yes
         if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
-      - run: opam install --deps-only --with-dev-setup .
+      - run: opam install --deps-only --with-dev-setup . --yes
         if: ${{ steps.cache-opam.outputs.cache-hit != '' }}
       - run: opam exec -- opam-dune-lint
       - run: pnpm install --frozen-lockfile
@@ -65,9 +65,9 @@ jobs:
             ~/.opam
             _opam
       - run: opam update
-      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --yes --deps-only --with-dev-setup .
+      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --deps-only --with-dev-setup . --yes
         if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
-      - run: opam install --deps-only --with-dev-setup .
+      - run: opam install --deps-only --with-dev-setup . --yes
         if: ${{ steps.cache-opam.outputs.cache-hit != '' }}
       - run: pnpm install --frozen-lockfile
       - run: opam exec -- dune build
@@ -100,9 +100,9 @@ jobs:
             ~/.opam
             _opam
       - run: opam update
-      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --yes --deps-only --with-dev-setup .
+      - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --deps-only --with-dev-setup . --yes
         if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
-      - run: opam install --deps-only --with-dev-setup .
+      - run: opam install --deps-only --with-dev-setup . --yes
         if: ${{ steps.cache-opam.outputs.cache-hit != '' }}
       - run: pnpm install --frozen-lockfile
       - run: opam exec -- dune build
