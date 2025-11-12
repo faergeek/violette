@@ -45,7 +45,7 @@ module Trigger = struct
                 ariaControls = menuId [@mel.as "aria-controls"];
                 ariaHaspopup = ("menu" [@mel.as "aria-haspopup"]);
                 id = triggerId;
-                popoverTarget = menuId;
+                popovertarget = menuId;
                 onPointerDown =
                   (fun _ ->
                     if isOpenRef.current then
@@ -248,5 +248,5 @@ module Item = struct
             focus-visible:text-accent-foreground [&_svg]:size-4 \
             [&_svg]:shrink-0"
          ~role:"menuitem" ~type_ ?onClick () [@JSX])
-      [%mel.obj { popoverTarget = menuId; popoverTargetAction = "hide" }]
+      [%mel.obj { popovertarget = menuId; popovertargetaction = "hide" }]
 end

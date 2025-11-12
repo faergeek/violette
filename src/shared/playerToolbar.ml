@@ -110,7 +110,7 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                              ~className:
                                "w-full p-3 \
                                 group-has-[#volume-settings:popover-open]/volume-settings:[&:not(:hover)]:text-primary"
-                             ~popoverTarget:"volume-settings" ~variant:"icon"
+                             ~popovertarget:"volume-settings" ~variant:"icon"
                              ~children:
                                (LucideReact.SlidersVertical.make ~role:"none" ()
                                 [@JSX])

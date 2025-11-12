@@ -40,7 +40,7 @@ let[@react.component] make =
       ?className
       ?disabled
       ?loading
-      ?(popoverTarget : string option)
+      ?(popovertarget : string option)
       ?variant
       ?type_
       ?onClick
@@ -76,4 +76,4 @@ let[@react.component] make =
                   ?children () [@JSX]);
              ]
            () [@JSX])
-        [%mel.obj { popoverTarget }])
+        [%mel.obj { popovertarget }])
