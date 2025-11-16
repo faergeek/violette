@@ -43,13 +43,16 @@
   overflow-wrap: break-word;
 }
 
+html {
+  scroll-padding-top: calc(var(--now-playing-height) + 30px);
+  scroll-padding-bottom: var(--player-toolbar-height);
+}
+
 body {
   min-width: 320px;
   background: hsl(var(--background));
   color: hsl(var(--foreground));
   accent-color: hsl(var(--primary));
-  scroll-padding-top: calc(var(--now-playing-height) + 30px);
-  scroll-padding-bottom: var(--player-toolbar-height);
 }
 
 body[data-scroll-lock] {
