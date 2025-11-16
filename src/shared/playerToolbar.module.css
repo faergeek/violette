@@ -1,0 +1,65 @@
+.root {
+  display: flex;
+  background: hsl(var(--background));
+}
+
+.item {
+  flex-grow: 1;
+}
+
+.btn {
+  padding: 0.75rem;
+}
+
+.volumeSettings {
+  margin: 0;
+  border: 1px solid hsl(var(--border));
+  padding: 0.75rem;
+  width: 24rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 2px 2px rgb(0 0 0 / 0.1);
+  background: hsl(var(--background));
+  font-variant-caps: all-small-caps;
+}
+
+.volumeSettingsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.volumeSettingsItem {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.volumeSettingsPreAmpLabel {
+  white-space: nowrap;
+}
+
+.volumeSettingsPreAmpUnits {
+  white-space: nowrap;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-variant-numeric: slashed-zero tabular-nums;
+}
+
+.volumeSettingsTrigger {
+  width: 100%;
+
+  .volumeSettings:popover-open + &:not(:hover) {
+    color: hsl(var(--primary));
+  }
+}
+
+.queueButtonIsOpen {
+  color: hsl(var(--primary));
+}
+
+.repeatEnabled {
+  &,
+  &:hover {
+    color: hsl(var(--primary));
+  }
+}

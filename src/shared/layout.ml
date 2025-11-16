@@ -1,17 +1,21 @@
+external%private [@mel.module "./layout.module.css"] css :
+  < root : string ; header : string ; playerControls : string ; queue : string >
+  Js.t = "default"
+
 let[@react.component] make () =
   let queueTriggerRef = React.useRef None and queueId = React.useId () in
-  (div ~className:"relative flex min-h-lvh flex-col"
+  (div ~className:css##root
      ~children:
        [
          (QueueContext.Provider.make
             ~children:
               [
-                (header ~className:"sticky top-0 z-30 bg-background"
+                (header ~className:css##header
                    ~children:[ (NowPlaying.make () [@JSX]) ]
                    () [@JSX]);
                 (main ~children:[ (Router.Outlet.make () [@JSX]) ] () [@JSX]);
                 (Footer.make () [@JSX]);
-                (div ~className:"container sticky bottom-0 z-50 mx-auto sm:px-4"
+                (Container.make ~className:css##playerControls
                    ~children:
                      [
                        (PlaybackPosition.make () [@JSX]);
@@ -21,11 +25,7 @@ let[@react.component] make () =
                 (QueueContext.Consumer.make
                    ~children:(fun
                        QueueContext.Context.{ isOpen; setIsOpen = _ } ->
-                     (div
-                        ~className:
-                          "fixed inset-0 bottom-[var(--player-toolbar-height)] \
-                           isolate z-40 bg-background"
-                        ~hidden:(not isOpen)
+                     (div ~className:css##queue ~hidden:(not isOpen)
                         ~children:
                           [
                             (Queue.make ~id:queueId ~triggerRef:queueTriggerRef

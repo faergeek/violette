@@ -1,0 +1,47 @@
+@import '../shared/media.css';
+
+.root {
+  margin-inline: auto;
+
+  @media (width >= v-sm) {
+    padding: 1em 1em 0;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tag {
+  font-weight: bold;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  letter-spacing: 0.1em;
+  color: hsl(var(--muted-foreground));
+  font-variant-caps: all-small-caps;
+}
+
+.starButton {
+  margin-inline-start: 0.5rem;
+}
+
+.subtitle {
+  color: hsl(var(--muted-foreground));
+}
+
+.discs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.discTitle {
+  margin-bottom: 0.25rem;
+
+  @media (width < v-sm) {
+    padding-inline: 0.5rem;
+  }
+}

@@ -1,7 +1,10 @@
+external%private [@mel.module "./artistsPage.module.css"] css :
+  < root : string > Js.t = "default"
+
 open Shared
 
 let[@react.component] make ~listIds =
-  div ~className:"container mx-auto sm:px-4"
+  Container.make ~className:css##root
     ~children:
       [
         (CardGrid.make

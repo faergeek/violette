@@ -1,3 +1,27 @@
+external%private [@mel.module "./songRow.module.css"] css :
+  < root : string
+  ; root_albumView : string
+  ; root_isCurrentInPlayer : string
+  ; root_paused : string
+  ; root_selected : string
+  ; coverArtAndTrackNumberCol : string
+  ; trackNumber : string
+  ; coverArt : string
+  ; playButtonWrapper : string
+  ; playButton : string
+  ; playButtonIcon : string
+  ; nowPlayingIndicator : string
+  ; title : string
+  ; subtitle : string
+  ; starButton : string
+  ; durationMenuCol : string
+  ; duration : string
+  ; durationSkeleton : string
+  ; menu : string
+  ; menuButton : string
+  ; removeFromQueueButton : string >
+  Js.t = "default"
+
 open Router
 open StoreFx
 
@@ -17,31 +41,29 @@ let[@react.component] make =
         let open Router.State in
         options ~select:(fun state -> Some state.location.hash == elementId)
         |> use
+      and isCurrentInPlayer =
+        Store.Context.useAppStore (fun state ->
+            state.player.currentSongId == songId)
+      and paused =
+        Store.Context.useAppStore (fun state -> state.player.paused)
       in
       (div ~ariaLabel:"Song"
          ~className:
            (Clsx.make
               [|
+                Item css##root;
+                Item (if isAlbumView then Some css##root_albumView else None);
                 Item
-                  "group/song-row col-span-full grid grid-cols-subgrid \
-                   items-center border-y-2 even:bg-muted/50";
-                Item
-                  [%mel.obj
-                    {
-                      px1 = isAlbumView [@mel.as "px-1"];
-                      py1 = not isAlbumView [@mel.as "py-1"];
-                      borderTransparent =
-                        not isSelected [@mel.as "border-transparent"];
-                      borderPrimary = isSelected [@mel.as "border-primary"];
-                    }];
+                  (if isCurrentInPlayer then Some css##root_isCurrentInPlayer
+                   else None);
+                Item (if paused then Some css##root_paused else None);
+                Item (if isSelected then Some css##root_selected else None);
               |])
          ?id:elementId
          ~children:
            [
              (div
-                ~className:
-                  "relative grid h-full grid-cols-subgrid items-center \
-                   justify-items-end overflow-clip"
+                ~className:css##coverArtAndTrackNumberCol
                 ~children:
                   [
                     (let open Store.State in
@@ -51,87 +73,29 @@ let[@react.component] make =
                           |. Option.bind (fun songId ->
                               state.songs.byId |. Js.Map.get ~key:songId))
                         ~children:(fun song ->
-                          (Store.Context.Consumer.make
-                             ~selector:(fun state ->
-                               state.player.currentSongId == songId)
-                             ~children:(fun isCurrentInPlayer ->
-                               if isAlbumView then
-                                 span ~ariaHidden:true
-                                   ~className:
-                                     (Clsx.make
-                                        [|
-                                          Item
-                                            "min-w-6 px-1 text-right \
-                                             slashed-zero tabular-nums";
-                                          Item
-                                            [%mel.obj
-                                              {
-                                                isNt =
-                                                  not isCurrentInPlayer
-                                                  [@mel.as
-                                                    "text-muted-foreground \
-                                                     focus-visible:text-transparent \
-                                                     group-hover/song-row:text-transparent \
-                                                     group-has-[:focus-visible]/song-row:text-transparent"];
-                                                is =
-                                                  isCurrentInPlayer
-                                                  [@mel.as "text-transparent"];
-                                              }];
-                                        |])
-                                   ~children:
-                                     (let open Subsonic.Song in
-                                      song
-                                      |. Option.bind (fun song -> song.track)
-                                      |> Option.map React.int
-                                      |> Option.value
-                                           ~default:(React.string {js| |js}))
-                                   () [@JSX]
-                               else
-                                 CoverArt.make
-                                   ~className:
-                                     (Clsx.make
-                                        [|
-                                          Item
-                                            "size-12 focus-visible:opacity-25 \
-                                             group-hover/song-row:opacity-25 \
-                                             group-has-[:focus-visible]/song-row:opacity-25";
-                                          Item
-                                            [%mel.obj
-                                              {
-                                                opacity25 =
-                                                  isCurrentInPlayer
-                                                  [@mel.as "opacity-25"];
-                                              }];
-                                        |])
-                                   ?coverArt:
-                                     (let open Subsonic.Song in
-                                      song
-                                      |> Option.map (fun song -> song.coverArt))
-                                   ~_lazy:true ~sizes:"3em" () [@JSX])
-                             () [@JSX]))
+                          if isAlbumView then
+                            span ~ariaHidden:true ~className:css##trackNumber
+                              ~children:
+                                (let open Subsonic.Song in
+                                 song
+                                 |. Option.bind (fun song -> song.track)
+                                 |> Option.map React.int
+                                 |> Option.value
+                                      ~default:(React.string {js| |js}))
+                              () [@JSX]
+                          else
+                            CoverArt.make ~className:css##coverArt
+                              ?coverArt:
+                                (let open Subsonic.Song in
+                                 song |> Option.map (fun song -> song.coverArt))
+                              ~_lazy:true ~sizes:"3em" () [@JSX])
                         () [@JSX]));
                     (Store.Context.Consumer.make
                        ~selector:
                          (let open Store.State in
                           fun state -> state.player.paused)
                        ~children:(fun paused ->
-                         (div
-                            ~className:
-                              (Clsx.make
-                                 [|
-                                   Item "absolute";
-                                   Item
-                                     [%mel.obj
-                                       {
-                                         right0 =
-                                           isAlbumView [@mel.as "right-0"];
-                                         not =
-                                           not isAlbumView
-                                           [@mel.as
-                                             "inset-0 m-auto flex items-center \
-                                              justify-center"];
-                                       }];
-                                 |])
+                         (div ~className:css##playButtonWrapper
                             ~children:
                               [
                                 songId
@@ -149,42 +113,7 @@ let[@react.component] make =
                                                  isCurrentInPlayer && not paused
                                                then "true"
                                                else "false")
-                                            ~className:
-                                              (Clsx.make
-                                                 [|
-                                                   Item
-                                                     "flex rounded-full \
-                                                      outline-offset-2";
-                                                   Item
-                                                     [%mel.obj
-                                                       {
-                                                         sdfasdfasf =
-                                                           ((not
-                                                               isCurrentInPlayer)
-                                                          || not paused)
-                                                           [@mel.as
-                                                             "opacity-0 \
-                                                              group-hover/song-row:inset-0 \
-                                                              group-hover/song-row:opacity-100 \
-                                                              group-has-[:focus-visible]/song-row:inset-0 \
-                                                              group-has-[:focus-visible]/song-row:opacity-100"];
-                                                         inset0_opacity100 =
-                                                           (isCurrentInPlayer
-                                                          && paused)
-                                                           [@mel.as
-                                                             "inset-0 \
-                                                              opacity-100"];
-                                                         right0_size6 =
-                                                           (isAlbumView
-                                                          && isCurrentInPlayer
-                                                          && not paused)
-                                                           [@mel.as
-                                                             "right-0 size-6"];
-                                                         size8 =
-                                                           not isAlbumView
-                                                           [@mel.as "size-8"];
-                                                       }];
-                                                 |])
+                                            ~className:css##playButton
                                             ~type_:"button"
                                             ~onClick:(fun _ ->
                                               let fx =
@@ -201,23 +130,18 @@ let[@react.component] make =
                                                   |> Js.Promise.resolve)
                                               |> ignore)
                                             ~children:
-                                              (React.cloneElement
-                                                 (if
-                                                    isCurrentInPlayer
-                                                    && not paused
-                                                  then
-                                                    LucideReact.CirclePause.make
-                                                      ~role:"none" () [@JSX]
-                                                  else
-                                                    LucideReact.CirclePlay.make
-                                                      ~role:"none" () [@JSX])
-                                                 [%mel.obj
-                                                   {
-                                                     className =
-                                                       "stroke-primary \
-                                                        size-full max-w-8 \
-                                                        max-h-8";
-                                                   }])
+                                              (if
+                                                 isCurrentInPlayer && not paused
+                                               then
+                                                 LucideReact.CirclePause.make
+                                                   ~className:
+                                                     css##playButtonIcon
+                                                   ~role:"none" () [@JSX]
+                                               else
+                                                 LucideReact.CirclePlay.make
+                                                   ~className:
+                                                     css##playButtonIcon
+                                                   ~role:"none" () [@JSX])
                                             () [@JSX]))
                                        () [@JSX]))
                                 |> Option.value ~default:React.null;
@@ -228,44 +152,7 @@ let[@react.component] make =
                                         state.player.currentSongId == songId)
                                    ~children:(fun isCurrentInPlayer ->
                                      if isCurrentInPlayer && not paused then
-                                       div
-                                         ~className:
-                                           (Clsx.make
-                                              [|
-                                                Item
-                                                  "absolute flex h-3 w-3 \
-                                                   items-center justify-center \
-                                                   group-hover/song-row:invisible \
-                                                   group-has-[:focus-visible]/song-row:invisible";
-                                                Item
-                                                  [%mel.obj
-                                                    {
-                                                      is =
-                                                        isAlbumView
-                                                        [@mel.as
-                                                          "inset-y-0 right-1 \
-                                                           my-auto"];
-                                                      not =
-                                                        not isAlbumView
-                                                        [@mel.as
-                                                          "inset-0 m-auto"];
-                                                    }];
-                                              |])
-                                         ~children:
-                                           [
-                                             (div
-                                                ~className:
-                                                  "relative inline-flex h-3 \
-                                                   w-3 rounded-full bg-primary"
-                                                () [@JSX]);
-                                             (div
-                                                ~className:
-                                                  "absolute inline-flex h-3 \
-                                                   w-3 animate-ping \
-                                                   rounded-full bg-primary \
-                                                   opacity-75"
-                                                () [@JSX]);
-                                           ]
+                                       div ~className:css##nowPlayingIndicator
                                          () [@JSX]
                                      else React.null)
                                    () [@JSX]);
@@ -274,7 +161,7 @@ let[@react.component] make =
                        () [@JSX]);
                   ]
                 () [@JSX]);
-             (div ~className:"min-w-0"
+             (div ~className:css##title
                 ~children:
                   (Store.Context.Consumer.make
                      ~selector:(fun state ->
@@ -288,7 +175,10 @@ let[@react.component] make =
                             [
                               (match song with
                               | None ->
-                                  Skeleton.make ~className:"max-w-40" () [@JSX]
+                                  Skeleton.make
+                                    ~style:
+                                      (ReactDOM.Style.make ~maxWidth:"10rem" ())
+                                    () [@JSX]
                               | Some song ->
                                   React.Fragment.make
                                     ~children:
@@ -310,8 +200,7 @@ let[@react.component] make =
                                               || primaryArtist
                                                  != Some song.artist)
                                          then
-                                           span
-                                             ~className:"text-muted-foreground"
+                                           span ~className:css##subtitle
                                              ~children:
                                                [
                                                  (span ~ariaHidden:true
@@ -353,10 +242,13 @@ let[@react.component] make =
                                else
                                  match song with
                                  | None ->
-                                     Skeleton.make ~className:"max-w-64" ()
-                                     [@JSX]
+                                     Skeleton.make
+                                       ~style:
+                                         (ReactDOM.Style.make ~maxWidth:"10rem"
+                                            ())
+                                       () [@JSX]
                                  | Some song ->
-                                     div ~className:"text-muted-foreground"
+                                     div ~className:css##subtitle
                                        ~children:
                                          [
                                            (if primaryArtist == Some song.artist
@@ -411,26 +303,13 @@ let[@react.component] make =
                       state.songs.byId |. Js.Map.get ~key:songId))
                 ~children:(fun song ->
                   let open Subsonic.Song in
-                  (StarButton.make
-                     ~className:
-                       (Clsx.make
-                          [|
-                            Item
-                              [%mel.obj
-                                {
-                                  p2 = isAlbumView [@mel.as "p-2"];
-                                  p3 = not isAlbumView [@mel.as "p-3"];
-                                }];
-                          |])
+                  (StarButton.make ~className:css##starButton
                      ~disabled:(song |> Option.is_none)
                      ?id:(song |> Option.map (fun song -> song.id))
                      ?starred:(song |. Option.bind (fun song -> song.starred))
                      () [@JSX]))
                 () [@JSX]);
-             (div
-                ~className:
-                  "group/song-row-menu relative grid h-full grid-cols-subgrid \
-                   items-center justify-items-end"
+             (div ~className:css##durationMenuCol
                 ~children:
                   [
                     (Store.Context.Consumer.make
@@ -441,38 +320,19 @@ let[@react.component] make =
                             |. Option.bind (fun songId ->
                                 state.songs.byId |. Js.Map.get ~key:songId))
                        ~children:(fun song ->
-                         (span ~ariaLabel:"Duration"
-                            ~className:
-                              (Clsx.make
-                                 [|
-                                   Item
-                                     "whitespace-nowrap slashed-zero \
-                                      tabular-nums \
-                                      group-hover/song-row:opacity-0 \
-                                      group-has-[:focus-visible]/song-row:opacity-0";
-                                   Item
-                                     [%mel.obj
-                                       {
-                                         pe2 = isAlbumView [@mel.as "pe-2"];
-                                         pe3 = not isAlbumView [@mel.as "pe-3"];
-                                       }];
-                                 |])
+                         (span ~ariaLabel:"Duration" ~className:css##duration
                             ~children:
                               (let open Subsonic.Song in
                                match song with
                                | None ->
                                    Skeleton.make
-                                     ~className:"inline-block w-full" () [@JSX]
+                                     ~className:css##durationSkeleton () [@JSX]
                                | Some song ->
                                    song.duration |> Duration.format
                                    |> React.string)
                             () [@JSX]))
                        () [@JSX]);
-                    (div
-                       ~className:
-                         "absolute inset-y-0 right-0 m-auto flex justify-end \
-                          opacity-0 group-hover/song-row:opacity-100 \
-                          group-has-[:focus-visible]/song-row:opacity-100"
+                    (div ~className:css##menu
                        ~children:
                          (DropdownMenu.Root.make
                             ~children:
@@ -480,21 +340,8 @@ let[@react.component] make =
                                 (DropdownMenu.Trigger.make
                                    ~children:
                                      (Button.make ~ariaLabel:"Song menu"
-                                        ~className:
-                                          (Clsx.make
-                                             [|
-                                               Item
-                                                 [%mel.obj
-                                                   {
-                                                     p2 =
-                                                       isAlbumView
-                                                       [@mel.as "p-2"];
-                                                     p3 =
-                                                       not isAlbumView
-                                                       [@mel.as "p-3"];
-                                                   }];
-                                             |])
-                                        ~variant:"icon"
+                                        ~className:css##menuButton
+                                        ~variant:`icon
                                         ~children:
                                           (LucideReact.Ellipsis.make
                                              ~role:"none" () [@JSX])
@@ -749,17 +596,7 @@ let[@react.component] make =
                 () [@JSX]);
              (if isQueueView then
                 Button.make ~ariaLabel:"Remove from queue"
-                  ~className:
-                    (Clsx.make
-                       [|
-                         Item
-                           [%mel.obj
-                             {
-                               p2 = isAlbumView [@mel.as "p-2"];
-                               p3 = not isAlbumView [@mel.as "p-3"];
-                             }];
-                       |])
-                  ~variant:"icon"
+                  ~className:css##removeFromQueueButton ~variant:`icon
                   ~onClick:(fun _ ->
                     (let open Promise.Monad_syntax in
                      let* result =

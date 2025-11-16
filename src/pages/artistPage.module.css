@@ -1,0 +1,94 @@
+@import '../shared/media.css';
+
+.root {
+  margin-inline: auto;
+
+  @media (width >= v-sm) {
+    padding: 1em 1em 0;
+  }
+}
+
+.artistInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tag {
+  font-weight: bold;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  letter-spacing: 0.1em;
+  color: hsl(var(--muted-foreground));
+  font-variant-caps: all-small-caps;
+}
+
+.starButton {
+  margin-inline-start: 0.5rem;
+}
+
+.subtitle {
+  color: hsl(var(--muted-foreground));
+}
+
+.tabsList {
+  background: hsl(var(--background));
+}
+
+.tabsList_sticky {
+  position: sticky;
+  z-index: 20;
+  top: var(--player-toolbar-height);
+}
+
+.mainTab {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.mainTabSectionHeading {
+  position: sticky;
+  z-index: 10;
+  top: var(--player-toolbar-height);
+  margin-bottom: 0.25rem;
+  background: hsl(var(--background));
+
+  @media (width < v-sm) {
+    padding-inline: 0.5rem;
+  }
+}
+
+.similarArtistsTab {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.similarArtistsTabNotPresent {
+  padding-inline: 0.5rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: center;
+}
+
+.similarArtistsTabNotPresentList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-wrap: balance;
+}
+
+.similarArtistsTabNotPresentItem {
+  display: inline;
+
+  &::before {
+    content: ' • ';
+    color: hsl(var(--primary));
+  }
+
+  &:first-child::before {
+    content: none;
+  }
+}

@@ -1,3 +1,6 @@
+external%private [@mel.module "./slider.module.css"] css :
+  < root : string > Js.t = "default"
+
 type marker = { label : string; value : float }
 
 let[@react.component] make ?ariaLabelledby ?className ?id ?markers ?max ?min
@@ -7,11 +10,7 @@ let[@react.component] make ?ariaLabelledby ?className ?id ?markers ?max ?min
      ~children:
        [
          (input ?ariaLabelledby
-            ~className:
-              (Clsx.make
-                 [|
-                   Item "w-full"; Item (className |> Option.value ~default:"");
-                 |])
+            ~className:(Clsx.make [| Item className; Item css##root |])
             ?id ~list:markersId
             ?max:(max |> Option.map Js.String.make)
             ?min:(min |> Option.map Js.String.make)

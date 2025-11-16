@@ -1,3 +1,6 @@
+external%private [@mel.module "./radioGroup.module.css"] css :
+  < root : string ; label : string ; input : string > Js.t = "default"
+
 module Context = struct
   include React.Context
 
@@ -25,12 +28,7 @@ module Root = struct
     (Context.make ~value:contextValue
        ~children:
          (div ~ariaLabelledby:id
-            ~className:
-              (Clsx.make
-                 [|
-                   Item "flex flex-wrap items-center gap-2";
-                   Item (className |> Option.value ~default:"");
-                 |])
+            ~className:(Clsx.make [| Item className; Item css##root |])
             ?defaultValue ?name ~role:"radiogroup" ?value
             ~onChange:(fun event ->
               let open ReactExtra.Event.Form in
@@ -58,7 +56,7 @@ end
 module Item = struct
   let[@react.component] make ?className ~label ?value =
     let contextValue = Context.use () in
-    (Label.make ~className:"flex cursor-pointer items-center gap-2"
+    (Label.make ~className:css##label
        ~children:
          [
            (input
@@ -66,21 +64,7 @@ module Item = struct
                 (match (contextValue.value, value) with
                 | None, _ | _, None -> None
                 | Some v, Some value -> Some (value == v))
-              ~className:
-                (Clsx.make
-                   [|
-                     Item
-                       "focus-visible:ring-ring flex aspect-square h-4 w-4 \
-                        cursor-[inherit] appearance-none items-center \
-                        justify-center rounded-full border border-primary \
-                        text-primary ring-offset-background before:h-2 \
-                        before:w-2 before:scale-0 before:rounded-full \
-                        before:bg-primary before:transition-transform \
-                        checked:before:scale-100 focus:outline-none \
-                        focus-visible:ring-2 focus-visible:ring-offset-2 \
-                        disabled:cursor-not-allowed disabled:opacity-50";
-                     Item (className |> Option.value ~default:"");
-                   |])
+              ~className:(Clsx.make [| Item className; Item css##input |])
               ?defaultChecked:
                 (match (contextValue.defaultValue, value) with
                 | None, _ | _, None -> None

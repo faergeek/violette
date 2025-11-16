@@ -1,3 +1,6 @@
+external%private [@mel.module "./coverArt.module.css"] css :
+  < root : string ; img : string ; img_not_loaded : string > Js.t = "default"
+
 let createSrcSet ~credentials ~coverArt =
   let open Js in
   [| 50; 100; 200; 300; 400; 500; 750; 1000; 1250; 1500; 2000 |]
@@ -47,12 +50,7 @@ let[@react.component] make ?alt ?className ?coverArt ?_lazy ?sizes =
       in
       None);
   div
-    ~className:
-      (Clsx.make
-         [|
-           Item "aspect-square bg-muted/75";
-           Item (className |> Option.value ~default:"");
-         |])
+    ~className:(Clsx.make [| Item className; Item css##root |])
     ~children:
       [
         React.cloneElement
@@ -62,17 +60,11 @@ let[@react.component] make ?alt ?className ?coverArt ?_lazy ?sizes =
              ~className:
                (Clsx.make
                   [|
-                    Item "size-full overflow-clip object-contain";
+                    Item css##img;
                     Item
-                      [%mel.obj
-                        {
-                          opacityNone =
-                            ((not isLoaded) || Option.is_none srcSet)
-                            [@mel.as "opacity-0"];
-                          opacityFull =
-                            (isLoaded && Option.is_some srcSet)
-                            [@mel.as "opacity-100"];
-                        }];
+                      (if (not isLoaded) || Option.is_none srcSet then
+                         Some css##img_not_loaded
+                       else None);
                   |])
              ?src:lastLoadedSrc ?sizes ?srcSet
              ~onError:

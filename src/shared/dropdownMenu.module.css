@@ -1,0 +1,35 @@
+.root {
+  margin: 0;
+  border: 1px solid hsl(var(--border));
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  background: hsl(var(--background));
+  transform-origin: top right;
+}
+
+.item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  border: 0;
+  padding: 0.375rem 0.5rem;
+  width: 100%;
+  border-radius: 0.125rem;
+  background: none;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover,
+  &:focus-visible {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}

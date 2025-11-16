@@ -1,0 +1,85 @@
+.root {
+  position: relative;
+  margin-top: -1rem;
+  height: 1rem;
+  user-select: none;
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-variant-numeric: slashed-zero tabular-nums;
+
+  @media (hover: hover) {
+    &:not(:hover) {
+      color: transparent;
+    }
+  }
+}
+
+.inner {
+  position: absolute;
+  inset: auto 0 0;
+  height: 1rem;
+  overflow: hidden;
+  background: hsl(var(--secondary));
+  transform-origin: bottom;
+  transition: transform ease-in-out 150ms;
+
+  @media (hover: hover) {
+    transform: scaleY(0.2);
+
+    .root:hover & {
+      transform: scaleY(1);
+    }
+  }
+}
+
+.buffered {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: hsl(var(--muted-foreground) / 0.2);
+  transform-origin: left;
+  transform: translate(var(--translate-x)) scaleX(var(--scale-x));
+  pointer-events: none;
+}
+
+.position {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: hsl(var(--primary));
+  transform-origin: left;
+  transform: scaleX(var(--scale-x));
+  pointer-events: none;
+  will-change: transform;
+}
+
+.currentTime {
+  position: absolute;
+  left: 0;
+  padding-inline-start: 0.5rem;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+.hoverTime {
+  position: absolute;
+  left: 0;
+  border-inline-start: 1px solid;
+  padding-inline-start: 0.25rem;
+  mix-blend-mode: difference;
+  transform: translate(var(--translate-x));
+  pointer-events: none;
+  will-change: contents;
+}
+
+.duration {
+  position: absolute;
+  right: 0;
+  margin-inline-start: auto;
+  padding-inline-end: 0.5rem;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}

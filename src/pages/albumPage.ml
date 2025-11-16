@@ -1,3 +1,13 @@
+external%private [@mel.module "./albumPage.module.css"] css :
+  < root : string
+  ; info : string
+  ; tag : string
+  ; starButton : string
+  ; subtitle : string
+  ; discs : string
+  ; discTitle : string >
+  Js.t = "default"
+
 open Router
 open Shared
 
@@ -83,7 +93,7 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
              | None -> fallback))
        () [@JSX])
   in
-  (div ~className:"container mx-auto sm:px-4 sm:pt-4"
+  (Container.make ~className:css##root
      ~children:
        [
          (MediaHeader.make
@@ -100,23 +110,22 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
                             "https://musicbrainz.org/release/" ^ id))
                       () [@JSX])))
             ~children:
-              (div ~className:"space-y-2"
+              (div ~className:css##info
                  ~children:
                    [
                      (div
                         ~children:
                           [
-                            (div
-                               ~className:
-                                 "text-sm font-bold tracking-widest \
-                                  text-muted-foreground \
-                                  [font-variant-caps:all-small-caps]"
+                            (div ~className:css##tag
                                ~children:(React.string "Album") () [@JSX]);
                             (H1.make
                                ~children:
                                  (match base with
                                  | None ->
-                                     Skeleton.make ~className:"w-64" () [@JSX]
+                                     Skeleton.make
+                                       ~style:
+                                         (ReactDOM.Style.make ~width:"16rem" ())
+                                       () [@JSX]
                                  | Some base ->
                                      React.Fragment.make
                                        ~children:
@@ -127,13 +136,14 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
                                               ~_to:"/album/$albumId"
                                               ~children:(React.string base.name)
                                               () [@JSX]);
-                                           (StarButton.make ~className:"ms-2"
+                                           (StarButton.make
+                                              ~className:css##starButton
                                               ~albumId:base.id
                                               ?starred:base.starred () [@JSX]);
                                          ]
                                        () [@JSX])
                                () [@JSX]);
-                            (div ~className:"text-muted-foreground"
+                            (div ~className:css##subtitle
                                ~children:
                                  (match base with
                                  | Some base ->
@@ -167,7 +177,10 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
                                          ]
                                        () [@JSX]
                                  | None ->
-                                     Skeleton.make ~className:"w-40" () [@JSX])
+                                     Skeleton.make
+                                       ~style:
+                                         (ReactDOM.Style.make ~width:"5rem" ())
+                                       () [@JSX])
                                () [@JSX]);
                           ]
                         () [@JSX]);
@@ -184,7 +197,7 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
          | None, _, _ | _, None, _ | _, _, None -> SongList.make () [@JSX]
          | Some base, Some details, Some discs ->
              if discs |. Js.Array.length > 1 then
-               div ~className:"space-y-4"
+               div ~className:css##discs
                  ~children:
                    (discs
                    |> Js.Array.map ~f:(fun disc ->
@@ -192,10 +205,7 @@ let[@react.component] make ~albumId ?deferredAlbumInfo =
                           ~key:(Int.to_string disc.number)
                           ~children:
                             [
-                              (H2.make
-                                 ~className:
-                                   "text-md mb-1 px-2 font-semibold \
-                                    text-muted-foreground sm:px-0"
+                              (H2.make ~className:css##discTitle
                                  ~children:
                                    [
                                      React.string "Disc ";

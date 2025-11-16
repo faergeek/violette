@@ -1,3 +1,17 @@
+external%private [@mel.module "./playerToolbar.module.css"] css :
+  < root : string
+  ; item : string
+  ; btn : string
+  ; volumeSettings : string
+  ; volumeSettingsContent : string
+  ; volumeSettingsItem : string
+  ; volumeSettingsPreAmpLabel : string
+  ; volumeSettingsPreAmpUnits : string
+  ; volumeSettingsTrigger : string
+  ; queueButtonIsOpen : string
+  ; repeatEnabled : string >
+  Js.t = "default"
+
 type repeatMode = RepeatAll | RepeatOne
 type volumeState = [ `muted | `volume1 | `volume2 ]
 
@@ -96,49 +110,30 @@ let[@react.component] make ~queueId ~queueTriggerRef =
           |> Js.Array.forEach ~f:(MediaSession.setActionHandler ~handler:None)))
     [| runAsyncStoreFx |];
   let repeatMode, setRepeatMode = React.useState (fun () -> None) in
-  (div ~className:"flex bg-background"
+  (div ~className:css##root
      ~children:
        [
-         (div ~className:"group/volume-settings grow"
+         (div ~className:css##item
             ~children:
               (Popover.Root.make
                  ~children:
                    [
-                     (Popover.Reference.make
-                        ~children:
-                          (Button.make ~ariaLabel:"Volume"
-                             ~className:
-                               "w-full p-3 \
-                                group-has-[#volume-settings:popover-open]/volume-settings:[&:not(:hover)]:text-primary"
-                             ~popovertarget:"volume-settings" ~variant:"icon"
-                             ~children:
-                               (LucideReact.SlidersVertical.make ~role:"none" ()
-                                [@JSX])
-                             () [@JSX])
-                        () [@JSX]);
                      (Popover.Content.make ~padding:4.0 ~placement:`topEnd
                         ~strategy:`fixed
                         ~children:
                           (React.cloneElement
-                             (div
-                                ~className:
-                                  "m-0 w-96 rounded-md border bg-background \
-                                   p-3 shadow-md [&:popover-open]:animate-in \
-                                   [&:popover-open]:fade-in-0 \
-                                   [&:popover-open]:zoom-in-95 \
-                                   [&:popover-open]:slide-in-from-bottom-2"
+                             (div ~className:css##volumeSettings
                                 ~id:"volume-settings"
                                 ~children:
                                   [
                                     (H2.make ~id:"volume-heading"
                                        ~children:(React.string "Volume") ()
                                      [@JSX]);
-                                    (div ~className:"space-y-4"
+                                    (div ~className:css##volumeSettingsContent
                                        ~children:
                                          [
                                            (div
-                                              ~className:
-                                                "flex items-center gap-2"
+                                              ~className:css##volumeSettingsItem
                                               ~children:
                                                 [
                                                   (Store.Context.Consumer.make
@@ -181,7 +176,7 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                                                             (if state == `muted
                                                              then "true"
                                                              else "false")
-                                                          ~variant:"icon"
+                                                          ~variant:`icon
                                                           ~onClick:(fun _ ->
                                                             StoreFx.ToggleMuted
                                                             .make ()
@@ -218,8 +213,6 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                                                   .preferredGain)
                                               ~children:(fun preferredGain ->
                                                 (RadioGroup.Root.make
-                                                   ~className:
-                                                     "[font-variant-caps:all-small-caps]"
                                                    ~name:"replay-gain"
                                                    ~value:
                                                      (preferredGain
@@ -247,7 +240,6 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                                                    ~children:
                                                      [
                                                        (RadioGroup.Label.make
-                                                          ~className:"me-2"
                                                           ~children:
                                                             (React.string
                                                                "Normalization")
@@ -267,14 +259,12 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                                                    () [@JSX]))
                                               () [@JSX]);
                                            (div
-                                              ~className:
-                                                "flex items-center gap-2"
+                                              ~className:css##volumeSettingsItem
                                               ~children:
                                                 [
                                                   (Label.make
                                                      ~className:
-                                                       "mt-2 shrink-0 pb-2 \
-                                                        [font-variant-caps:all-small-caps]"
+                                                       css##volumeSettingsPreAmpLabel
                                                      ~htmlFor:"pre-amp"
                                                      ~children:
                                                        (React.string "Pre-amp")
@@ -341,9 +331,7 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                                                                  () [@JSX]);
                                                               (span
                                                                  ~className:
-                                                                   "shrink-0 \
-                                                                    font-mono \
-                                                                    text-xs"
+                                                                   css##volumeSettingsPreAmpUnits
                                                                  ~children:
                                                                    [
                                                                      Gain.format
@@ -366,6 +354,21 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                                 () [@JSX])
                              [%mel.obj { popover = "auto" }])
                         () [@JSX]);
+                     (Popover.Reference.make
+                        ~children:
+                          (Button.make ~ariaLabel:"Volume"
+                             ~className:
+                               (Clsx.make
+                                  [|
+                                    Item css##btn;
+                                    Item css##volumeSettingsTrigger;
+                                  |])
+                             ~popovertarget:"volume-settings" ~variant:`icon
+                             ~children:
+                               (LucideReact.SlidersVertical.make ~role:"none" ()
+                                [@JSX])
+                             () [@JSX])
+                        () [@JSX]);
                    ]
                  () [@JSX])
             () [@JSX]);
@@ -374,8 +377,9 @@ let[@react.component] make ~queueId ~queueTriggerRef =
               (let open Store.State in
                fun state -> state.player.queuedSongIds |. Js.Array.length)
             ~children:(fun queuedSongCount ->
-              (Button.make ~ariaLabel:"Previous song" ~className:"grow p-3"
-                 ~disabled:(queuedSongCount == 0) ~variant:"icon"
+              (Button.make ~ariaLabel:"Previous song"
+                 ~className:(Clsx.make [| Item css##item; Item css##btn |])
+                 ~disabled:(queuedSongCount == 0) ~variant:`icon
                  ~onClick:(fun _ ->
                    StoreFx.GoToPrevSong.make ()
                    |> runAsyncStoreFx
@@ -397,8 +401,8 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                  ~children:(fun paused ->
                    (Button.make
                       ~ariaLabel:(if paused then "Play" else "Pause")
-                      ~className:"grow p-3" ~disabled:(not hasCurrentSong)
-                      ~variant:"icon"
+                      ~className:(Clsx.make [| Item css##item; Item css##btn |])
+                      ~disabled:(not hasCurrentSong) ~variant:`icon
                       ~onClick:(fun _ ->
                         StoreFx.TogglePaused.make ()
                         |> runAsyncStoreFx
@@ -417,8 +421,9 @@ let[@react.component] make ~queueId ~queueTriggerRef =
               let open Store.State in
               state.player.queuedSongIds |. Js.Array.length)
             ~children:(fun queuedSongCount ->
-              (Button.make ~ariaLabel:"Next song" ~className:"grow p-3"
-                 ~disabled:(queuedSongCount == 0) ~variant:"icon"
+              (Button.make ~ariaLabel:"Next song"
+                 ~className:(Clsx.make [| Item css##item; Item css##btn |])
+                 ~disabled:(queuedSongCount == 0) ~variant:`icon
                  ~onClick:(fun _ ->
                    StoreFx.GoToNextSong.make ()
                    |> runAsyncStoreFx
@@ -435,12 +440,11 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                  ~className:
                    (Clsx.make
                       [|
-                        Item "grow p-3";
+                        Item (Clsx.make [| Item css##item; Item css##btn |]);
                         Item
-                          [%mel.obj
-                            { isOpen = isOpen [@mel.as "text-primary"] }];
+                          (if isOpen then Some css##queueButtonIsOpen else None);
                       |])
-                 ~variant:"icon"
+                 ~variant:`icon
                  ~onClick:(fun _ -> setIsOpen (fun prevState -> not prevState))
                  ~children:(LucideReact.ListMusic.make ~role:"none" () [@JSX])
                  () [@JSX]))
@@ -457,16 +461,13 @@ let[@react.component] make ~queueId ~queueTriggerRef =
             ~className:
               (Clsx.make
                  [|
-                   Item "grow p-3";
+                   Item (Clsx.make [| Item css##item; Item css##btn |]);
                    Item
-                     [%mel.obj
-                       {
-                         is =
-                           (repeatMode |> Option.is_some)
-                           [@mel.as "text-primary enabled:hover:text-primary"];
-                       }];
+                     (if repeatMode |> Option.is_some then
+                        Some css##repeatEnabled
+                      else None);
                  |])
-            ~variant:"icon"
+            ~variant:`icon
             ~onClick:(fun _ ->
               setRepeatMode (function
                 | None -> Some RepeatAll

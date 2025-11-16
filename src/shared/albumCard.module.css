@@ -1,0 +1,33 @@
+@import './media.css';
+
+.link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.name,
+.info {
+  @media (width < v-sm) {
+    .root:nth-child(2n + 1) & {
+      padding-inline-start: 0.5rem;
+    }
+
+    .root:nth-child(2n) & {
+      padding-inline-end: 0.5rem;
+    }
+  }
+}
+
+.name {
+  margin: 0;
+  font-weight: bold;
+  font-size: inherit;
+  line-height: 1.25;
+}
+
+.info {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}

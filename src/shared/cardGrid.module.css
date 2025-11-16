@@ -1,0 +1,29 @@
+@import './media.css';
+
+.root {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(var(--col), minmax(0, 1fr));
+
+  --col: 2;
+
+  @media (width >= v-sm) {
+    --col: 4;
+  }
+
+  @media (width >= v-md) {
+    --col: 5;
+  }
+
+  @media (width >= v-lg) {
+    --col: 6;
+  }
+
+  @media (width >= v-xl) {
+    --col: 7;
+  }
+
+  @media (width >= v-2xl) {
+    --col: 8;
+  }
+}

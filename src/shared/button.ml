@@ -1,33 +1,11 @@
-type defaultVariants = { variant : string }
-type variantValues = { primary : string; icon : string; link : string }
-type variants = { variant : variantValues }
-
-let variants =
-  let defaultVariants : defaultVariants = { variant = "primary" } in
-  Cva.make
-    "inline-flex cursor-not-allowed items-center justify-center gap-2 \
-     whitespace-nowrap opacity-50 [&_svg]:shrink-0 \
-     [:where(:enabled,:any-link)&]:cursor-pointer \
-     [:where(:enabled,:any-link)&]:opacity-100"
-    {
-      defaultVariants;
-      variants =
-        {
-          variant =
-            {
-              primary =
-                "rounded-lg bg-primary px-3 py-2 text-sm \
-                 text-primary-foreground [&_svg]:size-5 \
-                 [:where(:enabled,:any-link)&]:hover:bg-primary/90";
-              icon =
-                "rounded-sm text-muted-foreground \
-                 [:where(:enabled,:any-link)&]:hover:text-secondary-foreground";
-              link =
-                "rounded-lg px-3 py-2 text-base text-foreground [&_svg]:size-5 \
-                 [:where(:enabled,:any-link)&]:hover:text-primary";
-            };
-        };
-    }
+external%private [@mel.module "./button.module.css"] css :
+  < root : string
+  ; root_variant_primary : string
+  ; root_variant_icon : string
+  ; root_state_loading : string
+  ; spinner : string
+  ; contents : string >
+  Js.t = "default"
 
 let[@react.component] make =
   React.forwardRef
@@ -37,11 +15,11 @@ let[@react.component] make =
       ?ariaLabel
       ?ariaPressed
       ?children
-      ?className
+      ?(className : string option)
       ?disabled
       ?loading
       ?(popovertarget : string option)
-      ?variant
+      ?(variant : [ `icon | `primary ] option)
       ?type_
       ?onClick
       ref
@@ -50,7 +28,19 @@ let[@react.component] make =
         (button ?ariaControls ?ariaExpanded ?ariaLabel ?ariaPressed
            ~className:
              (Clsx.make
-                [| Item (Cva.inputs ?className ?variant () |> variants) |])
+                [|
+                  Item className;
+                  Item css##root;
+                  Item
+                    (match variant with
+                    | None | Some `primary -> css##root_variant_primary
+                    | Some `icon -> css##root_variant_icon);
+                  Item
+                    (loading
+                    |. Option.bind (fun loading ->
+                        if loading then Some css##root_state_loading else None)
+                    );
+                |])
            ?disabled
            ?ref:(ref |> Js.Nullable.toOption |> Option.map ReactDOM.Ref.domRef)
            ~type_:(type_ |> Option.value ~default:"button")
@@ -58,22 +48,14 @@ let[@react.component] make =
            ~children:
              [
                loading
-               |. Option.bind (fun loading -> if loading then Some () else None)
-               |> Option.map (fun () ->
-                   (LucideReact.Loader2.make
-                      ~className:
-                        "absolute animate-spin self-center \
-                         text-primary-foreground"
-                      () [@JSX]))
+               |. Option.bind (fun loading ->
+                   if loading then
+                     Some
+                       (LucideReact.Loader2.make ~className:css##spinner ()
+                        [@JSX])
+                   else None)
                |> Option.value ~default:React.null;
-               (span
-                  ~className:
-                    (Clsx.make
-                       [|
-                         Item "contents";
-                         Item [%mel.obj { invisible = loading }];
-                       |])
-                  ?children () [@JSX]);
+               (span ~className:css##contents ?children () [@JSX]);
              ]
            () [@JSX])
         [%mel.obj { popovertarget }])

@@ -1,0 +1,9 @@
+@import '../shared/media.css';
+
+.root {
+  margin-inline: auto;
+
+  @media (width >= v-sm) {
+    padding-inline: 1rem;
+  }
+}

@@ -1,0 +1,63 @@
+@import './media.css';
+
+.root {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(var(--col), minmax(0, 1fr));
+  margin-bottom: 1rem;
+
+  --col: 1;
+
+  @media (width >= v-sm) {
+    --col: 3;
+  }
+
+  @media (width >= v-lg) {
+    --col: 4;
+  }
+
+  @media (width >= v-xl) {
+    --col: 5;
+  }
+
+  @media (width >= v-2xl) {
+    --col: 6;
+  }
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.links {
+  @media (width < v-sm) {
+    padding-inline: 0.5rem;
+  }
+}
+
+.rightCol {
+  --span: 1;
+  grid-column: span var(--span);
+
+  @media (width < v-sm) {
+    padding-inline: 0.5rem;
+  }
+
+  @media (width >= v-sm) {
+    --span: 2;
+  }
+
+  @media (width >= v-lg) {
+    --span: 3;
+  }
+
+  @media (width >= v-xl) {
+    --span: 4;
+  }
+
+  @media (width >= v-2xl) {
+    --span: 5;
+  }
+}

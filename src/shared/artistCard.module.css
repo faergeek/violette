@@ -1,0 +1,24 @@
+@import './media.css';
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.name {
+  margin: 0;
+  font-weight: bold;
+  font-size: inherit;
+  line-height: 1.25;
+
+  @media (width < v-sm) {
+    .root:nth-child(2n + 1) & {
+      padding-inline-start: 0.5rem;
+    }
+
+    .root:nth-child(2n) & {
+      padding-inline-end: 0.5rem;
+    }
+  }
+}

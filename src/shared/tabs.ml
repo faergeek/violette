@@ -1,3 +1,6 @@
+external%private [@mel.module "./tabs.module.css"] css :
+  < list : string ; content : string ; trigger : string > Js.t = "default"
+
 module Context = struct
   include React.Context
 
@@ -19,14 +22,7 @@ end
 module List = struct
   let[@react.component] make ~children ?className =
     div
-      ~className:
-        (Clsx.make
-           [|
-             Item
-               "flex max-w-full items-center space-x-2 overflow-auto text-sm \
-                font-bold text-muted-foreground";
-             Item (className |> Option.value ~default:"");
-           |])
+      ~className:(Clsx.make [| Item className; Item css##list |])
       ~role:"tablist"
       ~onKeyDown:(fun event ->
         let open React.Event.Keyboard in
@@ -102,14 +98,7 @@ module Trigger = struct
         {
           isSelected = isSelected [@mel.as "aria-selected"];
           className =
-            Clsx.make
-              [|
-                Item
-                  "whitespace-nowrap border-b-2 border-transparent px-2 \
-                   tracking-widest [font-variant-caps:all-small-caps] \
-                   aria-selected:border-primary aria-selected:text-foreground";
-                Item (childrenProps##className |> Option.value ~default:"");
-              |];
+            Clsx.make [| Item childrenProps##className; Item css##trigger |];
           role = "tab";
           tabIndex = (if isSelected then 0 else -1);
         }]
@@ -119,9 +108,7 @@ module Content = struct
   let[@react.component] make ?children ?className ?id ?value =
     let contextValue = Context.use () in
     (div ?children
-       ~className:
-         (Clsx.make
-            [| Item "mt-2"; Item (className |> Option.value ~default:"") |])
+       ~className:(Clsx.make [| Item className; Item css##content |])
        ~hidden:
          (match value with
          | None -> true

@@ -1,9 +1,12 @@
+external%private [@mel.module "./starButton.module.css"] css :
+  < root : string ; icon : string > Js.t = "default"
+
 let[@react.component] make ?albumId ?artistId ?className ?disabled ?id ?starred
     =
   let runAsyncStoreFx = StoreFx.RunAsync.use () in
   let starredOptimisic, setStarredOptimisic = React.useState (Fun.const None) in
   let starred = starredOptimisic |> Belt.Option.orElse starred in
-  (form ~className:"inline-flex" ~role:"none"
+  (form ~className:css##root ~role:"none"
      ~onSubmit:(fun event ->
        let open React.Event.Form in
        let open ReactExtra.Event.Form in
@@ -41,22 +44,11 @@ let[@react.component] make ?albumId ?artistId ?className ?disabled ?id ?starred
          (Button.make ~ariaLabel:"Favorite"
             ~ariaPressed:
               (match starred with Some _ -> "true" | None -> "false")
-            ?className ?disabled ~type_:"submit" ~variant:"icon"
+            ?className ?disabled ~type_:"submit" ~variant:`icon
             ~children:
               (LucideReact.Heart.make
-                 ~className:
-                   (match starred with
-                   | Some _ -> "fill-primary stroke-primary"
-                   | None -> "")
+                 ?className:(starred |> Option.map (fun _ -> css##icon))
                  ~role:"none" () [@JSX])
             () [@JSX]);
-         starred
-         |> Option.map (fun starred ->
-             (time ~ariaLabel:"Starred" ~className:"sr-only" ~dateTime:starred
-                ~children:
-                  (starred |> Js.Date.fromString |> Js.Date.toLocaleString
-                 |> React.string)
-                () [@JSX]))
-         |> Option.value ~default:React.null;
        ]
      () [@JSX])

@@ -1,0 +1,11 @@
+.root {
+  display: grid;
+  grid-template-columns: auto 1fr auto minmax(32px, auto) auto;
+  column-gap: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.root_albumView {
+  column-gap: 0.25rem;
+}

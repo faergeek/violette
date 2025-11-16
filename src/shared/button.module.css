@@ -1,0 +1,64 @@
+.root {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  white-space: nowrap;
+  opacity: 0.5;
+  cursor: not-allowed;
+
+  &:where(:enabled, :any-link) {
+    cursor: pointer;
+    opacity: 1;
+  }
+}
+
+.root_variant_primary {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+
+  &:where(:enabled, :any-link):hover {
+    background-color: hsl(var(--primary) / 0.9);
+  }
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.root_variant_icon {
+  padding: 0;
+  border-radius: 0.125rem;
+  background: none;
+  color: hsl(var(--muted-foreground));
+
+  &:where(:enabled, :any-link):hover {
+    color: hsl(var(--secondary-foreground));
+  }
+}
+
+.spinner {
+  position: absolute;
+  color: hsl(var(--primary-foreground));
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.contents {
+  display: contents;
+
+  .root_state_loading & {
+    visibility: hidden;
+  }
+}

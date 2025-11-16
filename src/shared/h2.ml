@@ -1,9 +1,7 @@
+external%private [@mel.module "./h2.module.css"] css : < root : string > Js.t
+  = "default"
+
 let[@react.component] make ?children ?className ?id =
   h2
-    ~className:
-      (Clsx.make
-         [|
-           Item "font-bold tracking-widest [font-variant-caps:all-small-caps]";
-           Item (className |> Option.value ~default:"");
-         |])
+    ~className:(Clsx.make [| Item className; Item css##root |])
     ?children ?id () [@JSX]
