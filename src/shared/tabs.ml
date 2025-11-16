@@ -105,13 +105,14 @@ module Trigger = struct
 end
 
 module Content = struct
-  let[@react.component] make ?children ?className ?id ?value =
+  let[@react.component] make ?children ?className ?value =
     let contextValue = Context.use () in
     (div ?children
        ~className:(Clsx.make [| Item className; Item css##content |])
-       ~hidden:
-         (match value with
-         | None -> true
-         | Some value -> value != contextValue.value)
-       ?id ~role:"tabpanel" () [@JSX])
+       ?style:
+         (value
+         |. Option.bind (fun value ->
+             if value == contextValue.value then None
+             else Some (ReactDOM.Style.make ~display:"none" ())))
+       ~role:"tabpanel" () [@JSX])
 end
