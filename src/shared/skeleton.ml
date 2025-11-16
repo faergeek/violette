@@ -1,9 +1,7 @@
-let[@react.component] make ?className =
+external%private [@mel.module "./skeleton.module.css"] css :
+  < root : string > Js.t = "default"
+
+let[@react.component] make ?className ?style =
   span
-    ~className:
-      (Clsx.make
-         [|
-           Item "my-[0.25lh] block h-[0.75lh] animate-pulse rounded-md bg-muted";
-           Item (className |> Option.value ~default:"");
-         |])
-    () [@JSX]
+    ~className:(Clsx.make [| Item className; Item css##root |])
+    ?style () [@JSX]

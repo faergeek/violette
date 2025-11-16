@@ -1,0 +1,76 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100lvh;
+}
+
+.inner {
+  margin-inline: auto;
+  padding-top: 1rem;
+  max-width: 24rem;
+  width: 100%;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-inline: 1rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.logo {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.logoSvg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.description {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.demoLink {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: hsl(var(--foreground));
+
+  &:hover {
+    color: hsl(var(--primary));
+  }
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.label {
+  padding-bottom: 0.25rem;
+}
+
+.submitButtonWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.submitError {
+  margin: 0;
+  color: hsl(var(--destructive));
+}

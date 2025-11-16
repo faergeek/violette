@@ -1,3 +1,7 @@
+external%private [@mel.module "./albumCard.module.css"] css :
+  < root : string ; link : string ; name : string ; info : string > Js.t
+  = "default"
+
 open Router
 open Store.Context
 open Subsonic.BaseAlbum
@@ -8,39 +12,33 @@ let[@react.component] make ?coverArtSizes ?id ?loadCoverArtLazily =
         id
         |. Option.bind (fun id -> state.albums.baseById |. Js.Map.get ~key:id))
   in
-  (div ~className:"group/album-card"
+  (div ~className:css##root
      ~children:
        [
-         (Link.make ~className:"space-y-1" ~params:[%mel.obj { albumId = id }]
+         (Link.make ~className:css##link ~params:[%mel.obj { albumId = id }]
             ~_to:"/album/$albumId"
             ~children:
               (React.Fragment.make
                  ~children:
                    [
-                     (CoverArt.make ~className:"w-full"
+                     (CoverArt.make
                         ?coverArt:(album |> Option.map (fun x -> x.coverArt))
                         ?_lazy:loadCoverArtLazily ?sizes:coverArtSizes () [@JSX]);
-                     (h2
-                        ~className:
-                          "font-bold leading-tight group-odd/album-card:ps-2 \
-                           group-even/album-card:pe-2 \
-                           sm:group-odd/album-card:ps-0 \
-                           sm:group-even/album-card:pe-0"
+                     (h2 ~className:css##name
                         ~children:
                           (album
                           |> Option.map (fun album -> React.string album.name)
                           |> Option.value
                                ~default:
-                                 (Skeleton.make ~className:"w-24" () [@JSX]))
+                                 (Skeleton.make
+                                    ~style:
+                                      (ReactDOM.Style.make ~width:"6rem" ())
+                                    () [@JSX]))
                         () [@JSX]);
                    ]
                  () [@JSX])
             () [@JSX]);
-         (div
-            ~className:
-              "text-sm text-muted-foreground group-odd/album-card:ps-2 \
-               group-even/album-card:pe-2 sm:group-odd/album-card:ps-0 \
-               sm:group-even/album-card:pe-0"
+         (div ~className:css##info
             ~children:
               (album
               |> Option.map (fun album ->
@@ -65,7 +63,10 @@ let[@react.component] make ?coverArtSizes ?id ?loadCoverArtLazily =
                        ]
                      () [@JSX]))
               |> Option.value
-                   ~default:(Skeleton.make ~className:"w-16" () [@JSX]))
+                   ~default:
+                     (Skeleton.make
+                        ~style:(ReactDOM.Style.make ~width:"4rem" ())
+                        () [@JSX]))
             () [@JSX]);
        ]
      () [@JSX])

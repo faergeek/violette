@@ -1,0 +1,231 @@
+.root {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+  border: 2px solid transparent;
+  border-inline: 0;
+  padding: 0.25rem 0;
+
+  &:nth-child(2n) {
+    background-color: hsl(var(--muted) / 0.5);
+  }
+}
+
+.root_selected {
+  border-color: hsl(var(--primary));
+}
+
+.coverArtAndTrackNumberCol {
+  position: relative;
+  grid-template-columns: subgrid;
+  display: grid;
+  align-items: center;
+  justify-items: end;
+  height: 100%;
+  overflow: clip;
+}
+
+.trackNumber {
+  padding-inline: 0.25rem;
+  min-width: 1.5rem;
+  color: hsl(var(--muted-foreground));
+  text-align: right;
+  font-variant-numeric: slashed-zero tabular-nums;
+}
+
+.coverArt {
+  width: 3rem;
+  height: 3rem;
+}
+
+.playButtonWrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playButton {
+  display: flex;
+  outline-offset: 2px;
+  border: 0;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: none;
+  opacity: 0;
+}
+
+.playButtonIcon {
+  width: 100%;
+  height: 100%;
+  stroke: hsl(var(--primary));
+}
+
+.nowPlayingIndicator {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  width: 0.75rem;
+  height: 0.75rem;
+
+  &::before,
+  &::after {
+    content: '';
+    display: inline-flex;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+  }
+
+  &::before {
+    position: relative;
+  }
+
+  &::after {
+    position: absolute;
+    will-change: opacity, transform;
+    animation: ping 1s ease-in-out infinite;
+  }
+}
+
+@keyframes ping {
+  0% {
+    opacity: 0.75;
+  }
+
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.title {
+  min-width: 0;
+}
+
+.subtitle {
+  color: hsl(var(--muted-foreground));
+}
+
+.starButton {
+  padding: 0.75rem;
+}
+
+.durationMenuCol {
+  position: relative;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+  justify-items: end;
+  height: 100%;
+}
+
+.duration {
+  padding-inline-end: 0.75rem;
+  white-space: nowrap;
+  font-variant-numeric: slashed-zero tabular-nums;
+}
+
+.durationSkeleton {
+  display: inline-block;
+  width: 100%;
+}
+
+.menu {
+  position: absolute;
+  inset: 0;
+  left: auto;
+  display: flex;
+  justify-content: flex-end;
+  margin: auto;
+  opacity: 0;
+}
+
+.menuButton {
+  padding: 0.75rem;
+}
+
+.removeFromQueueButton {
+  padding: 0.75rem;
+}
+
+.root_albumView {
+  padding: 0 0.25rem;
+
+  .playButtonWrapper {
+    inset: auto 0 auto auto;
+  }
+
+  .playButton {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .starButton {
+    padding: 0.5rem;
+  }
+
+  .duration {
+    padding-inline-end: 0.5rem;
+  }
+
+  .menuButton {
+    padding: 0.5rem;
+  }
+
+  .removeFromQueueButton {
+    padding: 0.5rem;
+  }
+}
+
+.root:hover,
+.root:has(:focus-visible) {
+  .trackNumber {
+    color: transparent;
+  }
+
+  .coverArt {
+    opacity: 0.25;
+  }
+
+  .playButton {
+    opacity: 1;
+  }
+
+  .nowPlayingIndicator {
+    visibility: hidden;
+  }
+
+  .duration {
+    opacity: 0;
+  }
+
+  .menu {
+    opacity: 1;
+  }
+}
+
+.root_isCurrentInPlayer {
+  .trackNumber {
+    color: transparent;
+  }
+
+  .coverArt {
+    opacity: 0.25;
+  }
+}
+
+.root_paused.root_isCurrentInPlayer {
+  .playButton {
+    opacity: 1;
+  }
+}

@@ -1,3 +1,6 @@
+external%private [@mel.module "./songList.module.css"] css :
+  < root : string ; root_albumView : string > Js.t = "default"
+
 let[@react.component] make =
   React.memo
     (fun
@@ -13,15 +16,8 @@ let[@react.component] make =
          ~className:
            (Clsx.make
               [|
-                Item
-                  "grid text-sm \
-                   [grid-template-columns:auto_1fr_auto_minmax(32px,auto)_auto]";
-                Item
-                  [%mel.obj
-                    {
-                      gapX1 = isAlbumView [@mel.as "gap-x-1"];
-                      gapX2 = not isAlbumView [@mel.as "gap-x-2"];
-                    }];
+                Item css##root;
+                Item (if isAlbumView then Some css##root_albumView else None);
               |])
          ~children:
            (songIds

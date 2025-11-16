@@ -2,11 +2,11 @@
   {
     "name": "css",
     "path": "dist/assets/**/*.css",
-    "limit": "6 kB"
+    "limit": "5 kB"
   },
   {
     "name": "js",
     "path": "dist/assets/**/*.js",
-    "limit": "122 kB"
+    "limit": "111 kB"
   }
 ]

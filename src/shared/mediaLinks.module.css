@@ -1,0 +1,12 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 0.5rem;
+}

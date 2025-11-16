@@ -2,7 +2,6 @@
  (name shared)
  (libraries
   clsx
-  cva
   domExtra
   domParser
   floatingUI

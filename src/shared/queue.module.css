@@ -1,0 +1,41 @@
+@import './media.css';
+
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.header {
+  margin-inline-end: var(--scrollbar-inline-size);
+}
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  margin-inline: auto;
+  padding-inline-start: 1rem;
+
+  @media (width >= v-sm) {
+    padding-inline-end: 1rem;
+  }
+}
+
+.headerCloseButton {
+  margin-inline-start: auto;
+  padding: 0.75rem;
+}
+
+.body {
+  border-top: 1px solid hsl(var(--border));
+  overflow: auto;
+}
+
+.bodyContainer {
+  margin-inline: auto;
+
+  @media (width >= v-sm) {
+    padding-inline: 1rem;
+  }
+}

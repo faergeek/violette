@@ -1,0 +1,7 @@
+.root {
+  margin: 0;
+  font-weight: bold;
+  font-size: inherit;
+  letter-spacing: 0.1em;
+  font-variant-caps: all-small-caps;
+}

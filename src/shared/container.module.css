@@ -1,0 +1,25 @@
+@import './media.css';
+
+.root {
+  width: 100%;
+
+  @media (width >= v-sm) {
+    max-width: v-sm;
+  }
+
+  @media (width >= v-md) {
+    max-width: v-md;
+  }
+
+  @media (width >= v-lg) {
+    max-width: v-lg;
+  }
+
+  @media (width >= v-xl) {
+    max-width: v-xl;
+  }
+
+  @media (width >= v-2xl) {
+    max-width: v-2xl;
+  }
+}

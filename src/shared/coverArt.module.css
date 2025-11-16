@@ -1,0 +1,14 @@
+.root {
+  aspect-ratio: 1;
+  background: hsl(var(--muted) / 0.75);
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.img_not_loaded {
+  opacity: 0;
+}

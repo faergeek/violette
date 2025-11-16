@@ -1,3 +1,19 @@
+external%private [@mel.module "./artistPage.module.css"] css :
+  < root : string
+  ; artistInfo : string
+  ; tag : string
+  ; starButton : string
+  ; subtitle : string
+  ; tabsList : string
+  ; tabsList_sticky : string
+  ; mainTab : string
+  ; mainTabSectionHeading : string
+  ; similarArtistsTab : string
+  ; similarArtistsTabNotPresent : string
+  ; similarArtistsTabNotPresentList : string
+  ; similarArtistsTabNotPresentItem : string >
+  Js.t = "default"
+
 open Router
 open Shared
 
@@ -8,10 +24,7 @@ module TopSongsSection = struct
     section
       ~children:
         [
-          (H2.make
-             ~className:
-               "sticky top-[var(--player-toolbar-height)] z-10 mb-1 \
-                bg-background px-2 sm:px-0"
+          (H2.make ~className:css##mainTabSectionHeading
              ~children:
                (Router.Link.make ~hash:"top-songs"
                   ~hashScrollIntoView:{ behavior = `instant; block = `start }
@@ -20,7 +33,6 @@ module TopSongsSection = struct
                   ~children:(React.string "Top songs") () [@JSX])
              () [@JSX]);
           children;
-          (div ~className:"pb-4" () [@JSX]);
         ]
       () [@JSX]
 end
@@ -30,10 +42,7 @@ module SimilarArtistsSection = struct
     section
       ~children:
         [
-          (H2.make
-             ~className:
-               "sticky top-[var(--player-toolbar-height)] z-10 mb-1 \
-                bg-background px-2 sm:px-0"
+          (H2.make ~className:css##mainTabSectionHeading
              ~children:
                (Router.Link.make ~hash:"similar-artists"
                   ~hashScrollIntoView:{ block = `start; behavior = `instant }
@@ -142,7 +151,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
         |> Option.map Option.some
         |> Option.value ~default:initialAlbumIds)
   in
-  (div ~className:"container mx-auto sm:px-4 sm:pt-4"
+  (Container.make ~className:css##root
      ~children:
        [
          (MediaHeader.make
@@ -160,17 +169,13 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                       () [@JSX]))
                  ~fallback:(MediaLinks.make ~skeleton:true () [@JSX]))
             ~children:
-              (div ~className:"space-y-2"
+              (div ~className:css##artistInfo
                  ~children:
                    [
                      (div
                         ~children:
                           [
-                            (div
-                               ~className:
-                                 "text-sm font-bold tracking-widest \
-                                  text-muted-foreground \
-                                  [font-variant-caps:all-small-caps]"
+                            (div ~className:css##tag
                                ~children:(React.string "Artist") () [@JSX]);
                             (match artist with
                             | Some artist ->
@@ -185,16 +190,19 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                                          ~children:(React.string artist.name) ()
                                        [@JSX]);
                                       (StarButton.make ~artistId:artist.id
-                                         ~className:"ms-2"
+                                         ~className:css##starButton
                                          ?starred:artist.starred () [@JSX]);
                                     ]
                                   () [@JSX]
                             | None ->
                                 H1.make
                                   ~children:
-                                    (Skeleton.make ~className:"w-64" () [@JSX])
+                                    (Skeleton.make
+                                       ~style:
+                                         (ReactDOM.Style.make ~width:"16rem" ())
+                                       () [@JSX])
                                   () [@JSX]);
-                            (div ~className:"text-muted-foreground"
+                            (div ~className:css##subtitle
                                ~children:
                                  (match artist with
                                  | Some artist ->
@@ -212,7 +220,10 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                                          ]
                                        () [@JSX]
                                  | None ->
-                                     Skeleton.make ~className:"w-20" () [@JSX])
+                                     Skeleton.make
+                                       ~style:
+                                         (ReactDOM.Style.make ~width:"5rem" ())
+                                       () [@JSX])
                                () [@JSX]);
                           ]
                         () [@JSX]);
@@ -232,10 +243,11 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                    ~className:
                      (Clsx.make
                         [|
+                          Item css##tabsList;
                           Item
-                            "top-[var(--player-toolbar-height)] z-20 \
-                             bg-background sm:px-0";
-                          Item [%mel.obj { sticky = tabValue != "main" }];
+                            (if tabValue != "main" then
+                               Some css##tabsList_sticky
+                             else None);
                         |])
                    ~children:
                      [
@@ -278,7 +290,8 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                           () [@JSX]);
                      ]
                    () [@JSX]);
-                (Tabs.Content.make ~id:"main" ~value:"main"
+                (Tabs.Content.make ~className:css##mainTab ~id:"main"
+                   ~value:"main"
                    ~children:
                      [
                        renderTopSongs
@@ -301,10 +314,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                        (section
                           ~children:
                             [
-                              (H2.make
-                                 ~className:
-                                   "sticky top-[var(--player-toolbar-height)] \
-                                    z-10 mb-1 bg-background px-2 sm:px-0"
+                              (H2.make ~className:css##mainTabSectionHeading
                                  ~children:
                                    (Link.make ~hash:"albums"
                                       ~hashScrollIntoView:
@@ -340,7 +350,6 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                                     in
                                     React.array cards)
                                  () [@JSX]);
-                              (div ~className:"pb-12" () [@JSX]);
                             ]
                           () [@JSX]);
                        renderSimilarArtists
@@ -378,8 +387,8 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                    ~children:
                      (CardGrid.make
                         ~children:
-                          (let cards =
-                             match albumIds with
+                          (React.array
+                             (match albumIds with
                              | Some albumIds ->
                                  albumIds |> Belt.Array.reverse
                                  |> Js.Array.map ~f:(fun id ->
@@ -391,9 +400,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                                  Belt.Array.make 12 None
                                  |. Belt.Array.mapWithIndex (fun i _ ->
                                      (AlbumCard.make ~key:(Int.to_string i) ()
-                                      [@JSX]))
-                           in
-                           React.array cards)
+                                      [@JSX]))))
                         () [@JSX])
                    () [@JSX]);
                 (Tabs.Content.make ~id:"similar-artists"
@@ -414,7 +421,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                             EmptyState.make ~message:"No similar artists" ()
                             [@JSX]
                           else
-                            div ~className:"space-y-8"
+                            div ~className:css##similarArtistsTab
                               ~children:
                                 [
                                   (let presentArtists =
@@ -454,25 +461,24 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                                    else
                                      div
                                        ~className:
-                                         "px-2 text-center text-sm \
-                                          text-muted-foreground"
+                                         css##similarArtistsTabNotPresent
                                        ~children:
                                          [
-                                           (H2.make ~className:"font-bold"
+                                           (H2.make
                                               ~children:
                                                 (React.string
                                                    "Not found in a library:")
                                               () [@JSX]);
                                            (ul
                                               ~className:
-                                                "space-y-2 text-balance"
+                                                css##similarArtistsTabNotPresentList
                                               ~children:
                                                 (notPresentArtists
                                                 |> Js.Array.map
                                                      ~f:(fun similarArtist ->
                                                        (li ~key:similarArtist
                                                           ~className:
-                                                            {js|inline after:text-primary after:content-['_•_'] last:after:content-['']|js}
+                                                            css##similarArtistsTabNotPresentItem
                                                           ~children:
                                                             (a
                                                                ~href:

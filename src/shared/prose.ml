@@ -1,17 +1,25 @@
+external%private [@mel.module "./prose.module.css"] css :
+  < skeletonLine1 : string
+  ; skeletonLine2 : string
+  ; skeletonLine3 : string
+  ; skeletonLine4 : string
+  ; link : string >
+  Js.t = "default"
+
 let[@react.component] make ?html =
   match html with
   | None ->
-      p
+      div
         ~children:
           [
-            (Skeleton.make ~className:"w-56 sm:w-96" () [@JSX]);
-            (Skeleton.make ~className:"w-36 sm:w-64" () [@JSX]);
-            (Skeleton.make ~className:"w-48 sm:w-80" () [@JSX]);
-            (Skeleton.make ~className:"w-28 sm:w-56" () [@JSX]);
+            (Skeleton.make ~className:css##skeletonLine1 () [@JSX]);
+            (Skeleton.make ~className:css##skeletonLine2 () [@JSX]);
+            (Skeleton.make ~className:css##skeletonLine3 () [@JSX]);
+            (Skeleton.make ~className:css##skeletonLine4 () [@JSX]);
           ]
         () [@JSX]
   | Some html ->
-      p
+      div
         ~children:
           (let open Webapi.Dom in
            let open DomParser in
@@ -24,9 +32,7 @@ let[@react.component] make ?html =
                | Element -> (
                    match Node.nodeName node with
                    | "A" ->
-                       a ~key:(Int.to_string index)
-                         ~className:
-                           "text-muted-foreground underline underline-offset-2"
+                       a ~key:(Int.to_string index) ~className:css##link
                          ?href:
                            (node |> HtmlElement.ofNode
                            |. Option.bind (HtmlElement.getAttribute "href"))

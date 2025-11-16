@@ -1,24 +1,31 @@
+external%private [@mel.module "./footer.module.css"] css :
+  < root : string
+  ; hr : string
+  ; content : string
+  ; logoWrapper : string
+  ; logo : string
+  ; dot : string
+  ; address : string >
+  Js.t = "default"
+
 open Router
 
 let[@react.component] make () =
-  footer ~className:"container mx-auto mt-auto"
+  Container.make ~className:css##root
     ~children:
       [
-        (hr ~className:"mx-4 mt-10 border-t" () [@JSX]);
-        (div
-           ~className:
-             "flex flex-wrap items-center justify-between gap-2 \
-              whitespace-nowrap px-4 py-6 text-center text-muted-foreground"
+        (hr ~className:css##hr () [@JSX]);
+        (div ~className:css##content
            ~children:
              [
-               (Link.make ~className:"flex items-center gap-2" ~_to:"/"
+               (Link.make ~className:css##logoWrapper ~_to:"/"
                   ~children:
                     [
-                      (Logo.make ~className:"size-5" () [@JSX]);
+                      (Logo.make ~className:css##logo () [@JSX]);
                       React.string "Violette";
                     ]
                   () [@JSX]);
-               (span
+               (address ~className:css##address
                   ~children:
                     [
                       (a
@@ -27,10 +34,10 @@ let[@react.component] make () =
                          ~rel:"noopener" ~target:"_blank"
                          ~children:(React.string {js|Copyright © 2025|js})
                          () [@JSX]);
-                      (span ~ariaHidden:true ~className:"text-primary"
+                      (span ~ariaHidden:true ~className:css##dot
                          ~children:(React.string {js| • |js})
                          () [@JSX]);
-                      (address ~className:"inline not-italic"
+                      (span
                          ~children:
                            (a ~href:"https://github.com/faergeek"
                               ~rel:"noopener" ~target:"_blank"
@@ -39,13 +46,13 @@ let[@react.component] make () =
                          () [@JSX]);
                     ]
                   () [@JSX]);
-               (a ~className:"flex items-center gap-2"
+               (a ~className:css##logoWrapper
                   ~href:"https://github.com/faergeek/violette" ~rel:"noopener"
                   ~target:"_blank"
                   ~children:
                     [
                       React.string "GitHub ";
-                      (SimpleIcons.Github.make ~className:"size-5" () [@JSX]);
+                      (SimpleIcons.Github.make ~className:css##logo () [@JSX]);
                     ]
                   () [@JSX]);
              ]

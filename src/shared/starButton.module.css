@@ -1,0 +1,8 @@
+.root {
+  display: inline-flex;
+}
+
+.icon {
+  fill: hsl(var(--primary));
+  stroke: hsl(var(--primary));
+}

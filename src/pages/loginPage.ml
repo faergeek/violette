@@ -1,3 +1,18 @@
+external%private [@mel.module "./loginPage.module.css"] css :
+  < root : string
+  ; inner : string
+  ; form : string
+  ; header : string
+  ; logo : string
+  ; logoSvg : string
+  ; description : string
+  ; demoLink : string
+  ; fields : string
+  ; label : string
+  ; submitButtonWrapper : string
+  ; submitError : string >
+  Js.t = "default"
+
 open Shared
 
 let[@react.component] make () =
@@ -50,40 +65,37 @@ let[@react.component] make () =
   let credentials =
     Store.Context.useAppStore (fun state -> state.auth.credentials)
   in
-  (div ~className:"flex min-h-lvh flex-col"
+  (div ~className:css##root
      ~children:
        [
-         (main ~className:"mx-auto w-full max-w-96 flex-1 pt-4"
+         (main ~className:css##inner
             ~children:
               [
                 (form ~ariaDescribedby:"login-form-description"
-                   ~ariaLabelledby:"login-form-heading"
-                   ~className:"space-y-4 px-4" ~onSubmit:handleSubmit
+                   ~ariaLabelledby:"login-form-heading" ~className:css##form
+                   ~onSubmit:handleSubmit
                    ~children:
                      [
-                       (div ~className:"flex flex-col space-y-1.5"
+                       (div ~className:css##header
                           ~children:
                             [
-                              (div
-                                 ~className:
-                                   "mb-3 flex items-center justify-center gap-2"
+                              (div ~className:css##logo
                                  ~children:
                                    [
-                                     (Logo.make ~className:"size-5" () [@JSX]);
+                                     (Logo.make ~className:css##logoSvg ()
+                                      [@JSX]);
                                      (strong ~ariaHidden:true
                                         ~children:(React.string "Violette") ()
                                       [@JSX]);
                                    ]
                                  () [@JSX]);
-                              (div ~className:"text-sm text-muted-foreground"
+                              (div ~className:css##description
                                  ~id:"login-form-description"
                                  ~children:
                                    [
                                      React.string
                                        "Enter your server details or ";
-                                     (button
-                                        ~className:
-                                          "text-foreground hover:text-primary"
+                                     (button ~className:css##demoLink
                                         ~type_:"button"
                                         ~onClick:
                                           (let open React.Event.Mouse in
@@ -113,13 +125,13 @@ let[@react.component] make () =
                                  () [@JSX]);
                             ]
                           () [@JSX]);
-                       (div ~className:"space-y-3"
+                       (div ~className:css##fields
                           ~children:
                             [
                               (div
                                  ~children:
                                    [
-                                     (Label.make ~className:"pb-1"
+                                     (Label.make ~className:css##label
                                         ~htmlFor:"login-server-base-url"
                                         ~children:[ React.string "URL:" ]
                                         () [@JSX]);
@@ -139,7 +151,7 @@ let[@react.component] make () =
                               (div
                                  ~children:
                                    [
-                                     (Label.make ~className:"pb-1"
+                                     (Label.make ~className:css##label
                                         ~htmlFor:"login-username"
                                         ~children:[ React.string "Username:" ]
                                         () [@JSX]);
@@ -158,7 +170,7 @@ let[@react.component] make () =
                               (div
                                  ~children:
                                    [
-                                     (Label.make ~className:"pb-1"
+                                     (Label.make ~className:css##label
                                         ~htmlFor:"login-password"
                                         ~children:[ React.string "Password:" ]
                                         () [@JSX]);
@@ -172,11 +184,10 @@ let[@react.component] make () =
                                  () [@JSX]);
                             ]
                           () [@JSX]);
-                       (div ~className:"space-y-2"
+                       (div ~className:css##submitButtonWrapper
                           ~children:
                             [
-                              (Button.make ~className:"w-full"
-                                 ~disabled:isLoginSubmitting
+                              (Button.make ~disabled:isLoginSubmitting
                                  ~loading:isLoginSubmitting ~type_:"submit"
                                  ~children:
                                    [
@@ -202,7 +213,7 @@ let[@react.component] make () =
                                match message with
                                | None -> React.null
                                | Some message ->
-                                   p ~className:"text-destructive" ~role:"alert"
+                                   p ~className:css##submitError ~role:"alert"
                                      ~children:[ React.string message ]
                                      () [@JSX]);
                             ]

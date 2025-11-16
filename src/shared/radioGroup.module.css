@@ -1,0 +1,45 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  cursor: pointer;
+}
+
+.input {
+  appearance: none;
+  cursor: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  color: hsl(var(--primary));
+
+  &:focus-visible {
+    outline: 2px solid #3b82f680;
+    outline-offset: 2px;
+  }
+
+  &::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: currentColor;
+    transform: scale(0);
+    transition: transform ease-in-out 100ms;
+  }
+
+  &:checked::before {
+    transform: scale(1);
+  }
+}

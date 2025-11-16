@@ -1,3 +1,12 @@
+external%private [@mel.module "./queue.module.css"] css :
+  < root : string
+  ; header : string
+  ; headerContainer : string
+  ; headerCloseButton : string
+  ; body : string
+  ; bodyContainer : string >
+  Js.t = "default"
+
 let[@react.component] make ~id ~(triggerRef : 'a React.ref) =
   let rootRef = React.useRef Js.Nullable.null
   and currentSongId =
@@ -54,19 +63,7 @@ let[@react.component] make ~id ~(triggerRef : 'a React.ref) =
     (isOpen, lockScroll, triggerRef);
   div
     ~ref:(ReactDOM.Ref.domRef rootRef)
-    ~className:
-      (Clsx.make
-         [|
-           Item "flex h-full flex-col overflow-hidden";
-           Item
-             [%mel.obj
-               {
-                 isOpen =
-                   isOpen
-                   [@mel.as "animate-in fade-in-0 slide-in-from-bottom-20"];
-               }];
-         |])
-    ~id
+    ~className:css##root ~id
     ~onKeyDown:(fun event ->
       match event |> ReactExtra.Event.Keyboard.code with
       | "Escape" ->
@@ -77,23 +74,23 @@ let[@react.component] make ~id ~(triggerRef : 'a React.ref) =
       | _ -> ())
     ~children:
       [
-        (div ~className:"me-[var(--scrollbar-inline-size)]"
+        (div ~className:css##header
            ~children:
-             (div ~className:"container mx-auto flex items-center ps-4 sm:pe-4"
+             (Container.make ~className:css##headerContainer
                 ~children:
                   [
                     (H2.make ~children:(React.string "Now playing") () [@JSX]);
-                    (Button.make ~ariaLabel:"Close" ~className:"ms-auto p-3"
-                       ~variant:"icon"
+                    (Button.make ~ariaLabel:"Close"
+                       ~className:css##headerCloseButton ~variant:`icon
                        ~onClick:(fun _ -> setIsOpen (Fun.const false))
                        ~children:(LucideReact.X.make ~role:"none" () [@JSX])
                        () [@JSX]);
                   ]
                 () [@JSX])
            () [@JSX]);
-        (div ~className:"overflow-auto border-t"
+        (div ~className:css##body
            ~children:
-             (div ~className:"container mx-auto sm:px-4"
+             (Container.make ~className:css##bodyContainer
                 ~children:
                   (SongList.make
                      ~getSongElementId:(( ^ ) "now-playing-queue-")

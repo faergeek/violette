@@ -1,0 +1,28 @@
+.list {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  max-width: 100%;
+  overflow: auto;
+  color: hsl(var(--muted-foreground));
+  font-weight: bold;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.trigger {
+  border-block-end: 2px solid transparent;
+  padding-inline: 0.5rem;
+  letter-spacing: 0.1em;
+  font-variant-caps: all-small-caps;
+  white-space: nowrap;
+
+  &[aria-selected='true'] {
+    border-color: hsl(var(--primary));
+    color: hsl(var(--foreground));
+  }
+}
+
+.content {
+  margin-top: 0.5rem;
+}

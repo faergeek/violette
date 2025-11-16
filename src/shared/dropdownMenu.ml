@@ -1,3 +1,6 @@
+external%private [@mel.module "./dropdownMenu.module.css"] css :
+  < root : string ; item : string > Js.t = "default"
+
 module Context = struct
   include React.Context
 
@@ -85,16 +88,7 @@ module Content = struct
       ~children:
         (React.cloneElement
            (div ~ariaLabelledby:triggerId ~children
-              ~className:
-                (Clsx.make
-                   [|
-                     Item
-                       "m-0 origin-top-right rounded-md border bg-background \
-                        p-1 shadow-md [&:popover-open]:animate-in \
-                        [&:popover-open]:fade-in-0 [&:popover-open]:zoom-in-95 \
-                        [&:popover-open]:slide-in-from-top-2";
-                     Item (className |> Option.value ~default:"");
-                   |])
+              ~className:(Clsx.make [| Item className; Item css##root |])
               ~id:menuId
               ~ref:(ReactDOM.Ref.domRef menuRef)
               ~role:"menu"
@@ -240,13 +234,7 @@ module Item = struct
   let[@react.component] make ~children ?onClick ?(type_ = "button") =
     let Context.{ menuId; _ } = useDropdownMenuContext () in
     React.cloneElement
-      (button ~children
-         ~className:
-           "flex w-full cursor-pointer select-none items-center gap-2 \
-            rounded-sm px-2 py-1.5 text-sm hover:bg-accent \
-            hover:text-accent-foreground focus-visible:bg-accent \
-            focus-visible:text-accent-foreground [&_svg]:size-4 \
-            [&_svg]:shrink-0"
-         ~role:"menuitem" ~type_ ?onClick () [@JSX])
+      (button ~children ~className:css##item ~role:"menuitem" ~type_ ?onClick ()
+       [@JSX])
       [%mel.obj { popovertarget = menuId; popovertargetaction = "hide" }]
 end

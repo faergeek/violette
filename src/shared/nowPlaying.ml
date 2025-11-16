@@ -1,3 +1,15 @@
+external%private [@mel.module "./nowPlaying.module.css"] css :
+  < root : string
+  ; coverArt : string
+  ; info : string
+  ; skeletonLine1 : string
+  ; skeletonLine2 : string
+  ; name : string
+  ; artistAndAlbum : string
+  ; starButton : string
+  ; dropdownMenuButton : string >
+  Js.t = "default"
+
 let[@react.component] make () =
   let navigate = Router.useNavigate ()
   and clearSubsonicCredentials =
@@ -11,24 +23,24 @@ let[@react.component] make () =
         |. Option.bind (fun currentSongId ->
             state.songs.byId |. Js.Map.get ~key:currentSongId))
   in
-  (div ~className:"container mx-auto flex items-center sm:px-4"
+  (Container.make ~className:css##root
      ~children:
        [
-         (CoverArt.make ~className:"size-12 shrink-0"
+         (CoverArt.make ~className:css##coverArt
             ?coverArt:
               (song |> Option.map (fun song -> Subsonic.Song.(song.coverArt)))
             ~_lazy:true ~sizes:"3em" () [@JSX]);
-         (div
-            ~className:"grid grow grid-rows-2 overflow-hidden px-2 py-1 text-sm"
+         (div ~className:css##info
             ~children:
               [
                 (match song with
                 | None -> (
                     match currentSongId with
                     | None -> React.null
-                    | Some _ -> Skeleton.make ~className:"mt-0 w-20" () [@JSX])
+                    | Some _ ->
+                        Skeleton.make ~className:css##skeletonLine1 () [@JSX])
                 | Some song ->
-                    span ~className:"col-span-full truncate"
+                    span ~className:css##name
                       ~children:
                         (Router.Link.make ~ariaLabel:"Song"
                            ~hash:(Album.getSongElementId song.id)
@@ -42,9 +54,10 @@ let[@react.component] make () =
                 | None -> (
                     match currentSongId with
                     | None -> React.null
-                    | Some _ -> Skeleton.make ~className:"mb-0 w-32" () [@JSX])
+                    | Some _ ->
+                        Skeleton.make ~className:css##skeletonLine2 () [@JSX])
                 | Some song ->
-                    span ~className:"truncate text-muted-foreground"
+                    span ~className:css##artistAndAlbum
                       ~children:
                         [
                           React.cloneElement
@@ -76,7 +89,8 @@ let[@react.component] make () =
                       () [@JSX]);
               ]
             () [@JSX]);
-         (StarButton.make ~className:"p-3" ~disabled:(song |> Option.is_none)
+         (StarButton.make ~className:css##starButton
+            ~disabled:(song |> Option.is_none)
             ?id:(song |> Option.map (fun song -> Subsonic.Song.(song.id)))
             ?starred:(song |. Option.bind (fun song -> song.starred))
             () [@JSX]);
@@ -85,8 +99,8 @@ let[@react.component] make () =
               [
                 (DropdownMenu.Trigger.make
                    ~children:
-                     (Button.make ~ariaLabel:"Menu" ~className:"p-3"
-                        ~variant:"icon"
+                     (Button.make ~ariaLabel:"Menu"
+                        ~className:css##dropdownMenuButton ~variant:`icon
                         ~children:(LucideReact.Menu.make () [@JSX])
                         () [@JSX])
                    () [@JSX]);
@@ -103,7 +117,7 @@ let[@react.component] make () =
                               "Home" |> React.string;
                             ]
                           () [@JSX]);
-                       (form ~className:"ms-auto"
+                       (form
                           ~onSubmit:(fun event ->
                             event |. React.Event.Form.preventDefault;
                             clearSubsonicCredentials ())
