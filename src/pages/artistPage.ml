@@ -290,8 +290,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                           () [@JSX]);
                      ]
                    () [@JSX]);
-                (Tabs.Content.make ~className:css##mainTab ~id:"main"
-                   ~value:"main"
+                (Tabs.Content.make ~className:css##mainTab ~value:"main"
                    ~children:
                      [
                        renderTopSongs
@@ -371,7 +370,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                            else React.null);
                      ]
                    () [@JSX]);
-                (Tabs.Content.make ~id:"top-songs" ~value:"top-songs"
+                (Tabs.Content.make ~value:"top-songs"
                    ~children:
                      (renderTopSongs ~fallback:(SongList.make () [@JSX])
                         (fun ~artist ~topSongIds ->
@@ -383,7 +382,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                               ~primaryArtist:artist.name ~songIds:topSongIds ()
                             [@JSX]))
                    () [@JSX]);
-                (Tabs.Content.make ~id:"albums" ~value:"albums"
+                (Tabs.Content.make ~value:"albums"
                    ~children:
                      (CardGrid.make
                         ~children:
@@ -403,8 +402,7 @@ let[@react.component] make ?deferredArtistInfo ?deferredSimilarArtists
                                       [@JSX]))))
                         () [@JSX])
                    () [@JSX]);
-                (Tabs.Content.make ~id:"similar-artists"
-                   ~value:"similar-artists"
+                (Tabs.Content.make ~value:"similar-artists"
                    ~children:
                      (renderSimilarArtists
                         ~fallback:
