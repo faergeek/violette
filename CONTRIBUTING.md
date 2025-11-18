@@ -54,7 +54,6 @@ dune fmt
 ### Links
 
 - [Melange](https://melange.re)
-- [Styles](https://v3.tailwindcss.com/)
 - [Icons](https://lucide.dev/icons)
 - [Brand icons](https://simpleicons.org/)
   - [package for React](https://github.com/icons-pack/react-simple-icons)
