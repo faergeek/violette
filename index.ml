@@ -1,8 +1,6 @@
 open React
 open ReactDOM
 
-[%%mel.raw "import './index.css'"]
-
 let () =
   let open Webapi in
   let open Dom in
