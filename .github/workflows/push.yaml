@@ -11,7 +11,7 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: asdf-vm/actions/install@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
@@ -48,7 +48,7 @@ jobs:
       name: ${{ github.ref_name }}
       url: https://violette.app
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: asdf-vm/actions/install@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
@@ -83,7 +83,7 @@ jobs:
       name: ${{ github.ref_name }}
       url: ${{ steps.preview.outputs.deployment-url }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: asdf-vm/actions/install@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
