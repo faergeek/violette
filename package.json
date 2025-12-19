@@ -23,7 +23,7 @@
     "autoprefixer": "^10.4.20",
     "clsx": "^2.1.1",
     "fast-check": "^4.0.0",
-    "lucide-react": "^0.561.0",
+    "lucide-react": "^0.562.0",
     "modern-normalize": "^3.0.1",
     "prettier": "^3.6.2",
     "react": "^18.0.0",
