@@ -363,7 +363,7 @@ let[@react.component] make ~queueId ~queueTriggerRef =
                                     Item css##btn;
                                     Item css##volumeSettingsTrigger;
                                   |])
-                             ~popovertarget:"volume-settings" ~variant:`icon
+                             ~popoverTarget:"volume-settings" ~variant:`icon
                              ~children:
                                (LucideReact.SlidersVertical.make ~role:"none" ()
                                 [@JSX])

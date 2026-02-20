@@ -19,7 +19,7 @@ let[@react.component] make =
       ?disabled
       ?id
       ?loading
-      ?(popovertarget : string option)
+      ?(popoverTarget : string option)
       ?(variant : [ `icon | `primary ] option)
       ?type_
       ?onClick
@@ -59,4 +59,4 @@ let[@react.component] make =
                (span ~className:css##contents ?children () [@JSX]);
              ]
            () [@JSX])
-        [%mel.obj { popovertarget }])
+        [%mel.obj { popoverTarget }])
