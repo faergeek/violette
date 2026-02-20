@@ -17,6 +17,7 @@ let[@react.component] make =
       ?children
       ?(className : string option)
       ?disabled
+      ?id
       ?loading
       ?(popovertarget : string option)
       ?(variant : [ `icon | `primary ] option)
@@ -41,7 +42,7 @@ let[@react.component] make =
                         if loading then Some css##root_state_loading else None)
                     );
                 |])
-           ?disabled
+           ?disabled ?id
            ?ref:(ref |> Js.Nullable.toOption |> Option.map ReactDOM.Ref.domRef)
            ~type_:(type_ |> Option.value ~default:"button")
            ?onClick
