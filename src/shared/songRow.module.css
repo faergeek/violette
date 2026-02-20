@@ -147,6 +147,7 @@
   display: flex;
   justify-content: flex-end;
   margin: auto;
+  padding-inline-end: 0.75rem;
   opacity: 0;
 }
 
@@ -176,6 +177,10 @@
 
   .duration {
     padding-inline-end: 0.5rem;
+  }
+
+  .menu {
+    padding-inline-end: 0;
   }
 
   .menuButton {

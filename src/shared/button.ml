@@ -17,8 +17,9 @@ let[@react.component] make =
       ?children
       ?(className : string option)
       ?disabled
+      ?id
       ?loading
-      ?(popovertarget : string option)
+      ?(popoverTarget : string option)
       ?(variant : [ `icon | `primary ] option)
       ?type_
       ?onClick
@@ -41,7 +42,7 @@ let[@react.component] make =
                         if loading then Some css##root_state_loading else None)
                     );
                 |])
-           ?disabled
+           ?disabled ?id
            ?ref:(ref |> Js.Nullable.toOption |> Option.map ReactDOM.Ref.domRef)
            ~type_:(type_ |> Option.value ~default:"button")
            ?onClick
@@ -58,4 +59,4 @@ let[@react.component] make =
                (span ~className:css##contents ?children () [@JSX]);
              ]
            () [@JSX])
-        [%mel.obj { popovertarget }])
+        [%mel.obj { popoverTarget }])
