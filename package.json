@@ -12,7 +12,7 @@
     "check-size-limits": "size-limit --highlight-less",
     "start": "vite preview"
   },
-  "packageManager": "pnpm@10.30.1",
+  "packageManager": "pnpm@10.30.2",
   "devDependencies": {
     "@floating-ui/dom": "^1.6.13",
     "@icons-pack/react-simple-icons": "^13.0.0",
