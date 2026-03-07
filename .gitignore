@@ -1,9 +1,2 @@
-/.env.*.local
-/.env.local
-/.swc
-/_build
-/_opam
-/coverage
 /dist
-/js
 /node_modules

@@ -1,6 +1,0 @@
-(library
- (name store)
- (modes melange)
- (libraries melange-json reason-react subsonic zustand)
- (preprocess
-  (pps melange.ppx melange-json.ppx reason-react-ppx)))

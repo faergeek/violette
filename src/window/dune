@@ -1,6 +1,0 @@
-(library
- (libraries melange-fetch melange.dom)
- (name window)
- (modes melange)
- (preprocess
-  (pps melange.ppx)))

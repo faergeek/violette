@@ -40,9 +40,9 @@
 
 .volumeSettingsPreAmpUnits {
   white-space: nowrap;
+  font-family: monospace;
   font-size: 0.75rem;
   line-height: 1rem;
-  font-variant-numeric: slashed-zero tabular-nums;
 }
 
 .volumeSettingsTrigger {
