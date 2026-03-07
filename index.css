@@ -76,3 +76,8 @@ img {
     color: hsl(var(--primary));
   }
 }
+
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: -2px;
+}
