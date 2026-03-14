@@ -27,7 +27,6 @@ jobs:
           path: |
             ~/.opam
             _opam
-      - run: opam update
       - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --deps-only --with-dev-setup . --yes
         if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
       - run: opam install --deps-only --with-dev-setup . --yes
@@ -64,7 +63,6 @@ jobs:
           path: |
             ~/.opam
             _opam
-      - run: opam update
       - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --deps-only --with-dev-setup . --yes
         if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
       - run: opam install --deps-only --with-dev-setup . --yes
@@ -99,7 +97,6 @@ jobs:
           path: |
             ~/.opam
             _opam
-      - run: opam update
       - run: opam init --bare --disable-sandboxing --no-setup && opam switch create --deps-only --with-dev-setup . --yes
         if: ${{ steps.cache-opam.outputs.cache-hit == '' }}
       - run: opam install --deps-only --with-dev-setup . --yes
