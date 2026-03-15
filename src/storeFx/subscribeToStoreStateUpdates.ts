@@ -9,6 +9,20 @@ const timePlayed = { contents: 0 };
 export function subscribeToStoreStateUpdates() {
   return Fx.bind(Fx.ask<{ store: Store }>(), ({ store }) => {
     store.subscribe((state, prevState) => {
+      if (state.auth.credentials !== prevState.auth.credentials) {
+        if (state.auth.credentials) {
+          Fx.runAsync(initializePlayQueue(), { store });
+        } else {
+          store.setState(prev => ({
+            player: {
+              ...prev.player,
+              currentSongId: undefined,
+              queuedSongIds: [],
+            },
+          }));
+        }
+      }
+
       if (
         state.player.currentTime !== prevState.player.currentTime ||
         state.player.duration !== prevState.player.duration
