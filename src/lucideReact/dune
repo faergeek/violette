@@ -1,6 +1,0 @@
-(library
- (libraries reason-react)
- (name lucideReact)
- (modes melange)
- (preprocess
-  (pps melange.ppx reason-react-ppx)))

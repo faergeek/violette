@@ -1,6 +1,0 @@
-(library
- (libraries pages router shared storeFx)
- (name routes)
- (modes melange)
- (preprocess
-  (pps melange.ppx melange-json.ppx reason-react-ppx)))

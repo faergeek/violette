@@ -130,29 +130,15 @@
 }
 
 .duration {
-  padding-inline-end: 0.75rem;
   white-space: nowrap;
   font-variant-numeric: slashed-zero tabular-nums;
 }
 
-.durationSkeleton {
-  display: inline-block;
-  width: 100%;
-}
-
 .menu {
   position: absolute;
-  inset: 0;
-  left: auto;
   display: flex;
   justify-content: flex-end;
-  margin: auto;
-  padding-inline-end: 0.75rem;
   opacity: 0;
-}
-
-.menuButton {
-  padding: 0.75rem;
 }
 
 .removeFromQueueButton {
@@ -174,21 +160,19 @@
   .starButton {
     padding: 0.5rem;
   }
+}
 
-  .duration {
-    padding-inline-end: 0.5rem;
+.root_isCurrentInPlayer {
+  .trackNumber {
+    color: transparent;
   }
 
-  .menu {
-    padding-inline-end: 0;
+  .coverArt {
+    opacity: 0.25;
   }
 
-  .menuButton {
-    padding: 0.5rem;
-  }
-
-  .removeFromQueueButton {
-    padding: 0.5rem;
+  &:not(.root_isNowPlaying) .playButton {
+    opacity: 1;
   }
 }
 
@@ -207,7 +191,7 @@
   }
 
   .nowPlayingIndicator {
-    visibility: hidden;
+    display: none;
   }
 
   .duration {
@@ -215,22 +199,6 @@
   }
 
   .menu {
-    opacity: 1;
-  }
-}
-
-.root_isCurrentInPlayer {
-  .trackNumber {
-    color: transparent;
-  }
-
-  .coverArt {
-    opacity: 0.25;
-  }
-}
-
-.root_paused.root_isCurrentInPlayer {
-  .playButton {
     opacity: 1;
   }
 }

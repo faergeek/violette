@@ -9,4 +9,13 @@
   align-items: center;
   white-space: nowrap;
   gap: 0.5rem;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--brand-color);
+  }
+}
+
+.icon {
+  color: var(--brand-color);
 }

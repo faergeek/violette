@@ -2,7 +2,7 @@
   display: inline-flex;
 }
 
-.icon {
+.filledIcon {
   fill: hsl(var(--primary));
   stroke: hsl(var(--primary));
 }

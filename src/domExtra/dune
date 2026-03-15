@@ -1,6 +1,0 @@
-(library
- (libraries melange-fetch melange-webapi melange.dom)
- (name domExtra)
- (modes melange)
- (preprocess
-  (pps melange.ppx)))
