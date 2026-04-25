@@ -22,7 +22,7 @@ importers:
         version: 12.1.0(size-limit@12.1.0)
       '@tanstack/react-router':
         specifier: ^1.85.5
-        version: 1.168.23(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 1.168.24(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.14
@@ -757,8 +757,8 @@ packages:
     resolution: {integrity: sha512-NaOGLRrddszbQj9upGat6HG/4TKvXLvu+osAIgfxPYA+eIvYKv8GKDJOrY2D3/U9MRnKfMWD7bU4jeD4xmqyIg==}
     engines: {node: '>=20.19'}
 
-  '@tanstack/react-router@1.168.23':
-    resolution: {integrity: sha512-+GblieDnutG6oipJJPNtRJjrWF8QTZEG/l0532+BngFkVK48oHNOcvIkSoAFYftK1egAwM7KBxXsb0Ou+X6/MQ==}
+  '@tanstack/react-router@1.168.24':
+    resolution: {integrity: sha512-CQWd9ywDZU6icG65SrjJMzWcNg/ehBKFxfxYssKSuELk0eM9SzJxJ3JBI760kdLXIsXewOX9PHpJDknxC/R5Ag==}
     engines: {node: '>=20.19'}
     peerDependencies:
       react: '>=18.0.0 || >=19.0.0'
@@ -770,8 +770,8 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@tanstack/router-core@1.168.15':
-    resolution: {integrity: sha512-Wr0424NDtD8fT/uALobMZ9DdcfsTyXtW5IPR++7zvW8/7RaIOeaqXpVDId8ywaGtqPWLWOfaUg2zUtYtukoXYA==}
+  '@tanstack/router-core@1.168.16':
+    resolution: {integrity: sha512-2lkWNMzDWWxVqTf9Y54DH1ceZOrGrOGzx9CFVMq8gQSOxhr3x3+otjVei1Rlx4xmsCc4yCqccqjun5wDtE9MZA==}
     engines: {node: '>=20.19'}
     hasBin: true
 
@@ -2773,11 +2773,11 @@ snapshots:
 
   '@tanstack/history@1.161.6': {}
 
-  '@tanstack/react-router@1.168.23(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@tanstack/react-router@1.168.24(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@tanstack/history': 1.161.6
       '@tanstack/react-store': 0.9.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@tanstack/router-core': 1.168.15
+      '@tanstack/router-core': 1.168.16
       isbot: 5.1.39
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
@@ -2789,7 +2789,7 @@ snapshots:
       react-dom: 19.2.5(react@19.2.5)
       use-sync-external-store: 1.6.0(react@19.2.5)
 
-  '@tanstack/router-core@1.168.15':
+  '@tanstack/router-core@1.168.16':
     dependencies:
       '@tanstack/history': 1.161.6
       cookie-es: 3.1.1
