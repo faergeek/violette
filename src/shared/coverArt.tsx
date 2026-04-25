@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { startTransition, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useAppStore } from '../store/context';
 import type { Credentials } from '../subsonic';
@@ -50,8 +50,10 @@ export function CoverArt({
   );
 
   useEffect(() => {
-    setIsLoaded(false);
-    setLastLoadedSrc(undefined);
+    startTransition(() => {
+      setIsLoaded(false);
+      setLastLoadedSrc(undefined);
+    });
   }, [srcSet]);
 
   return (
