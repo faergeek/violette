@@ -1,4 +1,5 @@
 {
   "arrowParens": "avoid",
+  "proseWrap": "always",
   "singleQuote": true
 }
