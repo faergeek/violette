@@ -88,25 +88,28 @@ export function subscribeToStoreStateUpdates() {
         state.player.currentSongId !== prevState.player.currentSongId ||
         state.player.replayGainOptions !== prevState.player.replayGainOptions
       ) {
-        const { albumGain, albumPeak, trackGain, trackPeak } =
-          song?.replayGain ?? {};
-
+        let newReplayGainValue = 1;
         const { preAmp, preferredGain } = state.player.replayGainOptions;
 
-        const gain =
-          preferredGain === 'album'
-            ? (albumGain ?? trackGain)
-            : (trackGain ?? albumGain);
+        if (preferredGain) {
+          const { albumGain, albumPeak, trackGain, trackPeak } =
+            song?.replayGain ?? {};
 
-        const peak =
-          preferredGain === 'album'
-            ? (albumPeak ?? trackPeak)
-            : (trackPeak ?? albumPeak);
+          const gain =
+            preferredGain === 'album'
+              ? (albumGain ?? trackGain)
+              : (trackGain ?? albumGain);
 
-        const newReplayGainValue = Math.min(
-          Math.pow(10, ((gain ?? 0) + preAmp) / 20),
-          1 / (peak ?? 1),
-        );
+          const peak =
+            preferredGain === 'album'
+              ? (albumPeak ?? trackPeak)
+              : (trackPeak ?? albumPeak);
+
+          newReplayGainValue = Math.min(
+            Math.pow(10, ((gain ?? 0) + preAmp) / 20),
+            1 / (peak ?? 1),
+          );
+        }
 
         replayGainValue.contents = newReplayGainValue;
 
