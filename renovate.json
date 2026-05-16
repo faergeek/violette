@@ -2,7 +2,8 @@
   "extends": [
     "config:recommended",
     ":semanticCommitsDisabled",
-    "helpers:pinGitHubActionDigests"
+    "helpers:pinGitHubActionDigests",
+    "security:minimumReleaseAgeNpm"
   ],
   "lockFileMaintenance": { "enabled": true }
 }
