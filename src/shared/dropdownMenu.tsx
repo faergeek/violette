@@ -128,12 +128,10 @@ export function Content({
         ref={menuRef}
         role="menu"
         onBlur={event => {
-          if (
-            !(
-              event.relatedTarget &&
-              event.currentTarget.contains(event.relatedTarget)
-            )
-          ) {
+          if (!(
+            event.relatedTarget &&
+            event.currentTarget.contains(event.relatedTarget)
+          )) {
             event.currentTarget.hidePopover();
           }
         }}

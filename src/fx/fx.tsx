@@ -91,8 +91,7 @@ export function map<Ok, Ok2, Err, Deps>(
 }
 
 export type Result<Ok, Err> =
-  | { TAG: typeof OK; _0: Ok }
-  | { TAG: typeof ERROR; _0: Err };
+  { TAG: typeof OK; _0: Ok } | { TAG: typeof ERROR; _0: Err };
 
 export function run<Ok, Err, Deps>(
   fx: Fx<Ok, Err, Deps>,
