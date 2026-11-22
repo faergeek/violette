@@ -16,7 +16,7 @@ const Song = v.object({
   albumId: v.string(),
   artist: v.string(),
   artistId: v.string(),
-  coverArt: v.string(),
+  coverArt: v.optional(v.string()),
   discNumber: v.optional(v.number()),
   duration: v.number(),
   genre: v.optional(v.string()),
@@ -50,7 +50,7 @@ type DiscTitle = v.InferOutput<typeof DiscTitle>;
 const Album = v.object({
   artist: v.string(),
   artistId: v.string(),
-  coverArt: v.string(),
+  coverArt: v.optional(v.string()),
   discTitles: v.optional(v.array(DiscTitle)),
   duration: v.optional(v.number()),
   genre: v.optional(v.string()),
@@ -79,7 +79,7 @@ export type AlbumInfo = v.InferOutput<typeof AlbumInfo>;
 const BaseAlbum = v.object({
   artist: v.string(),
   artistId: v.string(),
-  coverArt: v.string(),
+  coverArt: v.optional(v.string()),
   duration: v.optional(v.number()),
   genre: v.optional(v.string()),
   genres: v.optional(v.array(Genre)),
@@ -97,7 +97,7 @@ export type BaseAlbum = v.InferOutput<typeof BaseAlbum>;
 const Artist = v.object({
   album: v.optional(v.array(BaseAlbum)),
   albumCount: v.number(),
-  coverArt: v.string(),
+  coverArt: v.optional(v.string()),
   id: v.string(),
   musicBrainzId: v.optional(v.string()),
   name: v.string(),
@@ -117,7 +117,7 @@ export type ArtistInfoWithoutSimilarArtist = v.InferOutput<
 
 const BaseArtist = v.object({
   albumCount: v.number(),
-  coverArt: v.string(),
+  coverArt: v.optional(v.string()),
   id: v.string(),
   musicBrainzId: v.optional(v.string()),
   name: v.string(),

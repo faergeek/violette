@@ -75,10 +75,17 @@ export function subscribeToStoreStateUpdates() {
           metadata.artist = song.artist;
           metadata.title = song.title;
 
-          metadata.artwork = [96, 128, 192, 256, 384, undefined].map(size => ({
-            sizes: size == null ? '' : `${size}x${size}`,
-            src: getCoverArt(credentials, song.coverArt, size),
-          }));
+          const coverArt = song.coverArt;
+          if (coverArt == null) {
+            metadata.artwork = [];
+          } else {
+            metadata.artwork = [96, 128, 192, 256, 384, undefined].map(
+              size => ({
+                sizes: size == null ? '' : `${size}x${size}`,
+                src: getCoverArt(credentials, coverArt, size),
+              }),
+            );
+          }
         }
 
         navigator.mediaSession.metadata = metadata;
