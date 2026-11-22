@@ -53,11 +53,13 @@ export const route = createRoute({
         const credentials = state.auth.credentials;
         if (!credentials) throw new Error();
 
-        CoverArt.preload(
-          credentials,
-          initialArtist.coverArt,
-          MEDIA_HEADER_COVER_ART_SIZES,
-        );
+        if (initialArtist.coverArt != null) {
+          CoverArt.preload(
+            credentials,
+            initialArtist.coverArt,
+            MEDIA_HEADER_COVER_ART_SIZES,
+          );
+        }
 
         const initialAlbumIds = state.artists.albumIdsByArtistId.get(
           params.artistId,

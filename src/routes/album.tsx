@@ -56,11 +56,13 @@ export const route = createRoute({
     const base = state.albums.baseById.get(params.albumId);
     return (base != null ? Promise.resolve(base) : basePromise).then(
       baseAlbum => {
-        CoverArt.preload(
-          credentials,
-          baseAlbum.coverArt,
-          MEDIA_HEADER_COVER_ART_SIZES,
-        );
+        if (baseAlbum.coverArt != null) {
+          CoverArt.preload(
+            credentials,
+            baseAlbum.coverArt,
+            MEDIA_HEADER_COVER_ART_SIZES,
+          );
+        }
 
         return {
           deferredAlbumInfo: Fx.runAsync(fetchAlbumInfo(params.albumId), {
